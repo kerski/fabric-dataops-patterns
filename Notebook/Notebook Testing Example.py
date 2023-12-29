@@ -5,18 +5,18 @@
 # META {
 # META   "synapse": {
 # META     "lakehouse": {
-# META       "default_lakehouse": "ef820c8b-50ab-43f9-9490-30a63c2534de",
-# META       "default_lakehouse_name": "Continuous_Integration",
-# META       "default_lakehouse_workspace_id": "66563acf-9df8-4e25-a960-25237d1e5e2e",
+# META       "default_lakehouse": "37c04573-eac8-4774-9e22-45fd8d708048",
+# META       "default_lakehouse_name": "CIExample",
+# META       "default_lakehouse_workspace_id": "28b68708-e047-4f0b-a0d8-809219e494c1",
 # META       "known_lakehouses": [
 # META         {
-# META           "id": "ef820c8b-50ab-43f9-9490-30a63c2534de"
+# META           "id": "37c04573-eac8-4774-9e22-45fd8d708048"
 # META         }
 # META       ]
 # META     },
 # META     "environment": {
-# META       "environmentId": "64bf71c8-1c40-4017-aaef-cff20ccff958",
-# META       "workspaceId": "66563acf-9df8-4e25-a960-25237d1e5e2e"
+# META       "environmentId": "34d8f906-cce6-404d-a0b1-919f911c500f",
+# META       "workspaceId": "28b68708-e047-4f0b-a0d8-809219e494c1"
 # META     }
 # META   }
 # META }
@@ -25,6 +25,9 @@
 
 # ## Import 
 # *Note: The environment has semantic-link should be installed already*
+
+# MARKDOWN ********************
+
 
 # CELL ********************
 
@@ -58,7 +61,7 @@ run_dt = datetime.datetime.now()
 
 # Get latest queries for the branch
 # NOTE: Switch to commit id for orchestration
-dax_df = spark.sql("SELECT * FROM Continuous_Integration.dax_queries WHERE Azure_DevOps_Branch_Name = '" + branch + "' AND Dataset_Sub_Folder_Path LIKE '%.Tests.dax' AND Timestamp = (SELECT MAX(Timestamp) FROM Continuous_Integration.dax_queries)")
+dax_df = spark.sql("SELECT * FROM DAXQueries WHERE Azure_DevOps_Branch_Name = '" + branch + "' AND Dataset_Sub_Folder_Path LIKE '%.Tests.dax' AND Timestamp = (SELECT MAX(Timestamp) FROM DAXQueries)")
 
 display(dax_df)
 
@@ -120,5 +123,5 @@ for row in dax_df2.itertuples():
 
 # CELL ********************
 
-df = spark.sql("SELECT * FROM test_results LIMIT 1000")
+df = spark.sql("SELECT * FROM test_results LIMIT 10")
 display(df)
