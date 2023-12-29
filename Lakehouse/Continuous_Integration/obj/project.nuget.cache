@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "IopMtng7v3f1/zy540OJEmg6KVLLL70jo+FcS9Hl9XeXd0r12MnBOHg5IUZCKJ8+fUTP9h8zshPFZJ6teBS9XA==",
+  "success": true,
+  "projectFilePath": "c:\\Users\\JohnKerski\\Git\\GitHub\\fabric-dataops-patterns\\Lakehouse\\Continuous_Integration\\Continuous_Integration.sqlproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\JohnKerski\\.nuget\\packages\\microsoft.netframework.referenceassemblies\\1.0.0\\microsoft.netframework.referenceassemblies.1.0.0.nupkg.sha512",
+    "C:\\Users\\JohnKerski\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net45\\1.0.0\\microsoft.netframework.referenceassemblies.net45.1.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

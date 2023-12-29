@@ -1,0 +1,45 @@
+{
+  "format": 1,
+  "restore": {
+    "c:\\Users\\JohnKerski\\Git\\GitHub\\fabric-dataops-patterns\\Lakehouse\\Continuous_Integration\\Continuous_Integration.sqlproj": {}
+  },
+  "projects": {
+    "c:\\Users\\JohnKerski\\Git\\GitHub\\fabric-dataops-patterns\\Lakehouse\\Continuous_Integration\\Continuous_Integration.sqlproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "c:\\Users\\JohnKerski\\Git\\GitHub\\fabric-dataops-patterns\\Lakehouse\\Continuous_Integration\\Continuous_Integration.sqlproj",
+        "projectName": "Continuous_Integration",
+        "projectPath": "c:\\Users\\JohnKerski\\Git\\GitHub\\fabric-dataops-patterns\\Lakehouse\\Continuous_Integration\\Continuous_Integration.sqlproj",
+        "packagesPath": "C:\\Users\\JohnKerski\\.nuget\\packages\\",
+        "outputPath": "c:\\Users\\JohnKerski\\Git\\GitHub\\fabric-dataops-patterns\\Lakehouse\\Continuous_Integration\\obj\\",
+        "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
+        "configFilePaths": [
+          "C:\\Users\\JohnKerski\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net45"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net45": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net45": {
+          "dependencies": {
+            "Microsoft.NETFramework.ReferenceAssemblies": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.0.0, )"
+            }
+          }
+        }
+      }
+    }
+  }
+}
