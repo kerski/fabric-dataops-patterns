@@ -1,0 +1,109 @@
+{
+  "config": "{\"version\":\"5.42\",\"themeCollection\":{\"baseTheme\":{\"name\":\"CY21SU04\",\"version\":\"5.21\",\"type\":2}},\"activeSectionIndex\":0,\"defaultDrillFilterOtherVisuals\":true,\"slowDataSourceSettings\":{\"isCrossHighlightingDisabled\":false,\"isSlicerSelectionsButtonEnabled\":false,\"isFilterSelectionsButtonEnabled\":false,\"isFieldWellButtonEnabled\":false,\"isApplyAllButtonEnabled\":false},\"linguisticSchemaSyncVersion\":2,\"settings\":{\"useNewFilterPaneExperience\":true,\"allowChangeFilterTypes\":true,\"useStylableVisualContainerHeader\":true,\"exportDataMode\":1,\"pauseQueries\":false},\"objects\":{\"section\":[{\"properties\":{\"verticalAlignment\":{\"expr\":{\"Literal\":{\"Value\":\"'Top'\"}}}}}],\"outspacePane\":[{\"properties\":{\"expanded\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}},\"visible\":{\"expr\":{\"Literal\":{\"Value\":\"false\"}}}}}]}}",
+  "layoutOptimization": 0,
+  "resourcePackages": [
+    {
+      "resourcePackage": {
+        "disabled": false,
+        "items": [
+          {
+            "name": "CY21SU04",
+            "path": "BaseThemes/CY21SU04.json",
+            "type": 202
+          }
+        ],
+        "name": "SharedResources",
+        "type": 2
+      }
+    },
+    {
+      "resourcePackage": {
+        "disabled": false,
+        "items": [
+          {
+            "path": "lineStackedColumnMatrixADACEA3309644A92B1A6D50A68C81088.pbiviz.json",
+            "type": 5
+          }
+        ],
+        "name": "lineStackedColumnMatrixADACEA3309644A92B1A6D50A68C81088",
+        "type": 0
+      }
+    }
+  ],
+  "sections": [
+    {
+      "config": "{\"relationships\":[{\"source\":\"8823c9fce3db19aec38e\",\"target\":\"cb9b48525e8e70780eb8\",\"type\":3}]}",
+      "displayName": "Page 1",
+      "displayOption": 1,
+      "filters": "[]",
+      "height": 720.00,
+      "name": "ReportSection",
+      "visualContainers": [
+        {
+          "config": "{\"name\":\"790ad0f608ee45b48d59\",\"layouts\":[{\"id\":0,\"position\":{\"x\":261.6387665198238,\"y\":384.56387665198235,\"z\":1000,\"width\":533.4273127753304,\"height\":313.51541850220264,\"tabOrder\":0}}],\"singleVisual\":{\"visualType\":\"clusteredBarChart\",\"projections\":{\"Category\":[{\"queryRef\":\"EyeColorDim.Eye Color\",\"active\":true}],\"Y\":[{\"queryRef\":\"CountNonNull(MarvelFact.ID)\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"m\",\"Entity\":\"MarvelFact\",\"Type\":0},{\"Name\":\"e\",\"Entity\":\"EyeColorDim\",\"Type\":0}],\"Select\":[{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"ID\"}},\"Function\":5},\"Name\":\"CountNonNull(MarvelFact.ID)\"},{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"e\"}},\"Property\":\"Eye Color\"},\"Name\":\"EyeColorDim.Eye Color\"}],\"OrderBy\":[{\"Direction\":2,\"Expression\":{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"ID\"}},\"Function\":5}}}]},\"drillFilterOtherVisuals\":true,\"hasDefaultSort\":true,\"objects\":{\"dataPoint\":[{\"properties\":{\"fill\":{\"solid\":{\"color\":{\"expr\":{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Entity\":\"EyeColorDim\"}},\"Property\":\"Eye Color\"}},\"Function\":3}}}}}},\"selector\":{\"data\":[{\"dataViewWildcard\":{\"matchingOption\":1}}]}}],\"categoryAxis\":[{\"properties\":{\"concatenateLabels\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}]},\"vcObjects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Characters by Eye Color'\"}}}}}],\"general\":[{\"properties\":{\"altText\":{\"expr\":{\"Literal\":{\"Value\":\"'Characters by Eye Color'\"}}}}}]}}}",
+          "filters": "[]",
+          "height": 313.52,
+          "width": 533.43,
+          "x": 261.64,
+          "y": 384.56,
+          "z": 1000.00
+        },
+        {
+          "config": "{\"name\":\"7ff5063be9393370363c\",\"layouts\":[{\"id\":0,\"position\":{\"x\":762.3612334801762,\"y\":7.894273127753304,\"z\":6000,\"width\":517.6387665198238,\"height\":351.8590308370044,\"tabOrder\":6000}}],\"singleVisual\":{\"visualType\":\"lineChart\",\"projections\":{\"Category\":[{\"queryRef\":\"DateDim.Month Year\",\"active\":true}],\"Y\":[{\"queryRef\":\"MarvelFact.Running Total of Character Appearances\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"d\",\"Entity\":\"DateDim\",\"Type\":0},{\"Name\":\"m\",\"Entity\":\"MarvelFact\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"d\"}},\"Property\":\"Month Year\"},\"Name\":\"DateDim.Month Year\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"Running Total of Character Appearances\"},\"Name\":\"MarvelFact.Running Total of Character Appearances\"}]},\"drillFilterOtherVisuals\":true,\"vcObjects\":{\"general\":[{\"properties\":{\"altText\":{\"expr\":{\"Literal\":{\"Value\":\"'Running Total of Character Appearances by Month Year'\"}}}}}]}}}",
+          "filters": "[]",
+          "height": 351.86,
+          "width": 517.64,
+          "x": 762.36,
+          "y": 7.89,
+          "z": 6000.00
+        },
+        {
+          "config": "{\"name\":\"8823c9fce3db19aec38e\",\"layouts\":[{\"id\":0,\"position\":{\"x\":0,\"y\":36.08810572687225,\"z\":3000,\"width\":230.06167400881057,\"height\":104.88105726872247,\"tabOrder\":2000}}],\"singleVisual\":{\"visualType\":\"slicer\",\"projections\":{\"Values\":[{\"queryRef\":\"DateDim.Date\",\"active\":true}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"d\",\"Entity\":\"DateDim\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"d\"}},\"Property\":\"Date\"},\"Name\":\"DateDim.Date\"}],\"OrderBy\":[{\"Direction\":1,\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"d\"}},\"Property\":\"Date\"}}}]},\"drillFilterOtherVisuals\":true,\"hasDefaultSort\":true,\"objects\":{\"data\":[{\"properties\":{\"mode\":{\"expr\":{\"Literal\":{\"Value\":\"'Relative'\"}}},\"relativeRange\":{\"expr\":{\"Literal\":{\"Value\":\"'Last'\"}}},\"relativeDuration\":{\"expr\":{\"Literal\":{\"Value\":\"11D\"}}},\"relativePeriod\":{\"expr\":{\"Literal\":{\"Value\":\"'Years'\"}}}}}],\"dateRange\":[{\"properties\":{\"includeToday\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}],\"general\":[{\"properties\":{\"filter\":{\"filter\":{\"Version\":2,\"From\":[{\"Name\":\"d\",\"Entity\":\"DateDim\",\"Type\":0}],\"Where\":[{\"Condition\":{\"Between\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"d\"}},\"Property\":\"Date\"}},\"LowerBound\":{\"DateSpan\":{\"Expression\":{\"DateAdd\":{\"Expression\":{\"DateAdd\":{\"Expression\":{\"Now\":{}},\"Amount\":1,\"TimeUnit\":0}},\"Amount\":-11,\"TimeUnit\":3}},\"TimeUnit\":0}},\"UpperBound\":{\"DateSpan\":{\"Expression\":{\"Now\":{}},\"TimeUnit\":0}}}}}]}}}}]},\"vcObjects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Date Slicer'\"}}}}}],\"general\":[{\"properties\":{\"altText\":{\"expr\":{\"Literal\":{\"Value\":\"'Date Slicer'\"}}}}}]}}}",
+          "filters": "[]",
+          "height": 104.88,
+          "width": 230.06,
+          "x": 0.00,
+          "y": 36.09,
+          "z": 3000.00
+        },
+        {
+          "config": "{\"name\":\"ae9c7ada95c7c5d294d3\",\"layouts\":[{\"id\":0,\"position\":{\"x\":864.9867841409691,\"y\":469.1453744493392,\"z\":2000,\"width\":330.431718061674,\"height\":144.352422907489,\"tabOrder\":1000}}],\"singleVisual\":{\"visualType\":\"card\",\"projections\":{\"Values\":[{\"queryRef\":\"MarvelFact.Number of Characters\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"m\",\"Entity\":\"MarvelFact\",\"Type\":0}],\"Select\":[{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"Number of Characters\"},\"Name\":\"MarvelFact.Number of Characters\"}],\"OrderBy\":[{\"Direction\":2,\"Expression\":{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"Number of Characters\"}}}]},\"drillFilterOtherVisuals\":true,\"hasDefaultSort\":true,\"objects\":{\"categoryLabels\":[{\"properties\":{\"show\":{\"expr\":{\"Literal\":{\"Value\":\"false\"}}}}}]},\"vcObjects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Entity\":\"MarvelFact\"}},\"Property\":\"Number of Characters Title By Date\"}}},\"alignment\":{\"expr\":{\"Literal\":{\"Value\":\"'center'\"}}},\"show\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}]}}}",
+          "filters": "[]",
+          "height": 144.35,
+          "width": 330.43,
+          "x": 864.99,
+          "y": 469.15,
+          "z": 2000.00
+        },
+        {
+          "config": "{\"name\":\"c3c147760d0d3ad62a09\",\"layouts\":[{\"id\":0,\"position\":{\"x\":10.14977973568282,\"y\":173.6740088105727,\"z\":4000,\"width\":219.91189427312776,\"height\":186.07929515418502,\"tabOrder\":4000}}],\"singleVisual\":{\"visualType\":\"slicer\",\"projections\":{\"Values\":[{\"queryRef\":\"AlignmentDim.Alignment\",\"active\":true}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"a\",\"Entity\":\"AlignmentDim\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Alignment\"},\"Name\":\"AlignmentDim.Alignment\"}]},\"drillFilterOtherVisuals\":true,\"objects\":{\"data\":[{\"properties\":{\"mode\":{\"expr\":{\"Literal\":{\"Value\":\"'Basic'\"}}}}}],\"general\":[{\"properties\":{\"filter\":{\"filter\":{\"Version\":2,\"From\":[{\"Name\":\"a\",\"Entity\":\"AlignmentDim\",\"Type\":0}],\"Where\":[{\"Condition\":{\"In\":{\"Expressions\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"a\"}},\"Property\":\"Alignment\"}}],\"Values\":[[{\"Literal\":{\"Value\":\"'Not Available'\"}}]]}}}]}}}}]},\"vcObjects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Alignment Slicer'\"}}}}}],\"general\":[{\"properties\":{\"altText\":{\"expr\":{\"Literal\":{\"Value\":\"'Alignment Slicer'\"}}}}}]}}}",
+          "filters": "[]",
+          "height": 186.08,
+          "width": 219.91,
+          "x": 10.15,
+          "y": 173.67,
+          "z": 4000.00
+        },
+        {
+          "config": "{\"name\":\"cb9b48525e8e70780eb8\",\"layouts\":[{\"id\":0,\"position\":{\"x\":261.6387665198238,\"y\":0,\"z\":5000,\"width\":533.4273127753304,\"height\":351.8590308370044,\"tabOrder\":5000}}],\"singleVisual\":{\"visualType\":\"clusteredBarChart\",\"projections\":{\"Category\":[{\"queryRef\":\"MarvelFact.Name\",\"active\":true}],\"Y\":[{\"queryRef\":\"Sum(MarvelFact.Appearances)\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"m\",\"Entity\":\"MarvelFact\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"Name\"},\"Name\":\"MarvelFact.Name\"},{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"Appearances\"}},\"Function\":0},\"Name\":\"Sum(MarvelFact.Appearances)\"}],\"OrderBy\":[{\"Direction\":2,\"Expression\":{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"Appearances\"}},\"Function\":0}}}]},\"drillFilterOtherVisuals\":true,\"objects\":{\"dataPoint\":[{\"properties\":{\"fill\":{\"solid\":{\"color\":{\"expr\":{\"FillRule\":{\"Input\":{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Entity\":\"MarvelFact\"}},\"Property\":\"Appearances\"}},\"Function\":0}},\"FillRule\":{\"linearGradient3\":{\"min\":{\"color\":{\"Literal\":{\"Value\":\"'#41a4ff'\"}}},\"mid\":{\"color\":{\"Literal\":{\"Value\":\"'#0d6abf'\"}}},\"max\":{\"color\":{\"Literal\":{\"Value\":\"'#094780'\"}}},\"nullColoringStrategy\":{\"strategy\":{\"Literal\":{\"Value\":\"'asZero'\"}}}}}}}}}}},\"selector\":{\"data\":[{\"dataViewWildcard\":{\"matchingOption\":1}}]}}],\"legend\":[{\"properties\":{\"showGradientLegend\":{\"expr\":{\"Literal\":{\"Value\":\"false\"}}},\"show\":{\"expr\":{\"Literal\":{\"Value\":\"false\"}}}}}],\"categoryAxis\":[{\"properties\":{\"concatenateLabels\":{\"expr\":{\"Literal\":{\"Value\":\"true\"}}}}}]},\"vcObjects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Top Ten Appearances'\"}}}}}],\"general\":[{\"properties\":{\"altText\":{\"expr\":{\"Literal\":{\"Value\":\"'Top Ten Appearances'\"}}}}}]}}}",
+          "filters": "[{\"expression\":{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Entity\":\"MarvelFact\"}},\"Property\":\"Rank of Appearances\"}},\"filter\":{\"Version\":2,\"From\":[{\"Name\":\"m\",\"Entity\":\"MarvelFact\",\"Type\":0}],\"Where\":[{\"Condition\":{\"Comparison\":{\"ComparisonKind\":3,\"Left\":{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"m\"}},\"Property\":\"Rank of Appearances\"}},\"Right\":{\"Literal\":{\"Value\":\"11L\"}}}}}]},\"type\":\"Advanced\",\"howCreated\":1,\"isHiddenInViewMode\":false}]",
+          "height": 351.86,
+          "width": 533.43,
+          "x": 261.64,
+          "y": 0.00,
+          "z": 5000.00
+        },
+        {
+          "config": "{\"name\":\"fb0533340c00746789ac\",\"layouts\":[{\"id\":0,\"position\":{\"x\":230.06167400881057,\"y\":0,\"z\":0,\"width\":45.11013215859031,\"height\":719.5066079295154,\"tabOrder\":-9999000}}],\"singleVisual\":{\"visualType\":\"shape\",\"drillFilterOtherVisuals\":true,\"objects\":{\"shape\":[{\"properties\":{\"tileShape\":{\"expr\":{\"Literal\":{\"Value\":\"'line'\"}}}}}],\"rotation\":[{\"properties\":{\"shapeAngle\":{\"expr\":{\"Literal\":{\"Value\":\"0L\"}}},\"angle\":{\"expr\":{\"Literal\":{\"Value\":\"90L\"}}}}}],\"outline\":[{\"properties\":{\"lineColor\":{\"solid\":{\"color\":{\"expr\":{\"ThemeDataColor\":{\"ColorId\":1,\"Percent\":0.6}}}}}},\"selector\":{\"id\":\"default\"}}]},\"vcObjects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Divider Line'\"}}}}}]}}}",
+          "filters": "[]",
+          "height": 719.51,
+          "width": 45.11,
+          "x": 230.06,
+          "y": 0.00,
+          "z": 0.00
+        }
+      ],
+      "width": 1280.00
+    }
+  ]
+}

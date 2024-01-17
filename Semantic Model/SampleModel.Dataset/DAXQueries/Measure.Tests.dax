@@ -1,0 +1,99 @@
+DEFINE
+    // Pick a static date(s) and filters
+    VAR __January2010Filter =
+        TREATAS ( { DATE ( 2010, 1, 1 ) }, 'DateDim'[Date] )
+    VAR __OneDayFilter =
+        TREATAS ( { DATE ( 2021, 1, 1 ) }, 'DateDim'[Date] )
+    VAR __BlankDayFilter =
+        TREATAS ( { "JAN-0001" }, 'DateDim'[DateKey] )
+    VAR __GoodAlignmentFilter =
+        TREATAS ( { "Good" }, 'AlignmentDim'[Alignment] )
+    VAR __NeutralAlignmentFilter =
+        TREATAS ( { "Neutral" }, 'AlignmentDim'[Alignment] )
+    VAR __SpidermanID = 1678
+    VAR __WolverineID = 64786
+    /* Marvel Fact Measures */
+    VAR _RunningTotalofAppearsWithoutAlign =
+        CALCULATE ( [Running Total of Character Appearances], __January2010Filter )
+    VAR _RunningTotalofAppearsWithAlign =
+        CALCULATE (
+            [Running Total of Character Appearances],
+            __January2010Filter,
+            __GoodAlignmentFilter
+        )
+    /* Calculate Top Rank in appearances for Good Alignment*/
+    VAR _GoodRankofCharAppearances =
+        SELECTCOLUMNS (
+            FILTER (
+                KEEPFILTERS (
+                    SUMMARIZECOLUMNS (
+                        'MarvelFact'[ID],
+                        __GoodAlignmentFilter,
+                        "Rank_of_Appearances", IGNORE ( 'MarvelFact'[Rank of Appearances] )
+                    )
+                ),
+                [Rank_of_Appearances] = 1
+            ),
+            "ID", [ID]
+        )
+    /* Calculate Top Rank in appearances for Neutral Alignment*/
+    VAR _NeutralRankofCharAppearances =
+        SELECTCOLUMNS (
+            FILTER (
+                KEEPFILTERS (
+                    SUMMARIZECOLUMNS (
+                        'MarvelFact'[ID],
+                        __NeutralAlignmentFilter,
+                        "Rank_of_Appearances", IGNORE ( 'MarvelFact'[Rank of Appearances] )
+                    )
+                ),
+                [Rank_of_Appearances] = 1
+            ),
+            "ID", [ID]
+        )
+    /* Date Dim filter*/
+    VAR _MultipleDatesFilter =
+        CALCULATE (
+            [Date Filter],
+            FILTER (
+                'DateDim',
+                [Date] >= DATE ( 2010, 1, 1 )
+                    && [Date] <= DATE ( 2011, 6, 1 )
+            )
+        )
+    VAR _SingleDateFilter =
+        CALCULATE ( [Date Filter], FILTER ( 'DateDim', [Date] = DATE ( 2011, 6, 1 ) ) ) 
+        
+/*Run Tests*/
+VAR _Tests =               
+UNION (
+    ROW (
+        "TestName",
+            "Measure: Running Total of Appeareances should not be altered by Alignment Filter",
+        "ExpectedValue", TRUE,
+        "ActualValue", _RunningTotalofAppearsWithAlign = _RunningTotalofAppearsWithoutAlign
+    ),
+    ROW (
+        "TestName", "Measure: Top Rank in Appearances for Good Alignment should be Spider-man",
+        "ExpectedValue", __SpidermanID,
+        "ActualValue", _GoodRankofCharAppearances
+    ),
+    ROW (
+        "TestName", "Measure: Top Rank in Appearances for Neutral Alignment should be Wolverine",
+        "ExpectedValue", __WolverineID,
+        "ActualValue", _NeutralRankofCharAppearances
+    ),
+    ROW (
+        "TestName", "Measure: Date Filter should output 'between January, 2010 and June, 2011'",
+        "ExpectedValue", "between January, 2010 and June, 2011",
+        "ActualValue", _MultipleDatesFilter
+    ),
+    ROW (
+        "TestName", "Measure: Single Date Filter should output 'for the month of June, 2011'",
+        "ExpectedValue", "for the month of June, 2011",
+        "ActualValue", _SingleDateFilter
+    )
+)
+
+/*Output Pass/Fail*/
+EVALUATE ADDCOLUMNS(_Tests,"Passed",[ExpectedValue] = [ActualValue])
