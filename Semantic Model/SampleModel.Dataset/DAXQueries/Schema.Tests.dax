@@ -1,5 +1,4 @@
 DEFINE
-	
 	// Update TableName1 and TableName2 with your tables
 	VAR _TableName1 = "AlignmentDim"
 	VAR _TableName2 = "MarvelFact"
@@ -32,7 +31,10 @@ DEFINE
 		// Exclude RowNumber columns
 		[Type] <> 3
 	)
-	VAR _result = SELECTCOLUMNS(
+	
+	VAR _measures = INFO.MEASURES()
+	
+	VAR _columnsxtable = SELECTCOLUMNS(
 		NATURALINNERJOIN(
 			_columns,
 			_tables
@@ -43,12 +45,8 @@ DEFINE
 		[ExplicitName],
 		"Description",
 		[Description],
-		"Column in Data Source",
-		[SourceColumn],
 		"Explicit Type",
 		[ExplicitDataType],
-		"Inferred Type",
-		[InferredDataType],
 		"Data Category",
 		[DataCategory],
 		"Column Type",
@@ -59,13 +57,32 @@ DEFINE
 			[Type]
 		),
 		"Format String",
-		[FormatString],
-		"DAX formula",
-		[Expression]
+		[FormatString]
 	)
+	
+	VAR _measuresxtable = SELECTCOLUMNS(
+		NATURALINNERJOIN(
+			_measures,
+			_tables
+		),
+		"Table",
+		[TableName],
+		"Column",
+		[Name],
+		"Description",
+		[Description],
+		"Explicit Type",
+		[DataType],
+		"Data Category",
+		[DataCategory],		
+		"Column Type",
+		"Measures",
+		"Format String",
+		[FormatString]
+	)	
 
 	// Join with Data Types to get plain language types
-	VAR _schema = NATURALINNERJOIN(_result,_DataTypes)
+	VAR _schema = NATURALINNERJOIN(UNION(_columnsxtable,_measuresxtable),_DataTypes)
 	////// END TEST SETUP  //////
 	
 	////// INSERT EXPECTED SCHEMA //////
@@ -77,15 +94,7 @@ DEFINE
 	})		
 
 	// Set Expectations on the Schema
-	VAR _Definition_of_Table2Schema = DATATABLE("Column",STRING,"Type",STRING,"Data Category",STRING,"Format String",STRING,{
-		{"ID","Whole Number",BLANK(),"0"},
-		{"Appearances","Whole Number",BLANK(),"#,0"},
-		{"DateID","Whole Number",BLANK(),"0"},
-		{"AlignmentID","Whole Number",BLANK(),"0"},
-		{"EyeID","Whole Number",BLANK(),"0"},
-		{"Name","Text",BLANK(),BLANK()},
-		{"Test","Date",BLANK(),"Long Time"}
-	})		
+	VAR _Definition_of_Table2Schema = DATATABLE("Column",STRING,"Type",STRING,"Data Category",STRING,"Format String",STRING,{{"Name","Text",BLANK(),BLANK()},{"Number of Characters Title By Date","Text",BLANK(),BLANK()},{"ID","Whole Number",BLANK(),"0"},{"Appearances","Whole Number",BLANK(),"#,0"},{"DateID","Whole Number",BLANK(),"0"},{"EyeID","Whole Number",BLANK(),"0"},{"AlignmentID","Whole Number",BLANK(),"0"},{"Number of Characters","Whole Number",BLANK(),"0"},{"Rank of Appearances","Whole Number",BLANK(),"0"},{"Running Total of Character Appearances","Whole Number",BLANK(),"#,0"},{"Test","Date",BLANK(),"Long Time"}})	
 		
 	// Get the schema for Table 1
 	VAR _Table1schema = SELECTCOLUMNS(

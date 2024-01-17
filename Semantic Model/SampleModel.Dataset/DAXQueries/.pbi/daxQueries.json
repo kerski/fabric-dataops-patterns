@@ -6,8 +6,7 @@
     "NonTest",
     "Table.Tests",
     "Schema.Tests",
-    "Schema Query Example",
-    "Query 1"
+    "Schema Query Example"
   ],
   "defaultTab": "Schema.Tests"
 }

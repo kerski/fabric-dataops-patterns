@@ -1,6 +1,5 @@
 DEFINE
 	///////////////// SETUP SCHEMA TABLES ///////////////////
-	// Establish crosswalk for columns
 	VAR _DataTypes = DATATABLE(
 		"Explicit Type", INTEGER,
 		"Type", STRING,
@@ -12,8 +11,6 @@ DEFINE
 		{10,"Currency"},			
 		{11,"Boolean"}	
 		})
-		
-	// Retireve Table info
 	VAR _tables = SELECTCOLUMNS(
 		FILTER(
 			INFO.TABLES(),
@@ -25,14 +22,15 @@ DEFINE
 		"TableName",
 		[Name]
 	)
-	// Get columns for the table that is the RowNumber-*
 	VAR _columns = FILTER(
 		INFO.COLUMNS(),
 		// Exclude RowNumber columns
 		[Type] <> 3
 	)
-	// Build Column Table
-	VAR _result = SELECTCOLUMNS(
+	
+	VAR _measures = INFO.MEASURES()
+	
+	VAR _columnsxtable = SELECTCOLUMNS(
 		NATURALINNERJOIN(
 			_columns,
 			_tables
@@ -43,12 +41,8 @@ DEFINE
 		[ExplicitName],
 		"Description",
 		[Description],
-		"Column in Data Source",
-		[SourceColumn],
 		"Explicit Type",
 		[ExplicitDataType],
-		"Inferred Type",
-		[InferredDataType],
 		"Data Category",
 		[DataCategory],
 		"Column Type",
@@ -59,13 +53,32 @@ DEFINE
 			[Type]
 		),
 		"Format String",
-		[FormatString],
-		"DAX formula",
-		[Expression]
+		[FormatString]
 	)
+	
+	VAR _measuresxtable = SELECTCOLUMNS(
+		NATURALINNERJOIN(
+			_measures,
+			_tables
+		),
+		"Table",
+		[TableName],
+		"Column",
+		[Name],
+		"Description",
+		[Description],
+		"Explicit Type",
+		[DataType],
+		"Data Category",
+		[DataCategory],		
+		"Column Type",
+		"Measures",
+		"Format String",
+		[FormatString]
+	)	
 
 	// Join with Data Types to get plain language types
-	VAR _schema = NATURALINNERJOIN(_result,_DataTypes)
+	VAR _schema = NATURALINNERJOIN(UNION(_columnsxtable,_measuresxtable),_DataTypes)
 
 	//////////////  Model Specific //////////////////////////
 
