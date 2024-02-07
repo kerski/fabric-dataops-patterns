@@ -1,6 +1,6 @@
 # Gen2, Notebook Automated Testing Pattern
 
-#![Automated Testing](./images/automated-testing.png)
+![Automated Testing](./images/automated-testing.png)
 
 This pattern extracts DAX Query Views tests in the pbip format using a Gen2 Dataflow, run the tests in a Notebook, and stores the results in a Lakehouse.
 

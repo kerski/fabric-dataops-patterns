@@ -61,7 +61,7 @@ To test properly you should create conditions to test when:
 
 Screenshot below is an example of running tests for calculations.
 
-#![Testing Calculations](./images/testing-calculations.png)
+![Testing Calculations](./images/testing-calculations.png)
 *Example of tests for calculations like DAX measures and calculated columns.*
 
 #### 2. Testing Content
@@ -73,7 +73,7 @@ Knowing that your tables and columns have the appropriate content is imperative.
     - The existence of blank columns.
     - The values in a custom column are correct.
 
-#![Testing Content](./images/testing-content.png)
+![Testing Content](./images/testing-content.png)
 *Example of testing content of your tables and columns.*
 Note: Regex expressions still can’t be ran against content in columns within DAX syntax. I have an alternative approach to that <a href="https://www.kerski.tech/bringing-dataops-to-power-bi-part23/" target="_blank">in this article</a>.
 
@@ -93,7 +93,7 @@ Dependencies: At least the December 2023 version of Power Desktop and [DAX Query
 
 [Schema Query Example](./Semantic%20Model/SampleModel.Dataset/DAXQueries/Schema%20Query%20Example.dax): Example of generating the DataTable syntax for the expected value part of the test case.
 
-#![testing schema](./images/testing-schema.png)
+![testing schema](./images/testing-schema.png)
 *Example of running tests against your semantic model's schema.*
 
 

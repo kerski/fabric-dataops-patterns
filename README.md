@@ -1,6 +1,6 @@
 # fabric-dataops-patterns
 
-#![Microsoft Fabric DataOps Patterns](./documentation/images/fabric-dataops-patterns.png)
+![Microsoft Fabric DataOps Patterns](./documentation/images/fabric-dataops-patterns.png)
 
 Templates for weaving DataOps into Microsoft Fabric.
 
