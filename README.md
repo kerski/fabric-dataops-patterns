@@ -1,13 +1,11 @@
 # fabric-dataops-patterns
-Templates for weaving DataOps into Microsoft Fabric
 
+#![Microsoft Fabric DataOps Patterns](./documentation/images/fabric-dataops-patterns.png)
 
-## Testing Schema Template
-These patterns show how to run schema checks against a semantic model. 
+Templates for weaving DataOps into Microsoft Fabric.
 
-Dependencies: At least the December 2023 version of Power Desktop and [DAX Query View](https://learn.microsoft.com/en-us/power-bi/transform-model/dax-query-view).  Please make sure to turn on DAX Query View and PBIP preview features on.
+### Patterns
 
-[Schema.Tests.dax](./Semantic%20Model/SampleModel.Dataset/DAXQueries/Schema.Tests.dax): Example of running schema tests against a sample dataset.
-
-[Schema Query Example](./Semantic%20Model/SampleModel.Dataset/DAXQueries/Schema%20Query%20Example.dax): Example of generating the DataTable syntax for the expected value part of the test case.
+1. [DAX Query View Testing Pattern](./documentation/dax-query-view-testing-pattern.md)
+1. [Gen2, Notebook Automated Testing Pattern](./documentation/gen2-notebook-automated-testing-pattern.md)
 

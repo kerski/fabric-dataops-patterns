@@ -15,19 +15,6 @@
         "name": "SharedResources",
         "type": 2
       }
-    },
-    {
-      "resourcePackage": {
-        "disabled": false,
-        "items": [
-          {
-            "path": "lineStackedColumnMatrixADACEA3309644A92B1A6D50A68C81088.pbiviz.json",
-            "type": 5
-          }
-        ],
-        "name": "lineStackedColumnMatrixADACEA3309644A92B1A6D50A68C81088",
-        "type": 0
-      }
     }
   ],
   "sections": [
