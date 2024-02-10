@@ -4,6 +4,7 @@ DEFINE
 		"Explicit Type", INTEGER,
 		"Type", STRING,
 		{
+		{1,"Calculated column"},
 		{2,"Text"},
 		{6,"Whole Number"},
 		{8,"Decimal Number"},
