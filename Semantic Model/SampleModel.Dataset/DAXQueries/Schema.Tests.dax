@@ -8,6 +8,7 @@ DEFINE
 		"Explicit Type", INTEGER,
 		"Type", STRING,
 		{
+		{1,"Calculated column"},
 		{2,"Text"},
 		{6,"Whole Number"},
 		{8,"Decimal Number"},
@@ -94,7 +95,7 @@ DEFINE
 	})		
 
 	// Set Expectations on the Schema
-	VAR _Definition_of_Table2Schema = DATATABLE("Column",STRING,"Type",STRING,"Data Category",STRING,"Format String",STRING,{{"Name","Text",BLANK(),BLANK()},{"Number of Characters Title By Date","Text",BLANK(),BLANK()},{"ID","Whole Number",BLANK(),"0"},{"Appearances","Whole Number",BLANK(),"#,0"},{"DateID","Whole Number",BLANK(),"0"},{"EyeID","Whole Number",BLANK(),"0"},{"AlignmentID","Whole Number",BLANK(),"0"},{"Number of Characters","Whole Number",BLANK(),"0"},{"Rank of Appearances","Whole Number",BLANK(),"0"},{"Running Total of Character Appearances","Whole Number",BLANK(),"#,0"},{"Test","Date",BLANK(),"Long Time"}})	
+	VAR _Definition_of_Table2Schema = DATATABLE("Column",STRING,"Type",STRING,"Data Category",STRING,"Format String",STRING,{{"Test","Calculated column",BLANK(),"Short Date"},{"Name","Text",BLANK(),BLANK()},{"Number of Characters Title By Date","Text",BLANK(),BLANK()},{"ID","Whole Number",BLANK(),"0"},{"Appearances","Whole Number",BLANK(),"#,0"},{"DateID","Whole Number",BLANK(),"0"},{"EyeID","Whole Number",BLANK(),"0"},{"AlignmentID","Whole Number",BLANK(),"0"},{"Number of Characters","Whole Number",BLANK(),"0"},{"Rank of Appearances","Whole Number",BLANK(),"0"},{"Running Total of Character Appearances","Whole Number",BLANK(),"#,0"}})
 		
 	// Get the schema for Table 1
 	VAR _Table1schema = SELECTCOLUMNS(
@@ -131,6 +132,6 @@ EVALUATE
 	ADDCOLUMNS(
 		_Tests,
 		// Bug for December Release return true false and string
-		"Passed", IF([ExpectedValue] = [ActualValue],"true","false")
-		//"Passed", [ExpectedValue] = [ActualValue]
+		//"Passed", IF([ExpectedValue] = [ActualValue],"true","false")
+		"Passed", [ExpectedValue] = [ActualValue]
 	)
