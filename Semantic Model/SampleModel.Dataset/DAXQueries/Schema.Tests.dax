@@ -131,7 +131,5 @@ DEFINE
 EVALUATE 
 	ADDCOLUMNS(
 		_Tests,
-		// Bug for December Release return true false and string
-		//"Passed", IF([ExpectedValue] = [ActualValue],"true","false")
 		"Passed", [ExpectedValue] = [ActualValue]
 	)

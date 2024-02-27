@@ -8,5 +8,5 @@
     "Schema.Tests",
     "Schema Query Example"
   ],
-  "defaultTab": "Schema.Tests"
+  "defaultTab": "Measure.Tests"
 }
