@@ -81,10 +81,6 @@ else{ # Use account
     $Conn = Connect-AzAccount -Credential $Credentials
 }# end service principal check
 
-Write-Host "----"
-Write-Host $Conn
-Write-Host "----"
-
 # Get Authentication information
 $ConnectionInfo = Get-AzAccessToken -ResourceUrl $Opts.FabricAPIURL
 $FabricToken = $ConnectionInfo.Token
@@ -101,6 +97,10 @@ $FabricHeaders = @{
     'Authorization' = "Bearer {0}" -f $FabricToken
 }   
 
+Write-Host "----"
+Write-Host $FabricHeaders
+Write-Host "----"
+
 # Retrieve workspace name using filter capability
 $WorkspaceURL =  "$($Opts.PowerBIURL)/v1.0/myorg/groups?`$filter=name eq '$($Opts.WorkspaceName)' and state ne 'Deleted'"
 $WorkspaceResult = Invoke-WebRequest -Headers $FabricHeaders -Uri $WorkspaceURL -Method GET -Verbose
@@ -108,7 +108,7 @@ $WorkspaceObj = $WorkspaceResult | ConvertFrom-Json
 
 # Check if you can access the workspace or it exists
 if($WorkspaceObj.value.count -eq 0){
-    Write-Host "##vso[task.logissue type=error]Unable to locate workspace with name: $($Opt.WorkspaceName)"
+    Write-Host "##vso[task.logissue type=error]Unable to locate workspace with name: $($Opts.WorkspaceName)"
     exit 1
 }
 
