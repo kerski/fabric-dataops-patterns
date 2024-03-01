@@ -38,8 +38,8 @@ $Opts = @{
     PowerBIURL = "https://api.powerbi.com"
     XMLAPrefix = "powerbi://api.powerbi.com/v1.0/myorg/"
     WorkspaceName = "${env:WORKSPACE_NAME}"
-    UserName = "${env:PPU_USERNAME}";
-    Password = "${env:PPU_PASSWORD}";
+    UserName = "${env:USERNAME_OR_CLIENTID}";
+    Password = "${env:PASSWORD_OR_CLIENTSECRET}";
     IsServicePrincipal = $false;
     # Get new pbip changes
     PbiChanges = git diff --name-only --relative --diff-filter AMR HEAD^ HEAD '*.Dataset/*' '*.Report/*';
