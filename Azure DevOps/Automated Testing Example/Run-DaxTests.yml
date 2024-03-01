@@ -1,0 +1,35 @@
+trigger:
+  branches:
+    include:
+    - refs/heads/main
+
+pool:
+  vmimage: 'windows-latest'
+
+variables:
+  # Variable group with configuration
+  - group: ProductionBranch
+
+jobs:
+- job: Job_1
+  displayName: Automated Testing Job
+  steps:
+  - checkout: self
+    fetchDepth: 0
+  - task: PowerShell@2
+    displayName: Automated Testing
+    env:
+      PASSWORD_OR_CLIENTSECRET: $(PASSWORD_OR_CLIENTSECRET) # Maps the secret variable
+    inputs:
+      pwsh: true
+      targetType: inline
+      script: |     
+        $outputPath = ".\Run-DAXTests.ps1"
+        $testingURL = "https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/development/Azure%20DevOps/Automated%20Testing%20Example/Run-DAXTests.ps1"
+        Invoke-WebRequest -Uri $testingURL -OutFile $outputPath
+        dir
+
+        if(!(Test-Path -path $outputPath)){
+          exit 1
+        }
+        .\Run-DAXTests.ps1
