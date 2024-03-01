@@ -46,11 +46,6 @@ $opts = @{
     # Get new pbip changes
     PbiChanges = git diff --name-only --relative --diff-filter AMR HEAD^ HEAD '*.Dataset/*' '*.Report/*';
     BuildVersion = "${env:BUILD_SOURCEVERSION}";
-    IsDebug = $True
-}
-
-if($opts.IsDebug -eq $True){
-    Write-Host $opts
 }
 
 # Check variables
