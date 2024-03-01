@@ -48,7 +48,9 @@ $Opts = @{
     IsDebug = $True
 }
 
-Write-Host $Opts
+if($IsDebug -eq $True){
+    Write-Host $Opts
+}
 
 # Check variables
 if(!$Opts.WorkspaceName){
@@ -141,12 +143,11 @@ foreach($TestFile in $TestFiles){
                 $Result = $null
 
                 if($Opts.IsServicePrincipal){ # use service principal
-                    $Result = Invoke-ASCmd -Server "$($Opts.XMLAPrefix)$($WorkspaceName)" `
+                    $Result = Invoke-ASCmd -Server "$($Opts.XMLAPrefix)$($Opts.WorkspaceName)" `
                     -Database $DatasetName `
                     -InputFile $TestFile.FullName `
                     -Credential $Credentials `
-                    -TenantId $Opts.TenantId   
-                    -ServicePrincipal
+                    -TenantId $Opts.TenantId -ServicePrincipal
                 }
                 else{ # Issue XMLA request using username and password
                     $Result = Invoke-ASCmd -Server "$($Opts.XMLAPrefix)$($Opts.WorkspaceName)" `
