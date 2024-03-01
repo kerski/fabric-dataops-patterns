@@ -29,6 +29,7 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 - WORKSPACE_NAME - The display name for the workspace.
 - USERNAME_OR_CLIENTID - The service principal's application/client id or universal provider name for the account.
 - PASSWORD_OR_CLIENTSECRET - The client secret or password for the service principal or account respectively.
+- TENANT_ID - The tenant ID.  You can locate it by following the instructions <a href="https://learn.microsoft.com/en-us/sharepoint/find-your-office-365-tenant-id" target="_blank">at this link</a>.
 
 ![Create Variable Groups](./images/automated-testing-create-variable-group.png)
 

@@ -40,6 +40,7 @@ $Opts = @{
     WorkspaceName = "${env:WORKSPACE_NAME}"
     UserName = "${env:USERNAME_OR_CLIENTID}";
     Password = "${env:PASSWORD_OR_CLIENTSECRET}";
+    TenantId = "${env:TENANT_ID}";
     IsServicePrincipal = $false;
     # Get new pbip changes
     PbiChanges = git diff --name-only --relative --diff-filter AMR HEAD^ HEAD '*.Dataset/*' '*.Report/*';
@@ -55,11 +56,15 @@ if(!$Opts.WorkspaceName){
     exit 1
 }
 if(!$Opts.UserName){
-    Write-Host "##vso[task.logissue type=error]No pipeline variable name USER_NAME could be found."    
+    Write-Host "##vso[task.logissue type=error]No pipeline variable name USERNAME_OR_CLIENTID could be found."    
     exit 1
 }
 if(!$Opts.Password){
-    Write-Host "##vso[task.logissue type=error]No pipeline variable name PASSWORD could be found."    
+    Write-Host "##vso[task.logissue type=error]No pipeline variable name PASSWORD_OR_CLIENTSECRET could be found."    
+    exit 1
+}
+if(!$Opts.TenantId){
+    Write-Host "##vso[task.logissue type=error]No pipeline variable name TENANT_ID could be found."    
     exit 1
 }
 
@@ -74,7 +79,7 @@ $Conn = $null
 if($Opts.UserName -match $GuidRegex){# Service principal used
     $Opts.IsServicePrincipal = $true
     # Get Connection
-    $Conn = Connect-AzAccount -Credential $Credentials -ServicePrincipal
+    $Conn = Connect-AzAccount -Credential $Credentials -ServicePrincipal -Tenant $Opts.TenantId
 }
 else{ # Use account
     # Get Connection
