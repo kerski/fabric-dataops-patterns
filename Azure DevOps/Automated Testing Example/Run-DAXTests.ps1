@@ -8,6 +8,7 @@
 
     Power BI environment must be a premium/Fabric capacity and the account must have access to the workspace and datasets/semantic models.
 #>
+
 # Setup TLS 12
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
@@ -33,10 +34,10 @@ if (Get-Module -ListAvailable -Name "SqlServer") {
 # ---------- Validate Pipeline Variables ---------- #
 
 # Get Environment Variables from the Pipeline
-$Opts = @{
-    FabricAPIURL = "https://api.fabric.microsoft.com"
-    PowerBIURL = "https://api.powerbi.com"
-    XMLAPrefix = "powerbi://api.powerbi.com/v1.0/myorg/"
+$opts = @{
+    FabricApiUrl = "https://api.fabric.microsoft.com"
+    PowerBiUrl = "https://api.powerbi.com"
+    XmlaPrefix = "powerbi://api.powerbi.com/v1.0/myorg/"
     WorkspaceName = "${env:WORKSPACE_NAME}"
     UserName = "${env:USERNAME_OR_CLIENTID}";
     Password = "${env:PASSWORD_OR_CLIENTSECRET}";
@@ -48,70 +49,70 @@ $Opts = @{
     IsDebug = $True
 }
 
-if($Opts.IsDebug -eq $True){
-    Write-Host $Opts
+if($opts.IsDebug -eq $True){
+    Write-Host $opts
 }
 
 # Check variables
-if(!$Opts.WorkspaceName){
+if(!$opts.WorkspaceName){
     Write-Host "##vso[task.logissue type=error]No pipeline variable name WORKSPACE_NAME could be found."    
     exit 1
 }
-if(!$Opts.UserName){
+if(!$opts.UserName){
     Write-Host "##vso[task.logissue type=error]No pipeline variable name USERNAME_OR_CLIENTID could be found."    
     exit 1
 }
-if(!$Opts.Password){
+if(!$opts.Password){
     Write-Host "##vso[task.logissue type=error]No pipeline variable name PASSWORD_OR_CLIENTSECRET could be found."    
     exit 1
 }
-if(!$Opts.TenantId){
+if(!$opts.TenantId){
     Write-Host "##vso[task.logissue type=error]No pipeline variable name TENANT_ID could be found."    
     exit 1
 }
 
 # ---------- Setup Connection ---------- #
-$Secret = $Opts.Password | ConvertTo-SecureString -AsPlainText -Force
-$Credentials = [System.Management.Automation.PSCredential]::new($Opts.UserName,$Secret)
+$secret = $opts.Password | ConvertTo-SecureString -AsPlainText -Force
+$credentials = [System.Management.Automation.PSCredential]::new($opts.UserName,$secret)
 
 # Check if service principal or username/password
-$GuidRegex = '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}'
+$guidRegex = '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}'
 
-$Conn = $null
-if($Opts.UserName -match $GuidRegex){# Service principal used
-    $Opts.IsServicePrincipal = $true
+$conn = $null
+if($opts.UserName -match $guidRegex){# Service principal used
+    $opts.IsServicePrincipal = $true
     # Get Connection
-    $Conn = Connect-AzAccount -Credential $Credentials -ServicePrincipal -Tenant $Opts.TenantId
+    $conn = Connect-AzAccount -Credential $credentials -ServicePrincipal -Tenant $opts.TenantId
 }
 else{ # Use account
     # Get Connection
-    $Conn = Connect-AzAccount -Credential $Credentials
+    $conn = Connect-AzAccount -Credential $credentials
 }# end service principal check
 
 # Get Authentication information
-$ConnectionInfo = Get-AzAccessToken -ResourceUrl $Opts.FabricAPIURL
-$FabricToken = $ConnectionInfo.Token
-$Opts.TenantId = $ConnectionInfo.TenantId
+$connectionInfo = Get-AzAccessToken -ResourceUrl $opts.FabricApiUrl
+$fabricToken = $connectionInfo.Token
+$opts.TenantId = $connectionInfo.TenantId
 
-if(!$FabricToken)
+if(!$fabricToken)
 {
     Write-Error "Unable to access token."
     exit 1
 }
 
-$FabricHeaders = @{
+$fabricHeaders = @{
     'Content-Type' = "application/json"
-    'Authorization' = "Bearer {0}" -f $FabricToken
+    'Authorization' = "Bearer {0}" -f $fabricToken
 }   
 
 # Retrieve workspace name using filter capability
-$WorkspaceURL =  "$($Opts.PowerBIURL)/v1.0/myorg/groups?`$filter=name eq '$($Opts.WorkspaceName)' and state ne 'Deleted'"
-$WorkspaceResult = Invoke-WebRequest -Headers $FabricHeaders -Uri $WorkspaceURL -Method GET -Verbose
-$WorkspaceObj = $WorkspaceResult | ConvertFrom-Json
+$workspaceUrl =  "$($opts.PowerBiUrl)/v1.0/myorg/groups?`$filter=name eq '$($opts.WorkspaceName)' and state ne 'Deleted'"
+$workspaceResult = Invoke-WebRequest -Headers $fabricHeaders -Uri $workspaceUrl -Method GET -Verbose
+$workspaceObj = $workspaceResult | ConvertFrom-Json
 
 # Check if you can access the workspace or it exists
-if($WorkspaceObj.value.count -eq 0){
-    Write-Host "##vso[task.logissue type=error]Unable to locate workspace with name: $($Opts.WorkspaceName)"
+if($workspaceObj.value.count -eq 0){
+    Write-Host "##vso[task.logissue type=error]Unable to locate workspace with name: $($opts.WorkspaceName)"
     exit 1
 }
 
@@ -120,91 +121,91 @@ if($WorkspaceObj.value.count -eq 0){
 # ---------- Identity DAX Queries for Testing ---------- #
 
 # Identify the DAX Queries that have a .Tests or .Test
-$TestFiles = @(Get-ChildItem -Path "*.Dataset/DaxQueries" -Recurse | Where-Object {$_ -like "*.Tests.dax" -or $_ -like "*.Test.dax"})
+$testFiles = @(Get-ChildItem -Path "*.Dataset/DaxQueries" -Recurse | Where-Object {$_ -like "*.Tests.dax" -or $_ -like "*.Test.dax"})
 
-if($TestFiles.Count -eq 0){
+if($testFiles.Count -eq 0){
     Write-Host "##vso[task.logissue type=warning]Unable to locate DAX files in this repository. No tests will be conducted."
 }
 
 # Regex to get semantic model name
 # Note: This assumes the file name has not been changed previously
-$Pattern = "(?<=\\)([^\\]+)(?=\.Dataset)"
-$FailureCount = 0
+$pattern = "(?<=\\)([^\\]+)(?=\.Dataset)"
+$failureCount = 0
 # Execute Tests
-foreach($TestFile in $TestFiles){
-    $DatasetName = $TestFile.FullName | Select-String -Pattern $Pattern -AllMatches | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
+foreach($testFile in $testFiles){
+    $datasetName = $testFile.FullName | Select-String -Pattern $pattern -AllMatches | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
 
     Write-Host "--------"
-    Write-Host "##[debug]Running ""$($TestFile.FullName)"" for semantic model: $DatasetName"
+    Write-Host "##[debug]Running ""$($testFile.FullName)"" for semantic model: $datasetName"
 
-    if($DatasetName){
+    if($datasetName){
         #Connect to XMLA EndPoint and run DAX Query
         Try {
-                $Result = $null
+                $result = $null
 
-                if($Opts.IsServicePrincipal){ # use service principal
-                    $Result = Invoke-ASCmd -Server "$($Opts.XMLAPrefix)$($Opts.WorkspaceName)" `
-                    -Database $DatasetName `
-                    -InputFile $TestFile.FullName `
-                    -Credential $Credentials `
-                    -TenantId $Opts.TenantId -ServicePrincipal
+                if($opts.IsServicePrincipal){ # use service principal
+                    $result = Invoke-ASCmd -Server "$($opts.XmlaPrefix)$($opts.WorkspaceName)" `
+                    -Database $datasetName `
+                    -InputFile $testFile.FullName `
+                    -Credential $credentials `
+                    -TenantId $opts.TenantId -ServicePrincipal
                 }
                 else{ # Issue XMLA request using username and password
-                    $Result = Invoke-ASCmd -Server "$($Opts.XMLAPrefix)$($Opts.WorkspaceName)" `
-                    -Database $DatasetName `
-                    -InputFile $TestFile.FullName `
-                    -Credential $Credentials `
-                    -TenantId $Opts.TenantId
+                    $result = Invoke-ASCmd -Server "$($opts.XmlaPrefix)$($opts.WorkspaceName)" `
+                    -Database $datasetName `
+                    -InputFile $testFile.FullName `
+                    -Credential $credentials `
+                    -TenantId $opts.TenantId
                 }# end check for service principal setting
 
                 #Remove unicode chars for brackets and spaces from XML node names
-                $Result = $Result -replace '_x[0-9A-z]{4}_', '';
+                $result = $result -replace '_x[0-9A-z]{4}_', '';
 
                 #Load into XML and return
-                [System.Xml.XmlDocument]$XmlResult = New-Object System.Xml.XmlDocument
-                $XmlResult.LoadXml($Result)
+                [System.Xml.XmlDocument]$xmlResult = New-Object System.Xml.XmlDocument
+                $xmlResult.LoadXml($result)
 
                 #Get Node List
-                [System.Xml.XmlNodeList]$Rows = $XmlResult.GetElementsByTagName("row")
+                [System.Xml.XmlNodeList]$rows = $xmlResult.GetElementsByTagName("row")
 
                 #Check if Row Count is 0, no test results.
-                if ($Rows.Count -eq 0) {
-                    $FailureCount += 1
-                    Write-Host "##vso[task.logissue type=error]Query in test file ""($TestFile.FullName)"" returned no results."
+                if ($rows.Count -eq 0) {
+                    $failureCount += 1
+                    Write-Host "##vso[task.logissue type=error]Query in test file ""($testFile.FullName)"" returned no results."
                 }#end check of results
 
                 #Iterate through each row of the query results and check test results
-                foreach ($Row in $Rows){
+                foreach ($row in $rows){
                     #Expects Columns TestName, Expected, Actual Columns, Passed
-                    if ($Row.ChildNodes.Count -ne 4) {
-                        $FailureCount += 1
-                        Write-Host "##vso[task.logissue type=error]Query in test file ""$($Test.FullName)"" returned no results that did not have 4 columns (TestName, Expected, and Actual, Passed)."
+                    if ($row.ChildNodes.Count -ne 4) {
+                        $failureCount += 1
+                        Write-Host "##vso[task.logissue type=error]Query in test file ""$($test.FullName)"" returned no results that did not have 4 columns (TestName, Expected, and Actual, Passed)."
                     }else{
                         #Extract Values
-                        $TestName = $Row.ChildNodes[0].InnerText
-                        $ExpectedVal = $Row.ChildNodes[1].InnerText
-                        $ActualVal = $Row.ChildNodes[2].InnerText
+                        $testName = $row.ChildNodes[0].InnerText
+                        $expectedVal = $row.ChildNodes[1].InnerText
+                        $actualVal = $row.ChildNodes[2].InnerText
                         #Compute whether the test passed
-                        $Passed = ($ExpectedVal -eq $ActualVal) -and ($ExpectedVal -and $ActualVal)
-                       if (-not $Passed) {
-                            $FailureCount += 1
-                            Write-Host "##vso[task.logissue type=error]FAILED!: Test ""$($TestName)"" for semantic model: $($DatasetName). Expected: $($ExpectedVal) != $($ActualVal)"          }
+                        $passed = ($expectedVal -eq $actualVal) -and ($expectedVal -and $actualVal)
+                       if (-not $passed) {
+                            $failureCount += 1
+                            Write-Host "##vso[task.logissue type=error]FAILED!: Test ""$($testName)"" for semantic model: $($datasetName). Expected: $($expectedVal) != $($actualVal)"          }
                         else{
-                            Write-Host "##[debug]$($TestName) passed. Expected: $($ExpectedVal) == $($ActualVal)"
+                            Write-Host "##[debug]$($testName) passed. Expected: $($expectedVal) == $($actualVal)"
                         }
                     }# end expected columns check
                 }#end foreach
 
             }Catch [System.Exception]{
-                $ErrObj = ($_).ToString()
-                Write-Host "##vso[task.logissue type=error]$($ErrObj)"
-                $FailureCount +=1
+                $errObj = ($_).ToString()
+                Write-Host "##vso[task.logissue type=error]$($errObj)"
+                $failureCount +=1
             }#End Try
     }else{
-        Write-Host "##vso[task.logissue type=error]Unable to identify semantic model in file path: $($TestFile.Name)"
+        Write-Host "##vso[task.logissue type=error]Unable to identify semantic model in file path: $($testFile.Name)"
     }
 }# end foreach test file
 
-if($FailureCount -gt 0){
+if($failureCount -gt 0){
     exit 1 # Fail pipeline
 }
