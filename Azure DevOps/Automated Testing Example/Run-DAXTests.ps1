@@ -81,6 +81,10 @@ else{ # Use account
     $Conn = Connect-AzAccount -Credential $Credentials
 }# end service principal check
 
+Write-Host "----"
+Write-Host $Conn
+Write-Host "----"
+
 # Get Authentication information
 $ConnectionInfo = Get-AzAccessToken -ResourceUrl $Opts.FabricAPIURL
 $FabricToken = $ConnectionInfo.Token
