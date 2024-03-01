@@ -96,7 +96,7 @@ $Opts.TenantId = $ConnectionInfo.TenantId
 if(!$FabricToken)
 {
     Write-Error "Unable to access token."
-    return
+    exit 1
 }
 
 $FabricHeaders = @{
