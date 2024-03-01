@@ -1,6 +1,6 @@
 # Automating DAX Query View Testing Pattern
 
-If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pattern.md) you can then look at automating the tests when a branch in your repository is updated and synced with a workspace through <a href="https://learn.microsoft.com/en-us/power-bi/developer/projects/projects-git" target="_blank">Git Integration</a>. The following instructions show you how to setup a pipeline.
+If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pattern.md) you can then look at automating the tests when a branch in your repository is updated and synced with a workspace through <a href="https://learn.microsoft.com/en-us/power-bi/developer/projects/projects-git" target="_blank">Git Integration</a>. The following instructions show you how to setup a pipeline to automate testing.
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 ### Create the Variable Group
 
-1. In your project navigate to the Pipelines->Library section.
+1. In your project, navigate to the Pipelines->Library section.
 
 ![Variable Groups](./images/automated-testing-library.png)
 
@@ -36,7 +36,7 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 ### Create the Pipeline
 
-1. Navigate the pipeline interface.
+1. Navigate to the pipeline interface.
 
 ![Navigate to Pipeline](./images/automated-testing-navigate-pipeline.png)
 
@@ -48,7 +48,7 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 ![ADO Option](./images/automated-testing-ado-option.png)
 
-4. Select the repository you have connected to the workspace via Git Integration.
+4. Select the repository you have connected the workspace via Git Integration.
 
 ![Select Repo](./images/automated-testing-select-repo.png)
 
@@ -74,7 +74,18 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 ![Permit Again](./images/automated-testing-permit-again.png)
 
-11. This will kick of the automated testing.
+11. This will kick off the automated testing.
 
 ![Automated Job](./images/automated-testing-job-running.png)
 
+12. Select the "Automated Testing Job"
+
+![Select Job](./images/automated-testing-select-job.png)
+
+13. You will see a log of DAX Queries that end in .Tests or .Test running against their respective semantic models in your workspace.
+
+![Log](./images/automated-testing-log.png)
+
+14. For any failed tests, this will be logged to the job, and the pipeline will also fail.
+
+![Failed Tests](./images/automated-testing-failed-tests.png)

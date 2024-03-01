@@ -97,10 +97,6 @@ $FabricHeaders = @{
     'Authorization' = "Bearer {0}" -f $FabricToken
 }   
 
-Write-Host "----"
-Write-Host $FabricHeaders
-Write-Host "----"
-
 # Retrieve workspace name using filter capability
 $WorkspaceURL =  "$($Opts.PowerBIURL)/v1.0/myorg/groups?`$filter=name eq '$($Opts.WorkspaceName)' and state ne 'Deleted'"
 $WorkspaceResult = Invoke-WebRequest -Headers $FabricHeaders -Uri $WorkspaceURL -Method GET -Verbose
