@@ -10,7 +10,7 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 3. Your Power BI tenant has <a href="https://learn.microsoft.com/en-us/power-bi/enterprise/service-premium-connect-tools#enable-xmla-read-write" target="_blank">XMLA Read/Write Enabled</a>.
 
-4. You have a service principal or account (username and password) with a Premium Per User license. If you are using a service principal you will need to make sure the Power BI tenant allows <a href="https://learn.microsoft.com/en-us/power-bi/enterprise/service-premium-service-principal#enable-service-principals">service principals are to use the APIs</a>. The service prinicipal or account with at least the Viewer role to the workspace.
+4. You have a service principal or account (username and password) with a Premium Per User license. If you are using a service principal you will need to make sure the Power BI tenant allows <a href="https://learn.microsoft.com/en-us/power-bi/enterprise/service-premium-service-principal#enable-service-principals">service principals to use the APIs</a>. The service prinicipal or account will need at least the Viewer role to the workspace.
 
 ## Instructions
 
@@ -29,7 +29,7 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 - WORKSPACE_NAME - The display name for the workspace.
 - USERNAME_OR_CLIENTID - The service principal's application/client id or universal provider name for the account.
 - PASSWORD_OR_CLIENTSECRET - The client secret or password for the service principal or account respectively.
-- TENANT_ID - The tenant ID.  You can locate it by following the instructions <a href="https://learn.microsoft.com/en-us/sharepoint/find-your-office-365-tenant-id" target="_blank">at this link</a>.
+- TENANT_ID - The Tenant GUID.  You can locate it by following the instructions <a href="https://learn.microsoft.com/en-us/sharepoint/find-your-office-365-tenant-id" target="_blank">at this link</a>.
 
 ![Create Variable Groups](./images/automated-testing-create-variable-group.png)
 
@@ -53,7 +53,7 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 ![Select Repo](./images/automated-testing-select-repo.png)
 
-5. Copy the contents of template YAML file located <a href="https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/development/Azure%20DevOps/Automated%20Testing%20Example/Run-DaxTests.yml" target="_blank">at this link</a>.
+5. Copy the contents of the template YAML file located <a href="https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/development/Azure%20DevOps/Automated%20Testing%20Example/Run-DaxTests.yml" target="_blank">at this link</a> into the code editor.
 
 ![Copy YAML](./images/automated-testing-copy-yaml.png)
 
@@ -65,7 +65,7 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 ![Save and Run again](./images/automated-testing-save-and-run.png)
 
-8. You will be redirect to the first pipeline run, and you will be asked to authorize the pipeline to access the variable group created previously.  Select the 'View' button.
+8. You will be redirected to the first pipeline run, and you will be asked to authorize the pipeline to access the variable group created previously.  Select the 'View' button.
 
 9. A pop-up window will appear. Select the 'Permit' button.
 
@@ -79,7 +79,7 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 ![Automated Job](./images/automated-testing-job-running.png)
 
-12. Select the "Automated Testing Job"
+12. Select the "Automated Testing Job".
 
 ![Select Job](./images/automated-testing-select-job.png)
 
