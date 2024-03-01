@@ -132,7 +132,7 @@ foreach($TestFile in $TestFiles){
     $DatasetName = $TestFile.FullName | Select-String -Pattern $Pattern -AllMatches | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
 
     Write-Host "--------"
-    Write-Host "##[debug]Running $($Test.FullName) for dataset $DatasetName"
+    Write-Host "##[debug]Running $($TestFile.FullName) for dataset $DatasetName"
 
     if($DatasetName){
         #Connect to XMLA EndPoint and run DAX Query

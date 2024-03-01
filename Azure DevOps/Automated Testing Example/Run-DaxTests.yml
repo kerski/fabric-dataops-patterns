@@ -26,9 +26,10 @@ jobs:
       script: |     
         $outputPath = ".\Run-DAXTests.ps1"
         $testingURL = "https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/development/Azure%20DevOps/Automated%20Testing%20Example/Run-DAXTests.ps1"
+        # Get PowerShell code to run tests
         Invoke-WebRequest -Uri $testingURL -OutFile $outputPath
-        dir
 
+        # Double check file was downloaded correctly
         if(!(Test-Path -path $outputPath)){
           exit 1
         }
