@@ -52,5 +52,29 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 ![Select Repo](./images/automated-testing-select-repo.png)
 
-5. Copy the contents of template YAML file located <a href="" target="_blank">at this link</a>.
+5. Copy the contents of template YAML file located <a href="https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/development/Azure%20DevOps/Automated%20Testing%20Example/Run-DaxTests.yml" target="_blank">at this link</a>.
+
+![Copy YAML](./images/automated-testing-copy-yaml.png)
+
+6. Select the 'Save and Run' button.
+
+![Save and Run](./images/automated-testing-save-pipeline.png)
+
+7. You will be prompted to commit to the main branch. Select the 'Save and Run' button.
+
+![Save and Run again](./images/automated-testing-save-and-run.png)
+
+8. You will be redirect to the first pipeline run, and you will be asked to authorize the pipeline to access the variable group created previously.  Select the 'View' button.
+
+9. A pop-up window will appear. Select the 'Permit' button.
+
+![Permit](./images/automated-testing-permit.png)
+
+10. You will be asked to confirm.  Select the 'Permit' button.
+
+![Permit Again](./images/automated-testing-permit-again.png)
+
+11. This will kick of the automated testing.
+
+![Automated Job](./images/automated-testing-job-running.png)
 

@@ -47,6 +47,8 @@ $Opts = @{
     IsDebug = $True
 }
 
+Write-Host $Opts
+
 # Check variables
 if(!$Opts.WorkspaceName){
     Write-Host "##vso[task.logissue type=error]No pipeline variable name WORKSPACE_NAME could be found."    
