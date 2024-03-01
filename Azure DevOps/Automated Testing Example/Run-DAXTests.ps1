@@ -6,7 +6,7 @@
 
     Dependencies:  PowerShell modules Az.Accounts and SqlServer version 22.0 is required.
 
-    Power BI environment must be a premium/Fabric capacity and the account must have access to the workspace and datasets.
+    Power BI environment must be a premium/Fabric capacity and the account must have access to the workspace and datasets/semantic models.
 #>
 # Setup TLS 12
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -135,7 +135,7 @@ foreach($TestFile in $TestFiles){
     $DatasetName = $TestFile.FullName | Select-String -Pattern $Pattern -AllMatches | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
 
     Write-Host "--------"
-    Write-Host "##[debug]Running $($TestFile.FullName) for dataset $DatasetName"
+    Write-Host "##[debug]Running ""$($TestFile.FullName)"" for semantic model: $DatasetName"
 
     if($DatasetName){
         #Connect to XMLA EndPoint and run DAX Query
@@ -170,7 +170,7 @@ foreach($TestFile in $TestFiles){
                 #Check if Row Count is 0, no test results.
                 if ($Rows.Count -eq 0) {
                     $FailureCount += 1
-                    Write-Host "##vso[task.logissue type=error]Query in test file $($TestFile.FullName) returned no results."
+                    Write-Host "##vso[task.logissue type=error]Query in test file ""($TestFile.FullName)"" returned no results."
                 }#end check of results
 
                 #Iterate through each row of the query results and check test results
@@ -178,7 +178,7 @@ foreach($TestFile in $TestFiles){
                     #Expects Columns TestName, Expected, Actual Columns, Passed
                     if ($Row.ChildNodes.Count -ne 4) {
                         $FailureCount += 1
-                        Write-Host "##vso[task.logissue type=error]Query in test file $($Test.FullName) returned no results that did not have 4 columns (TestName, Expected, and Actual, Passed)."
+                        Write-Host "##vso[task.logissue type=error]Query in test file ""$($Test.FullName)"" returned no results that did not have 4 columns (TestName, Expected, and Actual, Passed)."
                     }else{
                         #Extract Values
                         $TestName = $Row.ChildNodes[0].InnerText
@@ -188,7 +188,7 @@ foreach($TestFile in $TestFiles){
                         $Passed = ($ExpectedVal -eq $ActualVal) -and ($ExpectedVal -and $ActualVal)
                        if (-not $Passed) {
                             $FailureCount += 1
-                            Write-Host "##vso[task.logissue type=error]FAILED!: Test $($TestName) for $($DatasetName). Expected: $($ExpectedVal) != $($ActualVal)"          }
+                            Write-Host "##vso[task.logissue type=error]FAILED!: Test ""$($TestName)"" for semantic model: $($DatasetName). Expected: $($ExpectedVal) != $($ActualVal)"          }
                         else{
                             Write-Host "##[debug]$($TestName) passed. Expected: $($ExpectedVal) == $($ActualVal)"
                         }
@@ -201,7 +201,7 @@ foreach($TestFile in $TestFiles){
                 $FailureCount +=1
             }#End Try
     }else{
-        Write-Host "##vso[task.logissue type=error]Unable to identify Dataset Name in file path: $($TestFile.Name)"
+        Write-Host "##vso[task.logissue type=error]Unable to identify semantic model in file path: $($TestFile.Name)"
     }
 }# end foreach test file
 
