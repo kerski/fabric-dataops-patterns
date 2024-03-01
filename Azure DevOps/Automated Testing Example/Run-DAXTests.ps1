@@ -48,7 +48,7 @@ $Opts = @{
     IsDebug = $True
 }
 
-if($IsDebug -eq $True){
+if($Opts.IsDebug -eq $True){
     Write-Host $Opts
 }
 
