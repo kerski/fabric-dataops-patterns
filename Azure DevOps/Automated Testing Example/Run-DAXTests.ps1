@@ -16,17 +16,17 @@
 
 #Install Az.Accounts if Needed
 if (Get-Module -ListAvailable -Name "Az.Accounts") {
-    Write-Host "Az.Accounts installed moving forward"
+    Write-Host "##[debug]Az.Accounts installed moving forward"
 } else {
-    Write-Host "Installing Az.Accounts"
+    Write-Host "##[debug]Installing Az.Accounts"
     #Install Az.Accounts Module
     Install-Module -Name Az.Accounts -Scope CurrentUser -AllowClobber -Force
 }
 
 if (Get-Module -ListAvailable -Name "SqlServer") {
-    Write-Host "SqlServer installed moving forward"
+    Write-Host "##[debug]SqlServer installed moving forward"
 } else {
-    Write-Host "Installing SqlServer"
+    Write-Host "##[debug]Installing SqlServer"
     #Install SqlServer Module
     Install-Module -Name SqlServer -Scope CurrentUser -AllowClobber -Force
 }

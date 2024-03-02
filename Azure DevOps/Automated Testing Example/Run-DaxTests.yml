@@ -8,7 +8,7 @@ pool:
 
 variables:
   # Variable group with configuration
-  - group: ProductionBranch
+  - group: DevelopmentBranch
 
 jobs:
 - job: Job_1

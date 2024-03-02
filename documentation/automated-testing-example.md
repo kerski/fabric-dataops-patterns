@@ -1,16 +1,16 @@
 # Automating DAX Query View Testing Pattern
 
-If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pattern.md) you can then look at automating the tests when a branch in your repository is updated and synced with a workspace through <a href="https://learn.microsoft.com/en-us/power-bi/developer/projects/projects-git" target="_blank">Git Integration</a>. The following instructions show you how to setup a pipeline to automate testing.
+If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pattern.md) you can also look at automating the tests when a branch in your repository is updated and synced with a workspace through <a href="https://learn.microsoft.com/en-us/power-bi/developer/projects/projects-git" target="_blank">Git Integration</a>. The following instructions show you how to setup an Azure DevOps pipeline to automate testing.
 
 ## Prerequisites
 
 1. You have an Azure DevOps project and have at least Project or Build Administrator rights for that project.
 
-2. You have connected a premium-back capacity workspace. Instructions are provided <a href="https://learn.microsoft.com/en-us/power-bi/developer/projects/projects-git" target="_blank">at this link.</a>
+2. You have connected a premium-back capacity workspace to your a repository in your Azure DevOps project. Instructions are provided <a href="https://learn.microsoft.com/en-us/power-bi/developer/projects/projects-git" target="_blank">at this link.</a>
 
 3. Your Power BI tenant has <a href="https://learn.microsoft.com/en-us/power-bi/enterprise/service-premium-connect-tools#enable-xmla-read-write" target="_blank">XMLA Read/Write Enabled</a>.
 
-4. You have a service principal or account (username and password) with a Premium Per User license. If you are using a service principal you will need to make sure the Power BI tenant allows <a href="https://learn.microsoft.com/en-us/power-bi/enterprise/service-premium-service-principal#enable-service-principals">service principals to use the APIs</a>. The service prinicipal or account will need at least the Viewer role to the workspace.
+4. You have a service principal or account (username and password) with a Premium Per User license. If you are using a service principal you will need to make sure the Power BI tenant allows <a href="https://learn.microsoft.com/en-us/power-bi/enterprise/service-premium-service-principal#enable-service-principals">service principals to use the Fabric APIs</a>. The service prinicipal or account will need at least the Viewer role to the workspace.
 
 ## Instructions
 
@@ -24,16 +24,18 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 ![Add Variable Group](./images/automated-testing-variable-group.png)
 
-3. Create a variable group called "ProductionBranch" and create the following variables:
+3. Create a variable group called "DevelopmentBranch" and create the following variables:
 
 - WORKSPACE_NAME - The display name for the workspace.
 - USERNAME_OR_CLIENTID - The service principal's application/client id or universal provider name for the account.
 - PASSWORD_OR_CLIENTSECRET - The client secret or password for the service principal or account respectively.
 - TENANT_ID - The Tenant GUID.  You can locate it by following the instructions <a href="https://learn.microsoft.com/en-us/sharepoint/find-your-office-365-tenant-id" target="_blank">at this link</a>.
 
-![Create Variable Groups](./images/automated-testing-create-variable-group.png)
+![Create Variable Group](./images/automated-testing-create-variable-group.png)
 
 4. Save the variable group.
+
+![Save Variable Group](./images/automated-testing-save-variable-group.png)
 
 ### Create the Pipeline
 
