@@ -38,8 +38,7 @@ $opts = @{
     # Get new pbip changes
     PbiChanges = git diff --name-only --relative --diff-filter AMR HEAD^ HEAD '*.Dataset/*' '*.Report/*';
     BuildVersion = "${env:BUILD_SOURCEVERSION}";
-}
-# Check variables
+}# Check variables
 if(!$opts.WorkspaceName){
     Write-Host "##vso[task.logissue type=error]No pipeline variable name WORKSPACE_NAME could be found."    
     exit 1
@@ -189,10 +188,18 @@ foreach($testFile in $testFiles){
                                 $failureCount += 1
                                 Write-Host "##vso[task.logissue type=error]Query in test file ""$($test.FullName)"" did not have 4 columns (TestName, Expected, and Actual, Passed)."
                             }else{# Compute whether the test passed
-                                $passed = ($row."[ExpectedValue]" -eq $row."[ActualValue]") -and ($row."[ExpectedValue]" -and $row."[ActualValue]")
+                                # Clear out values
+                                $testName = $null
+                                $expectedVal = $null
+                                $actualVal = $null
+                                $passed = $null
+                                # Assign values
+                                $testName = $row."[TestName]"
+                                $expectedVal = $row."[ExpectedValue]"
+                                $actualVal = $row."[ActualValue]"
+                                $passed = ($expectedVal -eq $actualVal)
                                 if (-not $passed) {
                                     $failureCount += 1
-                                    $testName = $row."[TestName]"
                                     Write-Host "##vso[task.logissue type=error]FAILED!: Test ""$($testName)"" for semantic model: $($datasetName). Expected: $($expectedVal) != $($actualVal)" }
                                 else{
                                      Write-Host "##[debug]""$($testName)"" passed. Expected: $($expectedVal) == $($actualVal)"
