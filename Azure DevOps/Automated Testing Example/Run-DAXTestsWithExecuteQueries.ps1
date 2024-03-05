@@ -141,7 +141,7 @@ foreach($testFile in $testFiles){
                 else{# Found datset id, now execute queries
                     $requestUrl = "$($opts.PowerBIURL)/v1.0/myorg/groups/$($workspaceGuid)/datasets/$($datasetToTest.Id)/executeQueries"
                     
-                    #Retrieve Content of the test
+                    # Retrieve Content of the test
                     $testContent = Get-Content $testFile.FullName -Raw
 
                     # Build request
@@ -167,13 +167,13 @@ foreach($testFile in $testFiles){
                     # Parse results
                     $requestResultJSON = $requestResult | ConvertFrom-Json
 
-                    #Check if Row Count is 0, no test results.
+                    # Check if Row Count is 0, no test results.
                     if ($requestResultJSON.results.tables.rows.Count -eq 0) {
                         $failureCount += 1
                         Write-Host "##vso[task.logissue type=error]Query in test file ""($testFile.FullName)"" returned no results."
-                    }#end check of results
+                    }# end check of results
 
-                    #Iterate through each row of the query results and check test results
+                    # Iterate through each row of the query results and check test results
                     $rowsToCheck = $requestResultJSON.results.tables.rows
                     foreach ($row in $rowsToCheck){
 
@@ -205,7 +205,7 @@ foreach($testFile in $testFiles){
                                      Write-Host "##[debug]""$($testName)"" passed. Expected: $($expectedVal) == $($actualVal)"
                                 }
                             }# end expected columns check
-                        }#end foreach
+                        }# end foreach
                 }# end datset id check
             }Catch [System.Exception]{
                 $errObj = ($_).ToString()
