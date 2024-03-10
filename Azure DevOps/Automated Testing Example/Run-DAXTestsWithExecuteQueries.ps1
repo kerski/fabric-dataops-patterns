@@ -33,7 +33,7 @@ if (Get-Module -ListAvailable -Name "SqlServer") {
 Write-Host "##[debug]Downloading FabricPS-PBIP module"
 
 # Create a new directory in the current location
-if(Test-Path -path ".\modules" -eq $false){
+if((Test-Path -path ".\modules") -eq $false){
     New-Item -Name "modules" -Type Directory
 }
 
