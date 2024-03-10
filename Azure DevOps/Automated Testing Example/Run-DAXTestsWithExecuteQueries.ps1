@@ -49,14 +49,18 @@ Import-Module ".\modules\FabricPS-PBIP" -Force
 # Get Environment Variables from the Pipeline
 $opts = @{
     PowerBIURL = "https://api.powerbi.com"
-    WorkspaceName = "${`{ parameters.WORKSPACE_NAME }}"
+    WorkspaceName = "${ parameters.WORKSPACE_NAME }"
     UserName = "${env:USERNAME_OR_CLIENTID}";
     Password = "${env:PASSWORD_OR_CLIENTSECRET}";
     TenantId = "${env:TENANT_ID}"
     IsServicePrincipal = $false
-    DatasetIdsToTest = ${`{ parameters.DATASET_IDS }}
+    DatasetIdsToTest = "${ parameters.DATASET_IDS }"
     BuildVersion = "${env:BUILD_SOURCEVERSION}";
     IsDebug = $True
+}
+
+if($opts.IsDebug){
+    Write-Host ($opts | Format-Table | Out-String)
 }
 
 # Check variables
