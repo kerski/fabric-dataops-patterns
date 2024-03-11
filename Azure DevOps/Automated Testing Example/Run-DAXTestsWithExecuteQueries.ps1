@@ -54,7 +54,7 @@ $opts = @{
     Password = "${env:PASSWORD_OR_CLIENTSECRET}";
     TenantId = "${env:TENANT_ID}";
     IsServicePrincipal = $false;
-    DatasetIdsToTest = "${env:$DATASET_IDS}";
+    DatasetIdsToTest = "${env:DATASET_IDS}";
     BuildVersion = "${env:BUILD_SOURCEVERSION}";
     IsDebug = $True
 }
