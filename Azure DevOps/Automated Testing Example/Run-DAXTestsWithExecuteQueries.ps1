@@ -114,6 +114,8 @@ $workspaceItems = Invoke-FabricAPIRequest -Uri "workspaces/$workspaceGuid/items"
 $datasets = $workspaceItems | Where-Object {$_.type -eq "SemanticModel"} 
 
 if($opts.DatasetIdsToTest){ # Filter datasets to test specifically base 
+    Write-Host "Checking if list of dataset ids exist in workspace: $($opts.DatasetIdsToTest)"
+
     # Convert comma delimited string to array
     $idsToCheck = @($opts.DatasetIdsToTest.Trim() -split ",")
 
@@ -128,7 +130,11 @@ if($opts.DatasetIdsToTest){ # Filter datasets to test specifically base
 
     # Reassign 
     $datasets = $datasetsToTest
-}
+
+    if($datasets.Count){
+        Write-Host "##vso[task.logissue type=warning]No datasets found in workspace from this list of workspace IDs: $($opts.DatasetIdsToTest)"
+    }# end count check
+}# end check for specific dataset ids passed in
 
 
 # Retrieve item.metadata.json files so we can map dataset names in the service
