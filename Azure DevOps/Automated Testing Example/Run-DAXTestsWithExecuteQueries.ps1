@@ -49,12 +49,12 @@ Import-Module ".\modules\FabricPS-PBIP" -Force
 # Get Environment Variables from the Pipeline
 $opts = @{
     PowerBIURL = "https://api.powerbi.com"
-    WorkspaceName = "${ variables.WORKSPACE_NAME }"
+    WorkspaceName = $WORKSPACE_NAME;
     UserName = "${env:USERNAME_OR_CLIENTID}";
     Password = "${env:PASSWORD_OR_CLIENTSECRET}";
     TenantId = "${env:TENANT_ID}"
     IsServicePrincipal = $false
-    DatasetIdsToTest = "${ variables.DATASET_IDS }"
+    DatasetIdsToTest = $DATASET_IDS;
     BuildVersion = "${env:BUILD_SOURCEVERSION}";
     IsDebug = $True
 }
@@ -115,7 +115,7 @@ $datasets = $workspaceItems | Where-Object {$_.type -eq "SemanticModel"}
 
 if($opts.DatasetIdsToTest){ # Filter datasets to test specifically base 
     # Convert comma delimited string to array
-    $idsToCheck = @($opts.DatasetIdsToTest -split ",")
+    $idsToCheck = @($opts.DatasetIdsToTest.Trim() -split ",")
 
     $datasetsToTest = @()
 
