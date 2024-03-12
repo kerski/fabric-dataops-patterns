@@ -131,7 +131,7 @@ if($opts.DatasetIdsToTest){ # Filter datasets to test specifically base
     # Reassign 
     $datasets = @($datasetsToTest)
 
-    if($datasets.Length){
+    if($datasets.Length -eq 0){
         Write-Host "##vso[task.logissue type=warning]No datasets found in workspace from this list of workspace IDs: $($opts.DatasetIdsToTest)"
     }# end count check
 }# end check for specific dataset ids passed in
