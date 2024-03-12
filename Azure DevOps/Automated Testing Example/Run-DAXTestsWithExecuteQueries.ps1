@@ -136,7 +136,7 @@ foreach($dataset in $datasets){
             }else{
                 # Execute Tests
                 foreach($testFile in $testFiles){
-                    #Connect to XMLA EndPoint and run DAX Query
+                    # Connect to XMLA EndPoint and run DAX Query
                     Try {
                             # Get Token before each run of test
                             $authToken = Get-FabricAuthToken
