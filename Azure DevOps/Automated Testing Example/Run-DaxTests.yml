@@ -8,10 +8,15 @@ parameters:
     type: string
     default: ' '
 
-#trigger:
-#  branches:
-#    include:
-#    - refs/heads/main
+schedules:
+- cron: 0 */6 * * *
+  displayName: Every 6 hours
+  branches:
+    include:
+      - development
+      - test
+      - main
+  always: True
 
 pool:
   vmimage: 'windows-latest'
