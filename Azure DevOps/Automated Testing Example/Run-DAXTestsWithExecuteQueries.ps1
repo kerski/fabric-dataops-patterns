@@ -4,45 +4,13 @@
     .DESCRIPTION: This pipeline code run through the DAX Query View files that end with .Tests
     or .Test and output the results.
 
-    Dependencies:  PowerShell modules Az.Accounts and SqlServer version 22.0 is required.
+    Dependencies:  PowerShell modules Az.Accounts is required.
 
-    Power BI environment must be a premium/Fabric capacity and the account must have access to the workspace and datasets.
+    Power BI environment must be a Premium or Fabric capacity and the account must have access to the workspace and datasets.
 #>
 
 # Setup TLS 12
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-
-# ---------- Check if PowerShell Modules are Installed ---------- #
-#Install Az.Accounts if Needed
-if (Get-Module -ListAvailable -Name "Az.Accounts") {
-    Write-Host "Az.Accounts installed moving forward"
-} else {
-    Write-Host "Installing Az.Accounts"
-    #Install Az.Accounts Module
-    Install-Module -Name Az.Accounts -Scope CurrentUser -AllowClobber -Force
-}
-
-if (Get-Module -ListAvailable -Name "SqlServer") {
-    Write-Host "SqlServer installed moving forward"
-} else {
-    Write-Host "Installing SqlServer"
-    #Install SqlServer Module
-    Install-Module -Name SqlServer -Scope CurrentUser -AllowClobber -Force
-}
-# ---------- Download Modules ------------- #
-Write-Host "##[debug]Downloading FabricPS-PBIP module"
-
-# Create a new directory in the current location
-if((Test-Path -path ".\modules") -eq $false){
-    New-Item -Name "modules" -Type Directory
-}
-
-@("https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/development/Azure%20DevOps/Automated%20Testing%20Example/modules/FabricPS-PBIP.psm1",
-  "https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/development/Azure%20DevOps/Automated%20Testing%20Example/modules/FabricPS-PBIP.psd1") |% {
-    Invoke-WebRequest -Uri $_ -OutFile ".\modules\$(Split-Path $_ -Leaf)"
-}
-
-Import-Module ".\modules\FabricPS-PBIP" -Force
 
 # ---------- Validate Pipeline Variables ---------- #
 
