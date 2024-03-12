@@ -108,7 +108,7 @@ if($opts.DatasetIdsToTest){ # Filter datasets to test specifically base
 
 
 # Retrieve item.metadata.json files so we can map dataset names in the service
-# with the name in the metdata files
+# with the name in the metadata files
 $metadataObjs = @()
 $metadataDS = @(Get-ChildItem -Path "*.Dataset/item.metadata.json" -Recurse)
 
