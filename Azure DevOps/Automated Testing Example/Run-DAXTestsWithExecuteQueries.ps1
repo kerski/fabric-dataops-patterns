@@ -123,7 +123,7 @@ foreach($m in $metadataDS){
 # ---------- Identify DAX Queries for Testing ---------- #
 foreach($dataset in $datasets){
     Write-Host "##[debug]--------------------------------------------------"
-    Write-Host "##[debug]Attempt to run test files for $($dataset.displayName)"
+    Write-Host "##[debug]Attempting to run test files for $($dataset.displayName)"
 
     # Search metdataObjs
     $result = $metadataObjs | Where-Object {$_.displayName -eq $dataset.displayName}
