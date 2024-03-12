@@ -27,6 +27,7 @@ $opts = @{
     IsDebug = $True
 }
 
+# Output parameters to console if in debug mode
 if($opts.IsDebug){
     Write-Host ($opts | Format-Table | Out-String)
 }
@@ -75,15 +76,15 @@ Try{
     $errObj = ($_).ToString()
     Write-Host "##vso[task.logissue type=error]$($errObj)"
     exit 1
-}#End Try
+}# End Try
 
 # Retrieve items from the workspace
 $workspaceItems = Invoke-FabricAPIRequest -Uri "workspaces/$workspaceGuid/items" -Method Get
 $datasets = $workspaceItems | Where-Object {$_.type -eq "SemanticModel"} 
 
 if($opts.DatasetIdsToTest){ # Filter datasets to test specifically base 
-    Write-Host "#[debug]--------------------------------------------------"
-    Write-Host "#[debug]Checking if list of dataset ids exist in workspace: $($opts.DatasetIdsToTest)"
+    Write-Host "##[debug]--------------------------------------------------"
+    Write-Host "##[debug]Checking if list of dataset ids exist in workspace: $($opts.DatasetIdsToTest)"
 
     # Convert comma delimited string to array
     $idsToCheck = @($opts.DatasetIdsToTest.Trim() -split ",")
@@ -117,11 +118,11 @@ foreach($m in $metadataDS){
     $content = Get-Content $m.FullName | ConvertFrom-Json
     $temp = @([pscustomobject]@{displayName=$content.displayName;FolderPath=$ParentFolder;})
     $metadataObjs += $temp
-}#end for each
+}# end for each
 
 # ---------- Identify DAX Queries for Testing ---------- #
 foreach($dataset in $datasets){
-    Write-Host "#[debug]--------------------------------------------------"
+    Write-Host "##[debug]--------------------------------------------------"
     Write-Host "##[debug]Identifying if any test files exist for $($dataset.displayName)"
 
     # Search metdataObjs
@@ -147,7 +148,7 @@ foreach($dataset in $datasets){
 
                             $requestUrl = "$($opts.PowerBIURL)/v1.0/myorg/groups/$($workspaceGuid)/datasets/$($dataset.Id)/executeQueries"
                             
-                            #Retrieve Content of the test
+                            # Retrieve Content of the test
                             $testContent = Get-Content $testFile.FullName -Raw
 
                             # Build request
@@ -173,13 +174,13 @@ foreach($dataset in $datasets){
                             # Parse results
                             $requestResultJSON = $requestResult | ConvertFrom-Json
 
-                            #Check if Row Count is 0, no test results.
+                            # Check if Row Count is 0, no test results.
                             if ($requestResultJSON.results.tables.rows.Count -eq 0) {
                                 $failureCount += 1
                                 Write-Host "##vso[task.logissue type=error]Query in test file ""($testFile.FullName)"" returned no results."
-                            }#end check of results
+                            }# end check of results
 
-                            #Iterate through each row of the query results and check test results
+                            # Iterate through each row of the query results and check test results
                             $rowsToCheck = $requestResultJSON.results.tables.rows
                             foreach ($row in $rowsToCheck){
 
@@ -211,7 +212,7 @@ foreach($dataset in $datasets){
                                             Write-Host "##[debug]""$($testName)"" passed. Expected: $($expectedVal) == $($actualVal)"
                                         }
                                     }# end expected columns check
-                            }#end foreach
+                            }# end foreach
                     }Catch [System.Exception]{
                         $errObj = ($_).ToString()
                         Write-Host "##vso[task.logissue type=error]$($errObj)"

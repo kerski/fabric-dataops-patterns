@@ -1,7 +1,17 @@
-trigger:
-  branches:
-    include:
-    - refs/heads/main
+parameters:
+  - name: WORKSPACE_NAME
+    displayName: Workspace name to conduct tests?
+    type: string
+    default: ''
+  - name: DATASET_IDS
+    displayName: If there is a set of datasets you would like tested, please provide comma-delimited list of GUIDs.
+    type: string
+    default: ' '
+
+#trigger:
+#  branches:
+#    include:
+#    - refs/heads/main
 
 pool:
   vmimage: 'windows-latest'
@@ -9,6 +19,10 @@ pool:
 variables:
   # Variable group with configuration
   - group: DevelopmentBranch
+  - name: 'WORKSPACE_NAME'
+    value: '${{ parameters.WORKSPACE_NAME }}'
+  - name: 'DATASET_IDS'
+    value: '${{ parameters.DATASET_IDS}}'
 
 jobs:
 - job: Job_1
@@ -17,20 +31,53 @@ jobs:
   - checkout: self
     fetchDepth: 0
   - task: PowerShell@2
-    displayName: Automated Testing
+    displayName: Install Dependencies
+    inputs:
+      pwsh: true
+      targetType: inline
+      script: |
+        # ---------- Check if PowerShell Modules are Installed ---------- #
+        # Install Az.Accounts if Needed
+        if (Get-Module -ListAvailable -Name "Az.Accounts") {
+            Write-Host "##[debug]Az.Accounts installed moving forward"
+        } else {
+            Write-Host "##[debug]Installing Az.Accounts"
+            # Install Az.Accounts Module
+            Install-Module -Name Az.Accounts -Scope CurrentUser -AllowClobber -Force
+        }
+        # ---------- Download Modules ------------- #
+        Write-Host "##[debug]Downloading FabricPS-PBIP module"
+
+        # Create a new directory in the current location
+        if((Test-Path -path ".\modules") -eq $false){
+            New-Item -Name "modules" -Type Directory
+        }
+
+        # For each url download and install in module folder
+        @("https://raw.githubusercontent.com/microsoft/Analysis-Services/master/pbidevmode/fabricps-pbip/FabricPS-PBIP.psm1",
+          "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/pbidevmode/fabricps-pbip/FabricPS-PBIP.psd1",
+          "https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/development/Azure%20DevOps/Automated%20Testing%20Example/Run-DAXTestsWithExecuteQueries.ps1") |% {
+            Invoke-WebRequest -Uri $_ -OutFile ".\modules\$(Split-Path $_ -Leaf)"
+        }     
+  - task: PowerShell@2
+    displayName: Conduct Testing
     env:
       PASSWORD_OR_CLIENTSECRET: $(PASSWORD_OR_CLIENTSECRET) # Maps the secret variable
     inputs:
       pwsh: true
+      arguments: -DATASET_IDS '$(DATASET_IDS)' -WORKSPACE_NAME '$(WORKSPACE_NAME)'
       targetType: inline
-      script: |     
-        $outputPath = ".\Run-DAXTests.ps1"
-        $testingURL = "https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/development/Azure%20DevOps/Automated%20Testing%20Example/Run-DAXTests.ps1"
-        # Get PowerShell code to run tests
-        Invoke-WebRequest -Uri $testingURL -OutFile $outputPath
-
+      script: |             
+        # Import FabricPS-PBIP
+        Import-Module ".\modules\FabricPS-PBIP" -Force          
+        
+        # Download Script to Run DAX Query View using DAX Query View Testing Pattern
+        $outputPath = ".\modules\Run-DAXTestsWithExecuteQueries.ps1"
+                
         # Double check file was downloaded correctly
         if(!(Test-Path -path $outputPath)){
           exit 1
         }
-        .\Run-DAXTests.ps1
+        # Run tests
+        .\modules\Run-DAXTestsWithExecuteQueries.ps1
+ 

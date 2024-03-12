@@ -26,14 +26,13 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 3. Create a variable group called "DevelopmentBranch" and create the following variables:
 
-- WORKSPACE_NAME - The display name for the workspace.
 - USERNAME_OR_CLIENTID - The service principal's application/client id or universal provider name for the account.
 - PASSWORD_OR_CLIENTSECRET - The client secret or password for the service principal or account respectively.
 - TENANT_ID - The Tenant GUID.  You can locate it by following the instructions <a href="https://learn.microsoft.com/en-us/sharepoint/find-your-office-365-tenant-id" target="_blank">at this link</a>.
 
 ![Create Variable Group](./images/automated-testing-create-variable-group.png)
 
-4. Save the variable group.
+1. Save the variable group.
 
 ![Save Variable Group](./images/automated-testing-save-variable-group.png)
 
@@ -59,36 +58,39 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 ![Copy YAML](./images/automated-testing-copy-yaml.png)
 
-6. Select the 'Save and Run' button.
+6. Update the default workspace name for located on line X with the workspace you will typically use to conduct testing.
+
+
+7. Select the 'Save and Run' button.
 
 ![Save and Run](./images/automated-testing-save-pipeline.png)
 
-7. You will be prompted to commit to the main branch. Select the 'Save and Run' button.
+8. You will be prompted to commit to the main branch. Select the 'Save and Run' button.
 
 ![Save and Run again](./images/automated-testing-save-and-run.png)
 
-8. You will be redirected to the first pipeline run, and you will be asked to authorize the pipeline to access the variable group created previously.  Select the 'View' button.
+9. You will be redirected to the first pipeline run, and you will be asked to authorize the pipeline to access the variable group created previously.  Select the 'View' button.
 
-9. A pop-up window will appear. Select the 'Permit' button.
+10. A pop-up window will appear. Select the 'Permit' button.
 
 ![Permit](./images/automated-testing-permit.png)
 
-10. You will be asked to confirm.  Select the 'Permit' button.
+11. You will be asked to confirm.  Select the 'Permit' button.
 
 ![Permit Again](./images/automated-testing-permit-again.png)
 
-11. This will kick off the automated testing.
+12. This will kick off the automated testing.
 
 ![Automated Job](./images/automated-testing-job-running.png)
 
-12. Select the "Automated Testing Job".
+13. Select the "Automated Testing Job".
 
 ![Select Job](./images/automated-testing-select-job.png)
 
-13. You will see a log of DAX Queries that end in .Tests or .Test running against their respective semantic models in your workspace.
+14. You will see a log of DAX Queries that end in .Tests or .Test running against their respective semantic models in your workspace.
 
 ![Log](./images/automated-testing-log.png)
 
-14. For any failed tests, this will be logged to the job, and the pipeline will also fail.
+15. For any failed tests, this will be logged to the job, and the pipeline will also fail.
 
 ![Failed Tests](./images/automated-testing-failed-tests.png)
