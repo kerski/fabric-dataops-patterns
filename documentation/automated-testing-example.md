@@ -60,6 +60,7 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 6. Update the default workspace name for located on line X with the workspace you will typically use to conduct testing.
 
+![Update workspace parameter](./images/automated-testing-update-workspace-parameter.png)
 
 7. Select the 'Save and Run' button.
 
