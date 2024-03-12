@@ -82,7 +82,8 @@ $workspaceItems = Invoke-FabricAPIRequest -Uri "workspaces/$workspaceGuid/items"
 $datasets = $workspaceItems | Where-Object {$_.type -eq "SemanticModel"} 
 
 if($opts.DatasetIdsToTest){ # Filter datasets to test specifically base 
-    Write-Host "Checking if list of dataset ids exist in workspace: $($opts.DatasetIdsToTest)"
+    Write-Host "#[debug]--------------------------------------------------"
+    Write-Host "#[debug]Checking if list of dataset ids exist in workspace: $($opts.DatasetIdsToTest)"
 
     # Convert comma delimited string to array
     $idsToCheck = @($opts.DatasetIdsToTest.Trim() -split ",")
@@ -120,104 +121,105 @@ foreach($m in $metadataDS){
 
 # ---------- Identify DAX Queries for Testing ---------- #
 foreach($dataset in $datasets){
-  Write-Host "##[debug]Identifying if any test files exist for $($dataset.displayName)"
+    Write-Host "#[debug]--------------------------------------------------"
+    Write-Host "##[debug]Identifying if any test files exist for $($dataset.displayName)"
 
-  # Search metdataObjs
-  $result = $metadataObjs | Where-Object {$_.displayName -eq $dataset.displayName}
+    # Search metdataObjs
+    $result = $metadataObjs | Where-Object {$_.displayName -eq $dataset.displayName}
 
-  if($result){ # We have a match so see if there are tests to conduct
-        # Identify the DAX Queries that have a .Tests or .Test
-        $testFiles = @(Get-ChildItem -Path "$($result.FolderPath)/DaxQueries" -Recurse | Where-Object {$_ -like "*.Tests.dax" -or $_ -like "*.Test.dax"})
+    if($result){ # We have a match so see if there are tests to conduct
+            # Identify the DAX Queries that have a .Tests or .Test
+            $testFiles = @(Get-ChildItem -Path "$($result.FolderPath)/DaxQueries" -Recurse | Where-Object {$_ -like "*.Tests.dax" -or $_ -like "*.Test.dax"})
 
-        if($testFiles.Count -eq 0){
-            Write-Host "##vso[task.logissue type=warning]Unable to locate DAX files in this repository. No tests will be conducted."
-        }else{
-            # Execute Tests
-            foreach($testFile in $testFiles){
-                #Connect to XMLA EndPoint and run DAX Query
-                Try {
-                        # Get Token before each run of test
-                        $authToken = Get-FabricAuthToken
-                        $fabricHeaders = @{
-                            'Content-Type' = "application/json"
-                            'Authorization' = "Bearer {0}" -f $authToken
-                        }
+            if($testFiles.Count -eq 0){
+                Write-Host "##vso[task.logissue type=warning]Unable to locate DAX files in this repository. No tests will be conducted."
+            }else{
+                # Execute Tests
+                foreach($testFile in $testFiles){
+                    #Connect to XMLA EndPoint and run DAX Query
+                    Try {
+                            # Get Token before each run of test
+                            $authToken = Get-FabricAuthToken
+                            $fabricHeaders = @{
+                                'Content-Type' = "application/json"
+                                'Authorization' = "Bearer {0}" -f $authToken
+                            }
 
-                        $requestUrl = "$($opts.PowerBIURL)/v1.0/myorg/groups/$($workspaceGuid)/datasets/$($dataset.Id)/executeQueries"
-                        
-                        #Retrieve Content of the test
-                        $testContent = Get-Content $testFile.FullName -Raw
+                            $requestUrl = "$($opts.PowerBIURL)/v1.0/myorg/groups/$($workspaceGuid)/datasets/$($dataset.Id)/executeQueries"
+                            
+                            #Retrieve Content of the test
+                            $testContent = Get-Content $testFile.FullName -Raw
 
-                        # Build request
-                        $requestBody = @{
-                            queries =@(
-                                @{
-                                    query = "$($testContent)"
-                                }
-                            )
-                            serializerSettings = @{includeNulls = $false}
-                        }
-
-                        # Convert to Json
-                        $requestBodyAsJson = $requestBody | ConvertTo-Json
-                        
-                        # Send Query
-                        $requestResult = $null
-                        $requestResult = Invoke-WebRequest -Headers $fabricHeaders `
-                                                        -Uri $requestUrl `
-                                                        -Method POST `
-                                                        -Body $requestBodyAsJson
-
-                        # Parse results
-                        $requestResultJSON = $requestResult | ConvertFrom-Json
-
-                        #Check if Row Count is 0, no test results.
-                        if ($requestResultJSON.results.tables.rows.Count -eq 0) {
-                            $failureCount += 1
-                            Write-Host "##vso[task.logissue type=error]Query in test file ""($testFile.FullName)"" returned no results."
-                        }#end check of results
-
-                        #Iterate through each row of the query results and check test results
-                        $rowsToCheck = $requestResultJSON.results.tables.rows
-                        foreach ($row in $rowsToCheck){
-
-                                # Make sure schema exists for the row
-                                $checkSchema = $row.PSObject.Members.name | Where-Object {$_ -eq "[TestName]" -or `
-                                                                                        $_ -eq "[ExpectedValue]" -or `
-                                                                                        $_ -eq "[ActualValue]" -or `
-                                                                                        $_ -eq "[Passed]"}
-
-                                # Expects Columns TestName, Expected, Actual Columns, Passed
-                                if ($checkSchema.Count -ne 4) {
-                                    $failureCount += 1
-                                    Write-Host "##vso[task.logissue type=error]Query in test file ""$($test.FullName)"" did not have 4 columns (TestName, Expected, and Actual, Passed)."
-                                }else{# Compute whether the test passed
-                                    # Clear out values
-                                    $testName = $null
-                                    $expectedVal = $null
-                                    $actualVal = $null
-                                    $passed = $null
-                                    # Assign values
-                                    $testName = $row."[TestName]"
-                                    $expectedVal = $row."[ExpectedValue]"
-                                    $actualVal = $row."[ActualValue]"
-                                    $passed = ($expectedVal -eq $actualVal)
-                                    if (-not $passed) {
-                                        $failureCount += 1
-                                        Write-Host "##vso[task.logissue type=error]FAILED!: Test ""$($testName)"" for semantic model: $($datasetName). Expected: $($expectedVal) != $($actualVal)" }
-                                    else{
-                                        Write-Host "##[debug]""$($testName)"" passed. Expected: $($expectedVal) == $($actualVal)"
+                            # Build request
+                            $requestBody = @{
+                                queries =@(
+                                    @{
+                                        query = "$($testContent)"
                                     }
-                                }# end expected columns check
-                        }#end foreach
-                }Catch [System.Exception]{
-                    $errObj = ($_).ToString()
-                    Write-Host "##vso[task.logissue type=error]$($errObj)"
-                    $failureCount +=1
-            }# end try
-            }# end for each test file
-        }# end on test file counts
-  }# end check metadata exists in this file structure for the dataset in the workspace
+                                )
+                                serializerSettings = @{includeNulls = $false}
+                            }
+
+                            # Convert to Json
+                            $requestBodyAsJson = $requestBody | ConvertTo-Json
+                            
+                            # Send Query
+                            $requestResult = $null
+                            $requestResult = Invoke-WebRequest -Headers $fabricHeaders `
+                                                            -Uri $requestUrl `
+                                                            -Method POST `
+                                                            -Body $requestBodyAsJson
+
+                            # Parse results
+                            $requestResultJSON = $requestResult | ConvertFrom-Json
+
+                            #Check if Row Count is 0, no test results.
+                            if ($requestResultJSON.results.tables.rows.Count -eq 0) {
+                                $failureCount += 1
+                                Write-Host "##vso[task.logissue type=error]Query in test file ""($testFile.FullName)"" returned no results."
+                            }#end check of results
+
+                            #Iterate through each row of the query results and check test results
+                            $rowsToCheck = $requestResultJSON.results.tables.rows
+                            foreach ($row in $rowsToCheck){
+
+                                    # Make sure schema exists for the row
+                                    $checkSchema = $row.PSObject.Members.name | Where-Object {$_ -eq "[TestName]" -or `
+                                                                                            $_ -eq "[ExpectedValue]" -or `
+                                                                                            $_ -eq "[ActualValue]" -or `
+                                                                                            $_ -eq "[Passed]"}
+
+                                    # Expects Columns TestName, Expected, Actual Columns, Passed
+                                    if ($checkSchema.Count -ne 4) {
+                                        $failureCount += 1
+                                        Write-Host "##vso[task.logissue type=error]Query in test file ""$($test.FullName)"" did not have 4 columns (TestName, Expected, and Actual, Passed)."
+                                    }else{# Compute whether the test passed
+                                        # Clear out values
+                                        $testName = $null
+                                        $expectedVal = $null
+                                        $actualVal = $null
+                                        $passed = $null
+                                        # Assign values
+                                        $testName = $row."[TestName]"
+                                        $expectedVal = $row."[ExpectedValue]"
+                                        $actualVal = $row."[ActualValue]"
+                                        $passed = ($expectedVal -eq $actualVal)
+                                        if (-not $passed) {
+                                            $failureCount += 1
+                                            Write-Host "##vso[task.logissue type=error]FAILED!: Test ""$($testName)"" for semantic model: $($datasetName). Expected: $($expectedVal) != $($actualVal)" }
+                                        else{
+                                            Write-Host "##[debug]""$($testName)"" passed. Expected: $($expectedVal) == $($actualVal)"
+                                        }
+                                    }# end expected columns check
+                            }#end foreach
+                    }Catch [System.Exception]{
+                        $errObj = ($_).ToString()
+                        Write-Host "##vso[task.logissue type=error]$($errObj)"
+                        $failureCount +=1
+                }# end try
+                }# end for each test file
+            }# end on test file counts
+    }# end check metadata exists in this file structure for the dataset in the workspace
 }# end foreach dataset
 
 # Check failure count
