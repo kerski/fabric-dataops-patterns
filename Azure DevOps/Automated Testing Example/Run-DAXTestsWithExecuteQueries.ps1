@@ -123,7 +123,7 @@ foreach($m in $metadataDS){
 # ---------- Identify DAX Queries for Testing ---------- #
 foreach($dataset in $datasets){
     Write-Host "##[debug]--------------------------------------------------"
-    Write-Host "##[group]Identifying if any test files exist for $($dataset.displayName)"
+    Write-Host "##[debug]Attempt to run test files for $($dataset.displayName)"
 
     # Search metdataObjs
     $result = $metadataObjs | Where-Object {$_.displayName -eq $dataset.displayName}
@@ -221,8 +221,6 @@ foreach($dataset in $datasets){
                 }# end for each test file
             }# end on test file counts
     }# end check metadata exists in this file structure for the dataset in the workspace
-
-    Write-Host "##[endgroup]"
 }# end foreach dataset
 
 # Check failure count
