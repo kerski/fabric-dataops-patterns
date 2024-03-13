@@ -1,4 +1,4 @@
-# Automating DAX Query View Testing Pattern
+# Automating DAX Query View Testing Pattern with Azure DevOps
 
 If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pattern.md) you can also look at automating the tests when a branch in your repository is updated and synced with a workspace through <a href="https://learn.microsoft.com/en-us/power-bi/developer/projects/projects-git" target="_blank">Git Integration</a>. The following instructions show you how to setup an Azure DevOps pipeline to automate testing.
 
