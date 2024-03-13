@@ -2,6 +2,11 @@
 
 If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pattern.md) you can also look at automating the tests when a branch in your repository is updated and synced with a workspace through <a href="https://learn.microsoft.com/en-us/power-bi/developer/projects/projects-git" target="_blank">Git Integration</a>. The following instructions show you how to setup an Azure DevOps pipeline to automate testing.
 
+## Table of Contents
+1. [Prequisites](#prerequisites)
+2. [Installation Instructions](#instructions)
+3. [Running the Pipeline](#running-the-pipeline)
+
 ## Prerequisites
 
 1. You have an Azure DevOps project and have at least Project or Build Administrator rights for that project.
@@ -58,7 +63,7 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 ![Copy YAML](./images/automated-testing-copy-yaml.png)
 
-6. Update the default workspace name for located on line X with the workspace you will typically use to conduct testing.
+6. Update the default workspace name for located on line 5 with the workspace you will typically use to conduct testing.
 
 ![Update workspace parameter](./images/automated-testing-update-workspace-parameter.png)
 
@@ -95,3 +100,16 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 15. For any failed tests, this will be logged to the job, and the pipeline will also fail.
 
 ![Failed Tests](./images/automated-testing-failed-tests.png)
+
+### Running the Pipeline
+
+This pipeline has two parameters that can be updated at run-time.  The purpose is for you to be able to control which workspace to conduct the testing and the specific data models to conduct testing.  When running tis pipeline you will be prompted to provide the following:
+
+1) Workspace name - This is a required field that is the name of the workspace.  Please note the service principal or account used in the variable group needs the Member role to the workspace.
+2) Dataset/Semantic Model IDs - The second question is an optional field if you would like to specify which dataset to conduct testing.  More that one dataset can be identify by delimiting with a comma (e.g. 23828487-9191-4109-8d3a-08b7817b9a44,12345958-1891-4109-8d3c-28a7717b9a45).  If no value is passed, the pipeline will conduct the following steps:
+   1) Identify all the semantic models in the repository.
+   2) Verify each semantic model exists in the workspace.
+   3) For the semantic model that exist in the workspace, check if any ".Test" or ".Tests" DAX files exist.
+   4) Execute the tests and output the results.
+
+![Run Pipeline](./images/automated-testing-run-pipeline.png)
