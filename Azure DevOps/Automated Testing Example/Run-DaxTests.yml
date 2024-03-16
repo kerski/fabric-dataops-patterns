@@ -23,7 +23,7 @@ pool:
 
 variables:
   # Variable group with configuration
-  - group: DevelopmentBranch
+  - group: TestingCredentials
   - name: 'WORKSPACE_NAME'
     value: '${{ parameters.WORKSPACE_NAME }}'
   - name: 'DATASET_IDS'

@@ -29,7 +29,7 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 ![Add Variable Group](./images/automated-testing-variable-group.png)
 
-3. Create a variable group called "DevelopmentBranch" and create the following variables:
+3. Create a variable group called "TestingCredentials" and create the following variables:
 
 - USERNAME_OR_CLIENTID - The service principal's application/client id or universal provider name for the account.
 - PASSWORD_OR_CLIENTSECRET - The client secret or password for the service principal or account respectively.
