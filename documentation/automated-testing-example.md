@@ -11,7 +11,7 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 1. You have an Azure DevOps project and have at least Project or Build Administrator rights for that project.
 
-2. You have connected a premium-back capacity workspace to your a repository in your Azure DevOps project. Instructions are provided <a href="https://learn.microsoft.com/en-us/power-bi/developer/projects/projects-git" target="_blank">at this link.</a>
+2. You have connected a premium-back capacity workspace to your repository in your Azure DevOps project. Instructions are provided <a href="https://learn.microsoft.com/en-us/power-bi/developer/projects/projects-git" target="_blank">at this link.</a>
 
 3. Your Power BI tenant has <a href="https://learn.microsoft.com/en-us/power-bi/enterprise/service-premium-connect-tools#enable-xmla-read-write" target="_blank">XMLA Read/Write Enabled</a>.
 
