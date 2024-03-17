@@ -18,7 +18,7 @@ DEFINE
 		),
 		ROW(
 			"TestName", "Marvel Fact: Percentage of null values does not exceed 15%.",
-			"ExepctedValue", 1,
+			"ExpectedValue", 1,
 			"AcutalValue", IF(_PercentageOfNullValuesInAppearances < .15 ,1,0)
 			)
 		)
