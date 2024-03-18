@@ -2,3 +2,4 @@
 **/.pbi/cache.abf
 *.config.json
 .nuget/
+testFiles/
