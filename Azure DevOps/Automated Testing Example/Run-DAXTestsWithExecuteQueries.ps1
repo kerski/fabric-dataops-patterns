@@ -186,12 +186,13 @@ foreach($dataset in $datasets){
                         $rowsToCheck = $requestResultJSON.results.tables.rows
                         foreach ($row in $rowsToCheck){
                             # Assign values
+                            Write-Host $row
                             $testName = $row."[TestName]"
                             $passedStr = $row."[Passed]"
 
                             if (!$testName -or !$passedStr) {
                                 $failureCount += 1
-                                Write-Host "##vso[task.logissue type=error]Query in test file ""$($test.FullName)"" did not have test mandatory columns 'TestName', 'Passed')."
+                                Write-Host "##vso[task.logissue type=error]Query in test file ""$($testFile.FullName)"" did not have test mandatory columns 'TestName', 'Passed')."
                             }
                             else {
 
