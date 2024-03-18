@@ -45,7 +45,7 @@ Describe 'Invoke-DQVTests' {
     }      
 
     # Check for good workspace
-    It 'Should output one failure for a failed test' {
+    It 'Should output a warning because the semantic model does not have tests' {
 
         $datasetIds = $variables.TestDatasetIdsDNE
 
