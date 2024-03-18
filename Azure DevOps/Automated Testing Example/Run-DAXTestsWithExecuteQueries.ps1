@@ -137,7 +137,7 @@ foreach($dataset in $datasets){
         }else{
             # Execute Tests
             foreach($testFile in $testFiles){
-                Write-Host "##[debug]Running test file '($testFile.FullName)'"
+                Write-Host "##[debug]Running test file '$($testFile.FullName)'"
 
                 # Connect to XMLA EndPoint and run DAX Query
                 Try {
@@ -179,7 +179,7 @@ foreach($dataset in $datasets){
                         # Check if Row Count is 0, no test results.
                         if ($requestResultJSON.results.tables.rows.Count -eq 0) {
                             $failureCount += 1
-                            Write-Host "##vso[task.logissue type=error]Query in test file ""($testFile.FullName)"" returned no results."
+                            Write-Host "##vso[task.logissue type=error]Query in test file ""$($testFile.FullName)"" returned no results."
                         }# end check of results
 
                         # Iterate through each row of the query results and check test results
