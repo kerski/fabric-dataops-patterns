@@ -1,2 +1,4 @@
 **/.pbi/localSettings.json
 **/.pbi/cache.abf
+*.config.json
+.nuget/
