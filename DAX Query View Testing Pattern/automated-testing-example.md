@@ -59,7 +59,7 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 ![Select Repo](../documentation/images/automated-testing-select-repo.png)
 
-5. Copy the contents of the template YAML file located <a href="https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/development/Azure%20DevOps/Automated%20Testing%20Example/Run-DaxTests.yml" target="_blank">at this link</a> into the code editor.
+5. Copy the contents of the template YAML file located <a href="https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/development/DAX%20Query%20View%20Testing%20Pattern/scripts/Run-DaxTests.yml" target="_blank">at this link</a> into the code editor.
 
 ![Copy YAML](../documentation/images/automated-testing-copy-yaml.png)
 
