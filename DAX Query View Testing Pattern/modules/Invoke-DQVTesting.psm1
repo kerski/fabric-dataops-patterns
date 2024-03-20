@@ -222,7 +222,7 @@ function Invoke-DQVTesting  {
     # Retrieve item.metadata.json files so we can map dataset names in the service
     # with the name in the metadata files
     $metadataObjs = @()
-    $metadataDS = @(Get-ChildItem -Path "*/*.Dataset/item.metadata.json" -Recurse)
+    $metadataDS = @(Get-ChildItem -Path "*.Dataset/item.metadata.json" -Recurse) + @(Get-ChildItem -Path "*/*.Dataset/item.metadata.json" -Recurse)
 
     foreach($m in $metadataDS){
         # Get Content on metdata
