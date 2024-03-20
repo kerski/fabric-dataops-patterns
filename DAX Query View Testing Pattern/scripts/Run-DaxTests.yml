@@ -42,18 +42,7 @@ jobs:
       targetType: inline
       script: |
         # ---------- Check if PowerShell Modules are Installed ---------- #
-        # ---------- Download Modules ------------- #
-        # Create a new directory in the current location
-        if((Test-Path -path ".\modules") -eq $false){
-            New-Item -Name "modules" -Type Directory
-        }
-
-        # For each url download and install in module folder
-        @("https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/development/DAX%20Query%20View%20Testing%20Pattern/modules/Invoke-DQVTesting.psm1",
-          "https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/development/DAX%20Query%20View%20Testing%20Pattern/modules/Invoke-DQVTesting.psd1"
-          ) |% {
-            Invoke-WebRequest -Uri $_ -OutFile ".\modules\$(Split-Path $_ -Leaf)"
-        }     
+        Install-Module -Name Invoke-DQVTesting -RequiredVersion 0.0.4 -Scope CurrentUser -AllowClobber -Force
   - task: PowerShell@2
     displayName: Conduct Testing
     env:
@@ -62,10 +51,7 @@ jobs:
       pwsh: true
       failOnStderr: true
       targetType: inline
-      script: |             
-        # Import Invoke-DQVTesting
-        Import-Module ".\modules\Invoke-DQVTesting.psm1" -Force          
-
+      script: |                    
         $secret = ${env:PASSWORD_OR_CLIENTSECRET} | ConvertTo-SecureString -AsPlainText -Force
         $credentials = [System.Management.Automation.PSCredential]::new("${env:USERNAME_OR_CLIENTID}",$secret)                  
 
