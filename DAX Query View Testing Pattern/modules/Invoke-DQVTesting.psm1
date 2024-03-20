@@ -311,7 +311,7 @@ function Invoke-DQVTesting  {
                                 $testName = $rows[$i]."[TestName]"
                                 $expectedVal = $rows[$i]."[ExpectedValue]"
                                 $actualVal = $rows[$i]."[ActualValue]"
-                                $passedStr = $rows[$i]."[Passed]"
+                                $passedStr = $rows[$i]."[Passed]".ToString()
 
                                 if (!$testName -or !$passedStr) {
                                     $failureCount += 1
