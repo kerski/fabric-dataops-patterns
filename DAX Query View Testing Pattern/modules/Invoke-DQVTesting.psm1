@@ -31,7 +31,7 @@ foreach ($nuget in $nugets)
     if (!(Test-Path "$currentPath\.nuget\$($nuget.name)*" -PathType Container)) {
         Install-Package -Name $nuget.name -ProviderName NuGet -Destination "$currentPath\.nuget" -RequiredVersion $nuget.Version -SkipDependencies -AllowPrereleaseVersions -Scope CurrentUser -Force
     }
-    Write-Output $nuget.path
+
     foreach ($nugetPath in $nuget.path)
     {
         Write-Output "Loading assemblies of: '$($nuget.name)'"
@@ -136,7 +136,7 @@ function Invoke-DQVTesting  {
         [PSCredential]$Credential,
 
         [Parameter(Mandatory = $false)]
-        [array]$DatasetId,
+        [array]$DatasetId = @(),
 
         [Parameter(Mandatory = $false)]
         [ValidateSet('ADO','Host','Table')]
@@ -190,7 +190,7 @@ function Invoke-DQVTesting  {
     $workspaceItems = Invoke-FabricAPIRequest -Uri "workspaces/$workspaceGuid/items" -Method Get
     $datasets = $workspaceItems | Where-Object {$_.type -eq "SemanticModel"}
 
-    if($DatasetId){ # Filter datasets to test specifically base
+    if($DatasetId.Length -gt 0){ # Filter datasets to test specifically base
         Write-ToLog -Message "--------------------------------------------------" `
                     -LogType "Debug" `
                     -LogOutput $LogOutput
@@ -199,7 +199,7 @@ function Invoke-DQVTesting  {
         $idsToCheck = @($DatasetId)
 
         foreach($id in $idsToCheck){
-            Write-ToLog -Message "Checking if list of dataset ids exist in workspace: $($id)" `
+            Write-ToLog -Message "Checking if list of dataset id exist in the workspace. Dataset ID: $($id)" `
             -LogType "Debug" `
             -LogOutput $LogOutput
 
@@ -213,7 +213,7 @@ function Invoke-DQVTesting  {
         $datasets = @($datasetsToTest)
 
         if($datasets.Length -eq 0){
-            Write-ToLog -Message "No datasets found in workspace from this list of workspace IDs: $($opts.DatasetIdsToTest)" `
+            Write-ToLog -Message "No datasets found in workspace from this list of dataset IDs: $($opts.DatasetIdsToTest)" `
             -LogType "Warning" `
             -LogOutput $LogOutput
         }# end count check
@@ -351,13 +351,13 @@ function Invoke-DQVTesting  {
                     }# end try
                 }# end for each test file
             }# end on test file counts
-    }# end check metadata exists in this file structure for the dataset in the workspace
-    else
-    {
-        Write-ToLog -Message "No test DAX queries for dataset '$($dataset.displayName)'." `
-                    -LogType "Debug" `
-                    -LogOutput $LogOutput
-    }
+        }# end check metadata exists in this file structure for the dataset in the workspace
+        else
+        {
+            Write-ToLog -Message "No test DAX queries for dataset '$($dataset.displayName)'." `
+                        -LogType "Debug" `
+                        -LogOutput $LogOutput
+        }
     }# end foreach dataset
 
     return $script:messages
