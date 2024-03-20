@@ -1,6 +1,6 @@
 Describe 'Invoke-DQVTesting' {
     BeforeAll { 
-        Import-Module .\Invoke-DQVTesting.psm1 -Force
+        Import-Module ".\Invoke-DQVTesting\Invoke-DQVTesting.psm1" -Force
 
         # Retrieve specific variables from json so we don't keep sensitive values in 
         # source control
