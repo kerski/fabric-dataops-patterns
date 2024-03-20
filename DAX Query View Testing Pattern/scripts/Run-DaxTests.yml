@@ -42,26 +42,16 @@ jobs:
       targetType: inline
       script: |
         # ---------- Check if PowerShell Modules are Installed ---------- #
-        # Install Az.Accounts if Needed
-        if (Get-Module -ListAvailable -Name "Az.Accounts") {
-            Write-Host "##[debug]Az.Accounts installed moving forward"
-        } else {
-            Write-Host "##[debug]Installing Az.Accounts"
-            # Install Az.Accounts Module
-            Install-Module -Name Az.Accounts -Scope CurrentUser -AllowClobber -Force
-        }
         # ---------- Download Modules ------------- #
-        Write-Host "##[debug]Downloading FabricPS-PBIP module"
-
         # Create a new directory in the current location
         if((Test-Path -path ".\modules") -eq $false){
             New-Item -Name "modules" -Type Directory
         }
 
         # For each url download and install in module folder
-        @("https://raw.githubusercontent.com/microsoft/Analysis-Services/master/pbidevmode/fabricps-pbip/FabricPS-PBIP.psm1",
-          "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/pbidevmode/fabricps-pbip/FabricPS-PBIP.psd1",
-          "https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/development/Azure%20DevOps/Automated%20Testing%20Example/Run-DAXTestsWithExecuteQueries.ps1") |% {
+        @("https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/development/DAX%20Query%20View%20Testing%20Pattern/modules/Invoke-DQVTesting.psm1",
+          "https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/development/DAX%20Query%20View%20Testing%20Pattern/modules/Invoke-DQVTesting.psd1"
+          ) |% {
             Invoke-WebRequest -Uri $_ -OutFile ".\modules\$(Split-Path $_ -Leaf)"
         }     
   - task: PowerShell@2
@@ -70,19 +60,26 @@ jobs:
       PASSWORD_OR_CLIENTSECRET: $(PASSWORD_OR_CLIENTSECRET) # Maps the secret variable
     inputs:
       pwsh: true
-      arguments: -DATASET_IDS '$(DATASET_IDS)' -WORKSPACE_NAME '$(WORKSPACE_NAME)'
+      failOnStderr: true
       targetType: inline
       script: |             
-        # Import FabricPS-PBIP
-        Import-Module ".\modules\FabricPS-PBIP" -Force          
-        
-        # Download Script to Run DAX Query View using DAX Query View Testing Pattern
-        $outputPath = ".\modules\Run-DAXTestsWithExecuteQueries.ps1"
-                
-        # Double check file was downloaded correctly
-        if(!(Test-Path -path $outputPath)){
-          exit 1
+        # Import Invoke-DQVTesting
+        Import-Module ".\modules\Invoke-DQVTesting.psm1" -Force          
+
+        $secret = ${env:PASSWORD_OR_CLIENTSECRET} | ConvertTo-SecureString -AsPlainText -Force
+        $credentials = [System.Management.Automation.PSCredential]::new("${env:USERNAME_OR_CLIENTID}",$secret)                  
+
+        # Check if specific datasets need to be tested
+        $lengthCheck = "${env:DATASET_IDS}".Trim()
+        if($lengthCheck -gt 0){
+          $datasetsToTest = "${env:DATASET_IDS}".Trim() -split ','
+        }else{
+          $datasetsToTest = @()
         }
+
         # Run tests
-        .\modules\Run-DAXTestsWithExecuteQueries.ps1
- 
+        Invoke-DQVTesting -WorkspaceName "${env:WORKSPACE_NAME}" `
+                        -Credential $credentials `
+                        -TenantId "${env:TENANT_ID}" `
+                        -DatasetId $datasetsToTest `
+                        -LogOutput "ADO"
