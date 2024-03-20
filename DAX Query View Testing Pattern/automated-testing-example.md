@@ -23,11 +23,11 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 1. In your project, navigate to the Pipelines->Library section.
 
-![Variable Groups](../images/automated-testing-library.png)
+![Variable Groups](../documentation/images/automated-testing-library.png)
 
 1. Select the "Add Variable Group" button.
 
-![Add Variable Group](../images/automated-testing-variable-group.png)
+![Add Variable Group](../documentation/images/automated-testing-variable-group.png)
 
 3. Create a variable group called "TestingCredentials" and create the following variables:
 
@@ -35,71 +35,71 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 - PASSWORD_OR_CLIENTSECRET - The client secret or password for the service principal or account respectively.
 - TENANT_ID - The Tenant GUID.  You can locate it by following the instructions <a href="https://learn.microsoft.com/en-us/sharepoint/find-your-office-365-tenant-id" target="_blank">at this link</a>.
 
-![Create Variable Group](../images/automated-testing-create-variable-group.png)
+![Create Variable Group](../documentation/images/automated-testing-create-variable-group.png)
 
 1. Save the variable group.
 
-![Save Variable Group](../images/automated-testing-save-variable-group.png)
+![Save Variable Group](../documentation/images/automated-testing-save-variable-group.png)
 
 ### Create the Pipeline
 
 1. Navigate to the pipeline interface.
 
-![Navigate to Pipeline](../images/automated-testing-navigate-pipeline.png)
+![Navigate to Pipeline](../documentation/images/automated-testing-navigate-pipeline.png)
 
 2. Select the "New Pipeline" button.
 
-![New Pipeline](../images/automated-testing-create-pipeline.png)
+![New Pipeline](../documentation/images/automated-testing-create-pipeline.png)
 
 3. Select the Azure Repos Git option.
 
-![ADO Option](../images/automated-testing-ado-option.png)
+![ADO Option](../documentation/images/automated-testing-ado-option.png)
 
 4. Select the repository you have connected the workspace via Git Integration.
 
-![Select Repo](../images/automated-testing-select-repo.png)
+![Select Repo](../documentation/images/automated-testing-select-repo.png)
 
 5. Copy the contents of the template YAML file located <a href="https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/development/Azure%20DevOps/Automated%20Testing%20Example/Run-DaxTests.yml" target="_blank">at this link</a> into the code editor.
 
-![Copy YAML](../images/automated-testing-copy-yaml.png)
+![Copy YAML](../documentation/images/automated-testing-copy-yaml.png)
 
 6. Update the default workspace name for located on line 5 with the workspace you will typically use to conduct testing.
 
-![Update workspace parameter](../images/automated-testing-update-workspace-parameter.png)
+![Update workspace parameter](../documentation/images/automated-testing-update-workspace-parameter.png)
 
 7. Select the 'Save and Run' button.
 
-![Save and Run](../images/automated-testing-save-pipeline.png)
+![Save and Run](../documentation/images/automated-testing-save-pipeline.png)
 
 8. You will be prompted to commit to the main branch. Select the 'Save and Run' button.
 
-![Save and Run again](../images/automated-testing-save-and-run.png)
+![Save and Run again](../documentation/images/automated-testing-save-and-run.png)
 
 9. You will be redirected to the first pipeline run, and you will be asked to authorize the pipeline to access the variable group created previously.  Select the 'View' button.
 
 10. A pop-up window will appear. Select the 'Permit' button.
 
-![Permit](../images/automated-testing-permit.png)
+![Permit](../documentation/images/automated-testing-permit.png)
 
 11. You will be asked to confirm.  Select the 'Permit' button.
 
-![Permit Again](../images/automated-testing-permit-again.png)
+![Permit Again](../documentation/images/automated-testing-permit-again.png)
 
 12. This will kick off the automated testing.
 
-![Automated Job](../images/automated-testing-job-running.png)
+![Automated Job](../documentation/images/automated-testing-job-running.png)
 
 13. Select the "Automated Testing Job".
 
-![Select Job](../images/automated-testing-select-job.png)
+![Select Job](../documentation/images/automated-testing-select-job.png)
 
 14. You will see a log of DAX Queries that end in .Tests or .Test running against their respective semantic models in your workspace.
 
-![Log](../images/automated-testing-log.png)
+![Log](../documentation/images/automated-testing-log.png)
 
 15. For any failed tests, this will be logged to the job, and the pipeline will also fail.
 
-![Failed Tests](../images/automated-testing-failed-tests.png)
+![Failed Tests](../documentation/images/automated-testing-failed-tests.png)
 
 ### Running the Pipeline
 
@@ -112,4 +112,4 @@ This pipeline has two parameters that can be updated at run-time.  The purpose i
    3) For the semantic model that exist in the workspace, check if any ".Test" or ".Tests" DAX files exist.
    4) Execute the tests and output the results.
 
-![Run Pipeline](../images/automated-testing-run-pipeline.png)
+![Run Pipeline](../documentation/images/automated-testing-run-pipeline.png)
