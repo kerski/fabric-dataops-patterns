@@ -61,7 +61,7 @@ function Write-ToLog {
         [Parameter(Mandatory = $true)]
         [string]$Message,
         [Parameter(Mandatory = $false)]
-        [ValidateSet('Debug','Warning','Error')]
+        [ValidateSet('Debug','Warning','Error','Failure')]
         [string]$LogType = 'Debug',
         [Parameter(Mandatory = $false)]
         [ValidateSet('ADO','Host','Table')]
@@ -82,6 +82,7 @@ function Write-ToLog {
         switch($LogType){
             'Warning' { $prefix = "##vso[task.logissue type=warning]"}
             'Error' { $prefix = "##vso[task.logissue type=error]"}
+            'Failure' { $prefix = "##vso[task.complete result=Failed;]"}
         }
         # Add prefix and write to host
         $Message = $prefix + $Message
@@ -360,6 +361,13 @@ function Invoke-DQVTesting  {
         }
     }# end foreach dataset
 
+    if($LogOutput -eq "ADO"){
+        if($failureCount -gt 0){
+            Write-ToLog -Message "Number of Failed Tests: $($failureCount)." `
+                        -LogType "Failure" `
+                        -LogOutput $LogOutput
+        }
+    }
     return $script:messages
 }
 
