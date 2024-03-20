@@ -293,7 +293,7 @@ function Invoke-DQVTesting  {
                         # Fill a dataset object with the result of the cmd
                         $da = new-Object Microsoft.AnalysisServices.AdomdClient.AdomdDataAdapter($cmd)
                         $ds = new-Object System.Data.DataSet
-                        $da.Fill($ds)
+                        $temp = $da.Fill($ds)
                         $rows = $ds.Tables.Rows
                         #Check if Row Count is 0, no test results.
                         if ($rows.Count -eq 0) {
