@@ -119,6 +119,21 @@ function Write-ToLog {
     .PARAMETER LogOutput
     Specifies where the log messages should be output. Options are 'ADO' (Azure DevOps Pipeline), 'Host', or 'Table'.
 
+    .EXAMPLE
+    Run tests for all datasets/semantic models in the workspace
+    Invoke-DQVTesting -WorkspaceName "WORKSPACE_NAME" `
+                        -Credential $userCredentials `
+                        -TenantId "TENANT_ID" `
+                        -LogOutput "ADO"
+
+    .EXAMPLE
+    Run tests for specific datasets/semantic models in the workspace
+    Invoke-DQVTesting -WorkspaceName "WORKSPACE_NAME" `
+                        -Credential $userCredentials `
+                        -TenantId "TENANT_ID" `
+                        -DatasetId @("DATASET GUID1","DATASET GUID2") `
+                        -LogOutput "ADO"
+
     .NOTES
         Author: John Kerski
         Dependencies:  PowerShell modules Az.Accounts is required.
