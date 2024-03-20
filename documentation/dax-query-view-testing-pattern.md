@@ -4,10 +4,15 @@ In the world of actual, tangible fabrics, a pattern is the template from which t
 
 My hope is that with this pattern you have a template to weave DataOps into Microsoft Fabric and ultimately have a quality solution for your customers.
 
-1. [Steps](#steps)
-    1. [Setup Workspace Governance](#1-setup-workspace-governance)
-    1. [Standardize Schema and Naming Conventions](#2-standardize-schema-and-naming-conventions)
-    1. [Build Tests](#3-build-tests)
+- [DAX Query View Testing Pattern](#dax-query-view-testing-pattern)
+  - [Steps](#steps)
+    - [1. Setup Workspace Governance](#1-setup-workspace-governance)
+    - [2. Standardize Schema and Naming Conventions](#2-standardize-schema-and-naming-conventions)
+    - [3. **Build Tests**](#3-build-tests)
+      - [1. Testing Calculations](#1-testing-calculations)
+      - [2. Testing Content](#2-testing-content)
+      - [3. Testing Schema](#3-testing-schema)
+  - [Automated Testing](#automated-testing)
 
 ## Steps
 
@@ -96,4 +101,7 @@ Dependencies: At least the December 2023 version of Power Desktop and [DAX Query
 ![testing schema](./images/testing-schema.png)
 *Example of running tests against your semantic model's schema.*
 
+## Automated Testing
+
+With this pattern in place you can implement automated testing in an Azure Pipeline by following [these directions](automated-testing-example.md).
 

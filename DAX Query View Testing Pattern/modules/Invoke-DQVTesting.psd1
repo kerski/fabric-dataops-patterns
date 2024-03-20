@@ -6,7 +6,9 @@
     Copyright = '(c) kerski.tech. All rights reserved.' # Replace with your company name  
     Description = 'This module run through the DAX Query View files that end with .Tests or .Test and output the results.'  
     RootModule = 'Invoke-DQVTesting.psm1'  
-    FunctionsToExport = 'Invoke-DQVTesting'  
+    FunctionsToExport = 'Invoke-DQVTesting'
+    ProjectUri = 'https://github.com/kerski/fabric-dataops-patterns'
+    LicenseUri = 'https://github.com/kerski/fabric-dataops-patterns/blob/main/LICENSE'
     PowerShellVersion = '7.1'  
     RequiredModules = @('Az.Accounts') # Include any other required modules here  
 } 
