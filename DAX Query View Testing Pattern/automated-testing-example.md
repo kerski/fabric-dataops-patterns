@@ -134,3 +134,7 @@ This pipeline has two parameters that can be updated at run-time.  The purpose i
 ## Monitoring
 
 It's essential to monitor the Azure DevOps pipeline for any failures. I've also written about some best practices for setting that up <a href="https://www.kerski.tech/bringing-dataops-to-power-bi-part31/" target="_blank">in this article</a>.
+
+
+*Git Logo provided by [Git - Logo Downloads
+(git-scm.com)](https://git-scm.com/downloads/logos)*
