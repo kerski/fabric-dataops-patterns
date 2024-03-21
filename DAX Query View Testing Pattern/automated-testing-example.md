@@ -2,10 +2,27 @@
 
 If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pattern.md) you can also look at automating the tests when a branch in your repository is updated and synced with a workspace through <a href="https://learn.microsoft.com/en-us/power-bi/developer/projects/projects-git" target="_blank">Git Integration</a>. The following instructions show you how to setup an Azure DevOps pipeline to automate testing.
 
+***Note***: If you're interested in a demonstration of Git Integration and DAX Query View Testing Pattern, please check out my <a href="https://youtu.be/WyMQSyf3NvM?si=-W3TxyyJQXE0m-et" target="_blank">YouTube video</a> on the subject.
+
 ## Table of Contents
-1. [Prequisites](#prerequisites)
-2. [Installation Instructions](#instructions)
-3. [Running the Pipeline](#running-the-pipeline)
+- [Automating DAX Query View Testing Pattern with Azure DevOps](#automating-dax-query-view-testing-pattern-with-azure-devops)
+  - [Table of Contents](#table-of-contents)
+  - [High-Level Process](#high-level-process)
+  - [Prerequisites](#prerequisites)
+  - [Instructions](#instructions)
+    - [Create the Variable Group](#create-the-variable-group)
+    - [Create the Pipeline](#create-the-pipeline)
+    - [Running the Pipeline](#running-the-pipeline)
+  - [Monitoring](#monitoring)
+
+## High-Level Process
+
+![Figure 1](../documentation/images/automated-testing-dax-high-level.png)
+*Figure 1 -- High-level diagram of automated testing with PBIP, Git Integration, and DAX Query View Testing Pattern*
+
+In the process depicted in **Figure 1**, your team **<u>saves</u>** their Power BI work in the PBIP extension format and **<u>commits</u>** those changes to Azure DevOps.
+
+Then, you or your team **<u>sync</u>** with the workspace and **<u>refresh</u>** the semantic models. For this article, I am assuming either manual integration or the use of <a href="https://github.com/microsoft/Analysis-Services/tree/master/pbidevmode/fabricps-pbip" target="_blank">Rui Romano's code</a> to deploy a PBIP file to a workspace, with semantic models refreshed appropriately. With these criteria met, you can execute the tests.
 
 ## Prerequisites
 
@@ -113,3 +130,7 @@ This pipeline has two parameters that can be updated at run-time.  The purpose i
    4) Execute the tests and output the results.
 
 ![Run Pipeline](../documentation/images/automated-testing-run-pipeline.png)
+
+## Monitoring
+
+It's essential to monitor the Azure DevOps pipeline for any failures. I've also written about some best practices for setting that up <a href="https://www.kerski.tech/bringing-dataops-to-power-bi-part31/" target="_blank">in this article</a>.
