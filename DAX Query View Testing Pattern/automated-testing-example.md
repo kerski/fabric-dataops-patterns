@@ -120,10 +120,10 @@ Then, you or your team **<u>sync</u>** with the workspace and **<u>refresh</u>**
 
 ### Running the Pipeline
 
-This pipeline has two parameters that can be updated at run-time.  The purpose is for you to be able to control which workspace to conduct the testing and the specific data models to conduct testing.  When running tis pipeline you will be prompted to provide the following:
+This pipeline has two parameters that can be updated at run-time.  The purpose is for you to be able to control which workspace to conduct the testing and the specific data models to conduct testing.  When running this pipeline you will be prompted to provide the following:
 
 1) Workspace name - This is a required field that is the name of the workspace.  Please note the service principal or account used in the variable group needs the Member role to the workspace.
-2) Dataset/Semantic Model IDs - The second question is an optional field if you would like to specify which dataset to conduct testing.  More that one dataset can be identify by delimiting with a comma (e.g. 23828487-9191-4109-8d3a-08b7817b9a44,12345958-1891-4109-8d3c-28a7717b9a45).  If no value is passed, the pipeline will conduct the following steps:
+2) Dataset/Semantic Model IDs - The second question is an optional field if you would like to specify which dataset to conduct testing.  More that one dataset can be identified by delimiting with a comma (e.g. 23828487-9191-4109-8d3a-08b7817b9a44,12345958-1891-4109-8d3c-28a7717b9a45).  If no value is passed, the pipeline will conduct the following steps:
    1) Identify all the semantic models in the repository.
    2) Verify each semantic model exists in the workspace.
    3) For the semantic model that exist in the workspace, check if any ".Test" or ".Tests" DAX files exist.
