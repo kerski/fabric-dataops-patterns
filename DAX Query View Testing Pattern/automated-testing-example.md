@@ -129,6 +129,8 @@ This pipeline has two parameters that can be updated at run-time.  The purpose i
    3) For the semantic model that exist in the workspace, check if any ".Test" or ".Tests" DAX files exist.
    4) Execute the tests and output the results.
 
+***Note***: This pipeline, as currently configured, will run every 6 hours and on commit/syncs to the main, test, and development branches of your repository.  Please update the triggers to fit your needs as appropriate. For more information, please see <a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/process/pipeline-triggers?view=azure-devops" target="_blank">this article</a>.
+
 ![Run Pipeline](../documentation/images/automated-testing-run-pipeline.png)
 
 ## Monitoring

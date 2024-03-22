@@ -340,7 +340,7 @@ function Invoke-DQVTesting  {
 
                                     if (-not $passed) {
                                         $failureCount += 1
-                                        Write-ToLog -Message "FAILED!: Test ""$($testName)"" for semantic model: $($datasetName). Expected: $($expectedVal) != $($actualVal)" `
+                                        Write-ToLog -Message "FAILED!: Test ""$($testName)"" for semantic model: $($databaseName). Expected: $($expectedVal) != $($actualVal)" `
                                                     -LogType "Error" `
                                                     -LogOutput $LogOutput `
                                                     -IsTestResult $true
