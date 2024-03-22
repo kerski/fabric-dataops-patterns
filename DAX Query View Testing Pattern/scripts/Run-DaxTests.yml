@@ -42,7 +42,7 @@ jobs:
       targetType: inline
       script: |
         # ---------- Check if PowerShell Modules are Installed ---------- #
-        Install-Module -Name Invoke-DQVTesting -RequiredVersion 0.0.4 -Scope CurrentUser -AllowClobber -Force
+        Install-Module -Name Invoke-DQVTesting -Scope CurrentUser -AllowClobber -Force
   - task: PowerShell@2
     displayName: Conduct Testing
     env:
