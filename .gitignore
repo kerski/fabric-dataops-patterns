@@ -1,2 +1,7 @@
 **/.pbi/localSettings.json
 **/.pbi/cache.abf
+*.config.json
+.nuget/
+testFiles/
+*.psd1
+publish.ps1

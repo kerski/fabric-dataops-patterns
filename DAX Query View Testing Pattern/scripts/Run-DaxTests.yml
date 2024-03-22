@@ -1,0 +1,71 @@
+parameters:
+  - name: WORKSPACE_NAME
+    displayName: Workspace name to conduct tests?
+    type: string
+    default: ''
+  - name: DATASET_IDS
+    displayName: If there is a set of datasets you would like tested, please provide comma-delimited list of GUIDs.
+    type: string
+    default: ' '
+
+schedules:
+- cron: 0 */6 * * *
+  displayName: Every 6 hours
+  branches:
+    include:
+      - development
+      - test
+      - main
+  always: True
+
+pool:
+  vmimage: 'windows-latest'
+
+variables:
+  # Variable group with configuration
+  - group: TestingCredentials
+  - name: 'WORKSPACE_NAME'
+    value: '${{ parameters.WORKSPACE_NAME }}'
+  - name: 'DATASET_IDS'
+    value: '${{ parameters.DATASET_IDS}}'
+
+jobs:
+- job: Job_1
+  displayName: Automated Testing Job
+  steps:
+  - checkout: self
+    fetchDepth: 0
+  - task: PowerShell@2
+    displayName: Install Dependencies
+    inputs:
+      pwsh: true
+      targetType: inline
+      script: |
+        # ---------- Check if PowerShell Modules are Installed ---------- #
+        Install-Module -Name Invoke-DQVTesting -Scope CurrentUser -AllowClobber -Force
+  - task: PowerShell@2
+    displayName: Conduct Testing
+    env:
+      PASSWORD_OR_CLIENTSECRET: $(PASSWORD_OR_CLIENTSECRET) # Maps the secret variable
+    inputs:
+      pwsh: true
+      failOnStderr: true
+      targetType: inline
+      script: |                    
+        $secret = ${env:PASSWORD_OR_CLIENTSECRET} | ConvertTo-SecureString -AsPlainText -Force
+        $credentials = [System.Management.Automation.PSCredential]::new("${env:USERNAME_OR_CLIENTID}",$secret)                  
+
+        # Check if specific datasets need to be tested
+        $lengthCheck = "${env:DATASET_IDS}".Trim()
+        if($lengthCheck -gt 0){
+          $datasetsToTest = "${env:DATASET_IDS}".Trim() -split ','
+        }else{
+          $datasetsToTest = @()
+        }
+
+        # Run tests
+        Invoke-DQVTesting -WorkspaceName "${env:WORKSPACE_NAME}" `
+                        -Credential $credentials `
+                        -TenantId "${env:TENANT_ID}" `
+                        -DatasetId $datasetsToTest `
+                        -LogOutput "ADO"
