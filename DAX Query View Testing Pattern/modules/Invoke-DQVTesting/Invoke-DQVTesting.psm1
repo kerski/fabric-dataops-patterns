@@ -95,15 +95,13 @@ function Write-ToLog {
 
 <#
     .SYNOPSIS
-    This module runs through the DAX Query View files that end with .Tests or .Test and output the results.
-
+    This module runs through the DAX Query View files that end with .Tests or .Test and output the results.  This is based on following the DAX Query View Testing Pattern: https://github.com/kerski/fabric-dataops-patterns/blob/main/DAX%20Query%20View%20Testing%20Pattern/dax-query-view-testing-pattern.md
     .DESCRIPTION
     The provided PowerShell script facilitates Data Query View (DQV) testing for datasets within a Fabric workspace.
 
     Tests should follow the DAX Query View Testing Pattern that returns a table with 4 column "TestName", "ExpectedValue", "ActualValue", "Passed".
 
-    For more information, please visit this link: https://blog.kerski.tech/bringing-dataops-to-power-bi-part36/
-
+    For more information, please visit this link: https://github.com/kerski/fabric-dataops-patterns/blob/main/DAX%20Query%20View%20Testing%20Pattern/dax-query-view-testing-pattern.md
     .PARAMETER TenantId
     The ID of the tenant where the Power BI workspace resides.
 
