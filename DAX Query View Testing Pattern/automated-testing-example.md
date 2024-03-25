@@ -14,6 +14,7 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
     - [Create the Pipeline](#create-the-pipeline)
     - [Running the Pipeline](#running-the-pipeline)
   - [Monitoring](#monitoring)
+  - [Invoke-DQVTesting](#invoke-dqvtesting)
 
 ## High-Level Process
 
@@ -129,12 +130,17 @@ This pipeline has two parameters that can be updated at run-time.  The purpose i
    3) For the semantic model that exist in the workspace, check if any ".Test" or ".Tests" DAX files exist.
    4) Execute the tests and output the results.
 
+***Note***: This pipeline, as currently configured, will run every 6 hours and on commit/syncs to the main, test, and development branches of your repository.  Please update the triggers to fit your needs as appropriate. For more information, please see <a href="https://learn.microsoft.com/en-us/azure/devops/pipelines/process/pipeline-triggers?view=azure-devops" target="_blank">this article</a>.
+
 ![Run Pipeline](../documentation/images/automated-testing-run-pipeline.png)
 
 ## Monitoring
 
 It's essential to monitor the Azure DevOps pipeline for any failures. I've also written about some best practices for setting that up <a href="https://www.kerski.tech/bringing-dataops-to-power-bi-part31/" target="_blank">in this article</a>.
 
+## Invoke-DQVTesting
+
+The pipeline leverages a PowerShell module called Invoke-DQVTesting.  For more information, please see [Invoke-DQVTesting](invoke-dqvtesting.md).
 
 *Git Logo provided by [Git - Logo Downloads
 (git-scm.com)](https://git-scm.com/downloads/logos)*
