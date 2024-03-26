@@ -1,10 +1,3 @@
----
-external help file: Invoke-DQVTesting-help.xml
-Module Name: Invoke-DQVTesting
-online version:
-schema: 2.0.0
----
-
 # Invoke-DQVTesting
 
 ## SYNOPSIS
