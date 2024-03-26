@@ -115,23 +115,45 @@ function Write-ToLog {
     An optional array of dataset IDs to specify which datasets to test. If not provided, all datasets will be tested.
 
     .PARAMETER LogOutput
-    Specifies where the log messages should be output. Options are 'ADO' (Azure DevOps Pipeline), 'Host', or 'Table'.
+    Specifies where the log messages should be written. Options are 'ADO' (Azure DevOps Pipeline), 'Host', or 'Table'.
+
+    When ADO is chosen:
+    - Any warning will be logged as an warning in the pipeline.  An example of a warning would be
+    if a dataset/semantic model has no tests to conduct.
+    - Any failed tests will be logged as an error in the pipeline.
+    - Successfully tests will be logged as a debug in the pipeline.
+    - If at least one failed test occurs, a failure is logged in the pipeline.
+
+    When Host is chosen, all output is written via the Write-Output command.
+
+    When Table is chosen:
+    - An Array containing objects with the following properties:
+        - message (String): The description of the event.
+        - logType (String): This is either Debug, Warning, Error, or Failure.
+        - isTestResult (Boolean): This indicates if the event was a test or not.  This is helpful for filtering results.
 
     .EXAMPLE
-    Run tests for all datasets/semantic models in the workspace
+    Run tests for all datasets/semantic models in the workspace and log output using Azure DevOps' logging commands.
     Invoke-DQVTesting -WorkspaceName "WORKSPACE_NAME" `
                         -Credential $userCredentials `
                         -TenantId "TENANT_ID" `
                         -LogOutput "ADO"
 
     .EXAMPLE
-    Run tests for specific datasets/semantic models in the workspace
+    Run tests for specific datasets/semantic models in the workspace and log output using Azure DevOps' logging commands.
     Invoke-DQVTesting -WorkspaceName "WORKSPACE_NAME" `
                         -Credential $userCredentials `
                         -TenantId "TENANT_ID" `
                         -DatasetId @("DATASET GUID1","DATASET GUID2") `
                         -LogOutput "ADO"
 
+    .EXAMPLE
+    Run tests for specific datasets/semantic models in the workspace and return output in an array of objects (table).
+    Invoke-DQVTesting -WorkspaceName "WORKSPACE_NAME" `
+                        -Credential $userCredentials `
+                        -TenantId "TENANT_ID" `
+                        -DatasetId @("DATASET GUID1","DATASET GUID2") `
+                        -LogOutput "Table"
     .NOTES
         Author: John Kerski
         Dependencies:  PowerShell modules Az.Accounts is required.
