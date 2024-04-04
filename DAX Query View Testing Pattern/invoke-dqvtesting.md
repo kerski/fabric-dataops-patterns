@@ -6,9 +6,16 @@ This is based on following the DAX Query View Testing Pattern: https://github.co
 
 ## SYNTAX
 
+### Default (Default)
 ```
-Invoke-DQVTesting [-TenantId] <String> [-WorkspaceName] <String> [-Credential] <PSCredential>
- [[-DatasetId] <Array>] [[-LogOutput] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Invoke-DQVTesting [-Path <String>] [-TenantId <String>] [-WorkspaceName <String>] [-Credential <PSCredential>]
+ [-DatasetId <Array>] [-LogOutput <String>] [-CI] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+```
+
+### Local
+```
+Invoke-DQVTesting [-Local] [-Path <String>] [-LogOutput <String>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -49,18 +56,78 @@ Invoke-DQVTesting -WorkspaceName "WORKSPACE_NAME" `
                     -LogOutput "Table"
 ```
 
+### EXAMPLE 4
+```
+Run tests for specific datasets/semantic models in the workspace and in subdirectories with names that begin with 'Model'.
+Output will use Azure DevOps' logging commands.
+Invoke-DQVTesting -WorkspaceName "WORKSPACE_NAME" `
+                    -Credential $userCredentials `
+                    -TenantId "TENANT_ID" `
+                    -DatasetId @("DATASET GUID1","DATASET GUID2") `
+                    -LogOutput "ADO" `
+                    -Path ".\Model*"
+```
+
+### EXAMPLE 5
+```
+Run tests for specific datasets/semantic models opened locally (via Power BI Desktop) and return output in an array of objects (table).
+Invoke-DQVTesting -Local
+```
+
+### EXAMPLE 6
+```
+Run tests for specific datasets/semantic models opened locally (via Power BI Desktop) and execute tests only in subdirectories with names that begin with 'Model'.
+Returns output in an array of objects (table).
+Invoke-DQVTesting -Local -Path ".\Model*"
+```
+
 ## PARAMETERS
 
-### -TenantId
-The ID of the tenant where the Power BI workspace resides.
+### -Local
+When this switch is used, this module will identify the Power BI files opened on your local machine (opened with Power BI Desktop) and run tests associated with the opened Power BI Files.
+The purpose of this switch is to allow you to test locally before automated testing occurs in a Continous Integration pipeline.
+
+When the Local parameter is used, TenantId, WorkspaceName, and Credential parameter is not required.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: Local
+Aliases:
+
+Required: True
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Path
+Specifies paths to files containing tests.
+The value is a path\file name or name pattern.
+Wildcards are permitted.
 
 ```yaml
 Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: True
-Position: 1
+Required: False
+Position: Named
+Default value: .
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TenantId
+The ID of the tenant where the Power BI workspace resides.
+
+```yaml
+Type: String
+Parameter Sets: Default
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -71,11 +138,11 @@ The name of the Power BI workspace where the datasets are located.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: Default
 Aliases:
 
-Required: True
-Position: 2
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -86,11 +153,11 @@ A PSCredential object containing the credentials used for authentication.
 
 ```yaml
 Type: PSCredential
-Parameter Sets: (All)
+Parameter Sets: Default
 Aliases:
 
-Required: True
-Position: 3
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -102,11 +169,11 @@ If not provided, all datasets will be tested.
 
 ```yaml
 Type: Array
-Parameter Sets: (All)
+Parameter Sets: Default
 Aliases:
 
 Required: False
-Position: 4
+Position: Named
 Default value: @()
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -128,10 +195,12 @@ When Host is chosen, all output is written via the Write-Output command.
 
 When Table is chosen:
 - An Array containing objects with the following properties:
-    - message (String): The description of the event.
-    - logType (String): This is either Debug, Warning, Error, or Failure.
-    - isTestResult (Boolean): This indicates if the event was a test or not. 
+    - Message (String): The description of the event.
+    - LogType (String): This is either Debug, Warning, Error, or Failure.
+    - IsTestResult (Boolean): This indicates if the event was a test or not. 
 This is helpful for filtering results.
+    - DataSource: The location of the workspace (if in the service) or the localhost (if local testing) of the semantic model.
+    - ModelName: The name of the semantic model.
 
 ```yaml
 Type: String
@@ -139,17 +208,29 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 5
+Position: Named
 Default value: ADO
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+### -CI
+Enable Exit after Run.
+When this switch is enable this will execute an "exit #" at the end of the module where "#" is the number of failed test cases.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: Default
+Aliases:
+
+Required: False
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ## OUTPUTS
-
 [See LogOutput](#logoutput)
 
 ## NOTES

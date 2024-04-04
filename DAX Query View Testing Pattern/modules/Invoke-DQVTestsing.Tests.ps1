@@ -14,13 +14,100 @@ Describe 'Invoke-DQVTesting' {
     # Clean up
     AfterAll {
     }
-    
+
     # Check if File Exists
     It 'Module should exist' {
         $isInstalled = Get-Command Invoke-DQVTesting
         $isInstalled | Should -Not -BeNullOrEmpty
+    }    
+    
+    # Check for Local parameters
+    # Make sure SampleTestMarch2024Release is open
+    It 'Should run tests locally' -Tag "Local" {
+        $results = @(Invoke-DQVTesting -Local -LogOutput "Table")
+        
+        Write-Host ($results | Format-Table | Out-String)
+        $warnings = $results | Where-Object {$_.LogType -eq 'Warning' -and $_.ModelName -eq 'SampleTestMarch2024Release'}
+        $warnings.Length | Should -Be 0
+        
+        $testResults = $results | Where-Object {$_.IsTestResult -eq $true}
+        $testResults.Length | Should -BeGreaterThan 0
     }
 
+    # No tests should be found for these tests
+    # Make sure SampleTestMarch2024Release is open
+    It 'Should warn about no test because path does not have tests for currently opened file' -Tag "Local" {
+        $testPath = "$((pwd).Path)\testFiles\sub*"
+        $results = @(Invoke-DQVTesting -Local -Path $testPath -LogOutput "Table")
+        
+        Write-Host ($results | Format-Table | Out-String)
+        $warnings = $results | Where-Object {$_.LogType -eq 'Warning' -and $_.ModelName -eq "SampleTestMarch2024Release"}
+        
+        $warnings.Length | Should -BeGreaterThan 0
+        
+        $warnings[0].message.StartsWith("No test DAX queries") | Should -Be $true 
+    }
+
+    # No tests should be found for these tests
+    # Make sure SampleTestMarch2024Release is open
+    It 'Should run tests for a subset based on folder path "SampleTest"' -Tag "Local" {
+        $testPath = "$((pwd).Path)\testFiles\Sample*"
+        $results = @(Invoke-DQVTesting -Local -Path $testPath -LogOutput "Table")
+        
+        Write-Host ($results | Format-Table | Out-String)
+        $testResults = $results | Where-Object {$_.IsTestResult -eq $true}
+        $testResults.Length | Should -BeGreaterThan 0
+    }    
+
+    It 'Should run tests for a subset based on folder path "SampleTest"' -Tag "Local" {
+        $testPath = "$((pwd).Path)\testFiles\Sample*"
+        $results = Invoke-DQVTesting -Local -Path $testPath -LogOutput "Table"
+       
+        $testResults = $results | Where-Object {$_.IsTestResult -eq $true}
+        $testResults.Length | Should -BeGreaterThan 0    
+    }   
+
+    # Check for missing tenant Id when not local
+    It 'Should throw error is missing tenant id when not local' -Tag "NotLocal" {
+        {Invoke-DQVTesting} | Should -Throw
+    }
+
+    # Check for missing tenant Id when not local
+    It 'Should throw error is missing tenant id when not local' -Tag "NotLocal" {
+        {Invoke-DQVTesting} | Should -Throw
+    }    
+
+    # Check for missing workspace when not local
+    It 'Should throw error is missing workspace when not local' -Tag "NotLocal" {
+        {Invoke-DQVTesting -TenantId $variables.TestTenantId} | Should -Throw
+    }
+
+    # Check for missing credentials when not local
+    It 'Should throw error is missing credentials when not local' -Tag "NotLocal" {
+        {Invoke-DQVTesting -TenantId $variables.TestTenantId -WorkspaceName "$($Variables.TestWorkspaceName)"} | Should -Throw
+    }    
+
+    # Check for March 2024 release .platform and .Semantic Model renames 
+    It 'Should output test results with new .platform format' -Tag "March2024" {
+
+        $datasetIds = $variables.TestDatasetMarch2024
+
+        $results = @(Invoke-DQVTesting -WorkspaceName "$($Variables.TestWorkspaceName)" `
+                        -Credential $userCredentials `
+                        -TenantId $variables.TestTenantId `
+                        -DatasetId $datasetIds `
+                        -LogOutput "Table")
+        
+        Write-Host ($results | Format-Table | Out-String)
+        $warnings = $results | Where-Object {$_.LogType -eq 'Warning'}
+        $warnings.Length | Should -Be 0
+        
+        $testResults = $results | Where-Object {$_.IsTestResult -eq $true}
+        $testResults.Length | Should -BeGreaterThan 0
+    }    
+    
+    
+    
     # Check for bad workspace
     It 'Should output a failure if the workspace is not accessible' {
         $results = @(Invoke-DQVTesting -WorkspaceName "$($Variables.TestWorkspaceName)Bad" `
@@ -28,7 +115,7 @@ Describe 'Invoke-DQVTesting' {
                         -TenantId $variables.TestTenantId `
                         -LogOutput "Table")
 
-        $errors = $results | Where-Object {$_.logType -eq 'Error'}
+        $errors = $results | Where-Object {$_.LogType -eq 'Error'}
         $errors.Length | Should -BeGreaterThan 0
         $errors[0].message.StartsWith("Cannot find workspace") | Should -Be $true
     } 
@@ -41,7 +128,7 @@ Describe 'Invoke-DQVTesting' {
                         -TenantId $variables.TestTenantId `
                         -LogOutput "Table")
 
-        $errors = $results | Where-Object {$_.logType -eq 'Error'}
+        $errors = $results | Where-Object {$_.LogType -eq 'Error'}
         $errors.Length | Should -BeGreaterThan 0
         $errors[0].message.StartsWith("Cannot find workspace") | Should -Be $true
     }     
@@ -58,7 +145,7 @@ Describe 'Invoke-DQVTesting' {
                         -LogOutput "Table")
         
         Write-Host ($results | Format-Table | Out-String)
-        $warnings = $results | Where-Object {$_.logType -eq 'Warning'}
+        $warnings = $results | Where-Object {$_.LogType -eq 'Warning'}
         $warnings.Length | Should -BeGreaterThan 0
         $warnings[0].message.StartsWith("No datasets found in workspace") | Should -Be $true 
     }      
@@ -71,7 +158,7 @@ Describe 'Invoke-DQVTesting' {
                         -LogOutput "Table")
         
                         
-        $errors = $results | Where-Object {$_.logType -eq 'Error'}
+        $errors = $results | Where-Object {$_.LogType -eq 'Error'}
         $errors.Length | Should -BeGreaterThan 0
     }     
 
@@ -87,7 +174,7 @@ Describe 'Invoke-DQVTesting' {
                         -LogOutput "Table")
         
         Write-Host ($results | Format-Table | Out-String)
-        $warnings = $results | Where-Object {$_.logType -eq 'Warning'}
+        $warnings = $results | Where-Object {$_.LogType -eq 'Warning'}
         $warnings.Length | Should -BeGreaterThan 0
     }  
     
@@ -103,7 +190,7 @@ Describe 'Invoke-DQVTesting' {
                         -LogOutput "Table")
         
         Write-Host ($results | Format-Table | Out-String)
-        $warnings = $results | Where-Object {$_.logType -eq 'Warning'}
+        $warnings = $results | Where-Object {$_.LogType -eq 'Warning'}
         $warnings.Length | Should -Be 0
     }  
 
@@ -119,15 +206,15 @@ Describe 'Invoke-DQVTesting' {
                         -LogOutput "Table")
         
         Write-Host ($results | Format-Table | Out-String)
-        $warnings = $results | Where-Object {$_.logType -eq 'Warning'}
+        $warnings = $results | Where-Object {$_.LogType -eq 'Warning'}
         $warnings.Length | Should -Be 0
         
-        $testResults = $results | Where-Object {$_.isTestResult -eq $true}
+        $testResults = $results | Where-Object {$_.IsTestResult -eq $true}
         $testResults.Length | Should -BeGreaterThan 0
     }
     
     # Check tests run with service principal
-    It 'Should run tests because the semantic models has tests that pass using a service principal' {
+    It 'Should run tests because the semantic models has tests that pass using a service principal' -Tag "ServicePrincipal" {
 
         $datasetIds = $variables.TestDatasetIdsExist
 
@@ -138,10 +225,10 @@ Describe 'Invoke-DQVTesting' {
                         -LogOutput "Table")
         
         Write-Host ($results | Format-Table | Out-String)
-        $warnings = $results | Where-Object {$_.logType -eq 'Warning'}
+        $warnings = $results | Where-Object {$_.LogType -eq 'Warning'}
         $warnings.Length | Should -Be 0
         
-        $testResults = $results | Where-Object {$_.isTestResult -eq $true}
+        $testResults = $results | Where-Object {$_.IsTestResult -eq $true}
         $testResults.Length | Should -BeGreaterThan 0
     }    
 
@@ -157,15 +244,15 @@ Describe 'Invoke-DQVTesting' {
                         -LogOutput "Table")
         
         Write-Host ($results | Format-Table | Out-String)
-        $warnings = $results | Where-Object {$_.logType -eq 'Warning'}
+        $warnings = $results | Where-Object {$_.LogType -eq 'Warning'}
         $warnings.Length | Should -Be 0
         
-        $testResults = $results | Where-Object {$_.isTestResult -eq $true}
+        $testResults = $results | Where-Object {$_.IsTestResult -eq $true}
         $testResults.Length | Should -Be 2
     }   
     
     # Check tests run with a service principal with RLS semantic model
-    It 'Should run tests because the RLS semantic models has tests that pass using a service principal' {
+    It 'Should run tests because the RLS semantic models has tests that pass using a service principal' -Tag "ServicePrincipal" {
 
         $datasetIds = $variables.TestDatasetIdsRLS
 
@@ -176,10 +263,10 @@ Describe 'Invoke-DQVTesting' {
                         -LogOutput "Table")
         
         Write-Host ($results | Format-Table | Out-String)
-        $warnings = $results | Where-Object {$_.logType -eq 'Warning'}
+        $warnings = $results | Where-Object {$_.LogType -eq 'Warning'}
         $warnings.Length | Should -Be 0
         
-        $testResults = $results | Where-Object {$_.isTestResult -eq $true}
+        $testResults = $results | Where-Object {$_.IsTestResult -eq $true}
         $testResults.Length | Should -Be 2
     }
 
@@ -194,7 +281,7 @@ Describe 'Invoke-DQVTesting' {
                         -DatasetId $datasetIds `
                         -LogOutput "Table")
                 
-        $testResults = $results | Where-Object {$_.isTestResult -eq $true}
+        $testResults = $results | Where-Object {$_.IsTestResult -eq $true}
         $testResults.Length | Should -BeGreaterThan 0
     }  
     
@@ -210,7 +297,7 @@ Describe 'Invoke-DQVTesting' {
                     -LogOutput "Table")
             
     Write-Host ($results | Format-Table | Out-String)
-    $errors = $results | Where-Object {$_.logType -eq 'Error'}
+    $errors = $results | Where-Object {$_.LogType -eq 'Error'}
     $errors.Length | Should -BeGreaterThan 0
 }      
 
