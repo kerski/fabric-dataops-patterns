@@ -477,26 +477,30 @@ function Invoke-DQVTesting  {
                                         -ModelName $datasetForTesting.ModelName
                         }#end check of results
 
-                        # Loop through each result
-                        for($i = 0; $i -lt $rows.Count; $i++)
-                        {
-                                # Increment Test Count
-                                $testCount +=1;
-                                #Extract Values
-                                $testName = $rows[$i]."[TestName]"
-                                $expectedVal = $rows[$i]."[ExpectedValue]"
-                                $actualVal = $rows[$i]."[ActualValue]"
-                                $passedStr = $rows[$i]."[Passed]".ToString()
+                        # Check columns
+                        $testNameColumnCheck= $null
+                        $testNameColumnCheck = $ds.Tables.Columns | Where-Object {$_.ColumnName -eq "[TestName]"}
+                        $passedNameColumnCheck = $null
+                        $passedNameColumnCheck = $ds.Tables.Columns | Where-Object {$_.ColumnName -eq "[Passed]" }
 
-                                if (!$testName -or !$passedStr) {
-                                    $testsFailed += 1
-                                    Write-ToLog -Message "Query in test file ""$($testFile.FullName)"" did not have test mandatory columns 'TestName', 'Passed')." `
-                                    -LogType "Error" `
-                                    -LogOutput $LogOutput `
-                                    -DataSource $datasetForTesting.DataSource `
-                                    -ModelName $datasetForTesting.ModelName
-                                }
-                                else {
+                        if($testNameColumnCheck.Length -ne 1 -or $passedNameColumnCheck.Length -ne 1){
+                            $testsFailed += 1
+                            Write-ToLog -Message "Query in test file ""$($testFile.FullName)"" did not have test mandatory columns 'TestName', 'Passed')." `
+                                        -LogType "Error" `
+                                        -LogOutput $LogOutput `
+                                        -DataSource $datasetForTesting.DataSource `
+                                        -ModelName $datasetForTesting.ModelName
+                        }else{
+                            # Loop through each result
+                            for($i = 0; $i -lt $rows.Count; $i++)
+                            {
+                                    # Increment Test Count
+                                    $testCount +=1;
+                                    #Extract Values
+                                    $testName = $rows[$i]."[TestName]"
+                                    $expectedVal = $rows[$i]."[ExpectedValue]"
+                                    $actualVal = $rows[$i]."[ActualValue]"
+                                    $passedStr = $rows[$i]."[Passed]".ToString()
 
                                     $passed = [bool]::Parse($passedStr)
 
@@ -518,9 +522,8 @@ function Invoke-DQVTesting  {
                                                     -DataSource $datasetForTesting.DataSource `
                                                     -ModelName $datasetForTesting.ModelName
                                         }# end check not passed
-                                }# end check on test name and passed
-                        }#end for loop
-
+                            }#end for loop
+                        }#end column check
                     }Catch [System.Exception]{
                         $errObj = ($_).ToString()
                         Write-ToLog -Message "$($errObj)" `

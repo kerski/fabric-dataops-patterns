@@ -104,9 +104,7 @@ Describe 'Invoke-DQVTesting' {
         
         $testResults = $results | Where-Object {$_.IsTestResult -eq $true}
         $testResults.Length | Should -BeGreaterThan 0
-    }    
-    
-    
+    }        
     
     # Check for bad workspace
     It 'Should output a failure if the workspace is not accessible' {
@@ -299,7 +297,22 @@ Describe 'Invoke-DQVTesting' {
     Write-Host ($results | Format-Table | Out-String)
     $errors = $results | Where-Object {$_.LogType -eq 'Error'}
     $errors.Length | Should -BeGreaterThan 0
-}      
+    }      
 
+    # Cjecl fpr 
+    It 'Should output errors for bad tests' -Tag "BadTests" {
+
+        $datasetIds = $variables.BadQueryDatasetIds
+
+        $results = @(Invoke-DQVTesting -WorkspaceName "$($Variables.TestWorkspaceName)" `
+                        -Credential $userCredentials `
+                        -TenantId $variables.TestTenantId `
+                        -DatasetId $datasetIds `
+                        -LogOutput "Table")
+        
+        Write-Host ($results | Format-Table | Out-String)
+        $errors = $results | Where-Object {$_.LogType -eq 'Error'}
+        $errors.Length | Should -BeGreaterThan 1
+    }    
         
 }
