@@ -53,7 +53,7 @@ jobs:
       targetType: inline
       script: |                    
         $secret = ${env:PASSWORD_OR_CLIENTSECRET} | ConvertTo-SecureString -AsPlainText -Force
-        $credentials = [System.Management.Automation.PSCredential]::new("${env:USERNAME_OR_CLIENTID}",$secret)                  
+        $credentials = [System.Management.Automation.PSCredential]::new(${env:USERNAME_OR_CLIENTID},$secret)                  
 
         # Check if specific datasets need to be tested
         $lengthCheck = "${env:DATASET_IDS}".Trim()
