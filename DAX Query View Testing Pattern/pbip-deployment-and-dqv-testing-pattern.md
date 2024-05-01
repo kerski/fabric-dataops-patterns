@@ -124,7 +124,7 @@ Then an Azure Pipeline is triggered to **<u>validate the content</u>** of your P
 
 ![Automated Job](../documentation/images/pbip-deployment-and-dqv-testing-job-running.png)
 
-13. Select the "Automated Testing Job".
+13. Select the "Automated Deployment and Testing Job".
 
 ![Select Job](../documentation/images/pbip-deployment-and-dqv-testing-select-job.png)
 
