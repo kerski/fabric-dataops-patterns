@@ -12,16 +12,17 @@ if (Get-Module -ListAvailable -Name "MicrosoftPowerBIMgmt") {
 
 <#
     .SYNOPSIS
-    This script runs a synchronous refresh of a dataset against the WorkspaceId identified.
+    This module runs a synchronous refresh of a Power BI dataset/semantic model against the Power BI/Fabric workspace identified.
 
     .DESCRIPTION
-    This script runs a synchronous refresh of a dataset against the WorkspaceId identified.
-
+    This module runs a synchronous refresh of a Power BI dataset/semantic model against the Power BI/Fabric workspace identified.
+    An enhanced refresh is issued to the dataset/semantic model and the status is checked until the refresh is completed or failed.
+    A premium capacity (PPU, Premium, or Fabric) is required to refresh the dataset/semantic model.
     .PARAMETER WorkspaceId
     GUID representing workspace in the service
 
     .PARAMETER SemanticModelId
-    GUID representing the semantic model in the service
+    The GUID representing the semantic model in the service
 
     .PARAMETER TenantId
     The GUID of the tenant where the Power BI workspace resides.
@@ -31,6 +32,9 @@ if (Get-Module -ListAvailable -Name "MicrosoftPowerBIMgmt") {
 
     .PARAMETER Environment
     Microsoft.PowerBI.Common.Abstractions.PowerBIEnvironmentType type to identify which API host to use.
+
+    .PARAMETER Timeout
+    The number of minutes to wait for the refresh to complete. Default is 30 minutes.
 
     .PARAMETER LogOutput
     Specifies where the log messages should be written. Options are 'ADO' (Azure DevOps Pipeline) or Host.

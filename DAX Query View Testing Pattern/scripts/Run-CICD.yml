@@ -7,8 +7,6 @@ parameters:
 trigger:
   branches:
     include:
-      - development
-      - test
       - main
 
 pool:
@@ -22,7 +20,7 @@ variables:
 
 jobs:
 - job: Job_1
-  displayName: Automated Testing Job
+  displayName: Automated Deployment and Testing Job
   steps:
   - checkout: self
     fetchDepth: 0
@@ -41,6 +39,9 @@ jobs:
 
         # Install Invoke-DQVTesting        
         Install-Module -Name Invoke-DQVTesting -Scope CurrentUser -AllowClobber -Force
+
+        # Install Invoke-SemanticModelRefresh        
+        Install-Module -Name Invoke-SemanticModelRefresh -Scope CurrentUser -AllowClobber -Force        
         
         # Create a new directory in the current location
         if((Test-Path -path ".\.nuget\custom_modules") -eq $false){
@@ -64,9 +65,6 @@ jobs:
         # ---------- Import PowerShell Modules ---------- #
         # Import FabricPS-PBIP
         Import-Module ".\.nuget\custom_modules\FabricPS-PBIP" -Force
-        
-        # Import Semantic Model Refresh
-        Import-Module "./Invoke-SemanticModelRefresh/Invoke-SemanticModelRefresh.psm1" -Force
 
         # ---------- Setup Credentials ---------- #
         $secret = ${env:PASSWORD_OR_CLIENTSECRET} | ConvertTo-SecureString -AsPlainText -Force
