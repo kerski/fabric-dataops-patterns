@@ -1,6 +1,6 @@
 # PBIP Deployment & DAX Query View Testing (DQV) Pattern
 
-If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pattern.md) you can also look at automating the deployment and tests. The following instructions show you how to setup an Azure DevOps pipeline to automate deployment of Power BI reports/datasets and automate testing. 
+If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pattern.md) you can also look at automating the deployment and testing using Azure DevOps. The following instructions show you how to setup an Azure DevOps pipeline to automate deployment of Power BI reports/semantic models and automate testing. 
 
 ## Table of Contents
 - [PBIP Deployment \& DAX Query View Testing (DQV) Pattern](#pbip-deployment--dax-query-view-testing-dqv-pattern)
