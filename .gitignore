@@ -1,6 +1,7 @@
 **/.pbi/localSettings.json
 **/.pbi/cache.abf
 *.config.json
+.\Tests.config.json
 .nuget/
 testFiles/
 *.psd1

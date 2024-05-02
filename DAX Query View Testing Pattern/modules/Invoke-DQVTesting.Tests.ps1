@@ -4,7 +4,7 @@ Describe 'Invoke-DQVTesting' {
 
         # Retrieve specific variables from json so we don't keep sensitive values in 
         # source control
-        $variables = Get-Content .\Invoke-DQVTests.config.json | ConvertFrom-Json        
+        $variables = Get-Content .\Tests.config.json | ConvertFrom-Json        
         $userSecret = $variables.TestPassword | ConvertTo-SecureString -AsPlainText -Force
         $serviceSecret = $variables.TestClientSecret | ConvertTo-SecureString -AsPlainText -Force
         $userCredentials = [System.Management.Automation.PSCredential]::new($variables.TestUserName,$userSecret)   
