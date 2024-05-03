@@ -54,7 +54,7 @@ jobs:
             Invoke-WebRequest -Uri $_ -OutFile ".\.nuget\custom_modules\$(Split-Path $_ -Leaf)"
         }
   - task: PowerShell@2
-    displayName: Deploy Changes for Semantic Models and Conduct Testing For Semantic Models
+    displayName: Deploy Changes for Semantic Models, Reports and Conduct Testing For Semantic Models
     env:
       PASSWORD_OR_CLIENTSECRET: $(PASSWORD_OR_CLIENTSECRET) # Maps the secret variable
     inputs:
@@ -97,7 +97,7 @@ jobs:
 
         # Detect if no changes
         if($pbipSMChanges -eq $null -and $pbipRptChanges -eq $null){
-            Write-Host "No changes detected in the Semantic Model or Dataset folders. Exiting..."
+            Write-Host "No changes detected in the Semantic Model or Report folders. Exiting..."
             exit 0
         }
 
@@ -192,12 +192,13 @@ jobs:
                   Write-Host "[##vso[task.logissue type=error]Semantic Model not found in workspace."
               }else{    
                 # Import report with appropriate semantic model id
-                #Write-Host "[#debug]Promoting report at $($promotePath) to workspace ${env:WORKSPACE_NAME}"
+                Write-Host "[#debug]Promoting report at $($promotePath) to workspace ${env:WORKSPACE_NAME}"
                 $promotedItem = Import-FabricItem -workspaceId $workspaceID -path $promotePath -itemProperties @{semanticmodelId = "$($semanticModel.id)"}
                 $rptPromotedItems += $promotedItem          
               }
           }else{
                 # Promote thin report that already has byConnection set
+                Write-Host "[#debug]Promoting report at $($promotePath) to workspace ${env:WORKSPACE_NAME}"
                 $promotedItem = Import-FabricItem -workspaceId $workspaceID -path $promotePath
                 $rptPromotedItems += $promotedItem                    
           }
