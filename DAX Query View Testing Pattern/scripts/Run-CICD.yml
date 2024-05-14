@@ -108,14 +108,14 @@ jobs:
         # ---------- Handle Semantic Models For Promotion ---------- #
         # Identify Semantic Models changed
         $sMPathsToPromote = @()
+        $filter = "*.pbism"
 
         foreach($change in $pbipSMChanges){
-            if ($change -like '*.SemanticModel/*' -or $change -like '*.Dataset/*') {
-                $parentFolder = Split-Path $change -Parent
-                $topFolder = ($parentFolder -split '\\')[0]
-                Write-Host $topFolder
-                $sMPathsToPromote += $topFolder
-            }
+          $parentFolder = Split-Path $change -Parent
+          while ($null -ne $parentFolder -and !( Test-Path( Join-Path $parentFolder $filter))) {
+                  $parentFolder = Split-Path $parentFolder -Parent
+              }
+          $sMPathsToPromote += $parentFolder
         }# end foreach
 
         # Remove duplicates
@@ -127,7 +127,6 @@ jobs:
         # Promote semantic models to workspace
         foreach($promotePath in $sMPathsToPromote){
             Write-Host "[#debug]Promoting semantic model at $($promotePath) to workspace ${env:WORKSPACE_NAME}"
-            
             $sMPromotedItems += Import-FabricItem -workspaceId $workspaceID -path $promotePath
         }# end foreach  
         
@@ -139,14 +138,14 @@ jobs:
 
         # Identify Reports changed
         $rptPathsToPromote = @()
+        $filter = "*.pbir"
 
         foreach($change in $pbipRptChanges){
-            if ($change -like '*.Report/*') {
-                $parentFolder = Split-Path $change -Parent
-                $topFolder = ($parentFolder -split '\\')[0]
-                Write-Host $topFolder
-                $rptPathsToPromote += $topFolder
-            }
+          $parentFolder = Split-Path $change -Parent
+          while ($null -ne $parentFolder -and !( Test-Path( Join-Path $parentFolder $filter))) {
+                  $parentFolder = Split-Path $parentFolder -Parent
+              }
+          $rptPathsToPromote += $parentFolder
         }# end foreach
 
         # Remove duplicates
@@ -160,11 +159,11 @@ jobs:
           # Get report definition
           $def = Get-ChildItem -Path $promotePath -Recurse -Include "definition.pbir"
           $semanticModelPath = (Get-Content $def.FullName | ConvertFrom-Json).datasetReference.byPath
-          
+
           # If byPath was null, we'll assume byConnection is set and skip
           if($semanticModelPath -ne $null){
-              # Assume running at root folder so remove '../' from path
-              $pathToCheck = $semanticModelPath.path -replace '../',''
+              # Semantic Model path is relative to the report path, Join-Path can handle relative paths
+              $pathToCheck = Join-Path $promotePath $semanticModelPath.path
               $metadataSM = Get-ChildItem -Path $pathToCheck -Recurse -Include "item.metadata.json",".platform" | `
               Where-Object {(Split-Path -Path $_.FullName).EndsWith(".Dataset") -or (Split-Path -Path $_.FullName).EndsWith(".SemanticModel")}
 
