@@ -18,29 +18,25 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 ![Figure 1](../documentation/images/deployment-and-dqv-testing-pattern-high-level.png)
 *Figure 1 -- High-level diagram of automated deployment of PBIP and automated testing with the DAX Query View Testing Pattern*
 
-In the process depicted in **Figure 1**, your team **<u>saves</u>** their Power BI work in the PBIP extension format and **<u>commits</u>** those changes to Azure DevOps.
+In the pattern depicted in Figure 1, your team saves their Power BI work in the PBIP extension format and commits those changes to Azure DevOps.
 
-Then an Azure Pipeline is triggered to **<u>validate the content</u>** of your Power BI semantic models and reports by performing the following:
+Then an Azure Pipeline is triggered to validate the content of your Power BI semantic models and reports by performing the following:
 
-1. The semantic model changes are identified using the "git diff" command. Semantic models that are changed are published to a Fabric workspace using <a href="https://github.com/microsoft/Analysis-Services/tree/master/pbidevmode/fabricps-pbip" target="_blank">Rui Romano's Fabric-PBIP script</a>.
-2. The report changes are identified using the "git diff" command. Report changes are evaluated for their "definition.pbir" configuration. If the byConnection property is null (meaning the report is not a thin report), the script identifies the local semantic model (example in Figure 2). If the byConnection is not null, we assume the report is a thin report and configured appropriately.  Each report that has been updated is then published to the same workspace.
-```
-{
-  "version": "4.0",
-  "datasetReference": {
-    "byPath": {
-      "path": "../SampleModel.SemanticModel"
-    },
-    "byConnection": null
-  }
-}
-``` 
-*Figure 2 - Example of .pbir definition file*
+1.  The semantic model changes are identified using the "git diff" command. Semantic models that are changed are published to a premium-backed workspace using <a href="https://github.com/microsoft/Analysis-Services/tree/master/pbidevmode/fabricps-pbip" target="_blank">Rui Romano\'s Fabric-PBIP script</a>. The question now is, which workspace do you deploy it to? I typically promote to a ***Build*** workspace first, which provides an area to validate the content of the semantic model before promoting to a ***development*** workspace that is shared by others on the team. This reduces the chances that a team member introduces an error in the ***Development*** workspace that could hinder the work being done by others in that workspace.
 
-3. For the semantic models published in step 1, the script then validates the functionality of the semantic model through a synchrounous refresh using <a href="https://www.powershellgallery.com/packages/Invoke-SemanticModelRefresh/" target="_blank">Invoke-SemanticModelRefresh</a>. If the refresh is successful, we move to step 4.
-***Note: The first time a new semantic is placed in the workspace, the refresh will fail. You have to "prime" the pipeline and set the data source credentials manually. As of April 2024, this is not fully automatable and the Fabric team at Microsoft <a href="https://powerbi.microsoft.com/en-us/blog/using-xmla-endpoints-to-change-data-sources-in-a-power-bi-dataset/" target="_blank">has written about</a>.***
+2.  With the semantic models published to a workspace, the report changes are identified using the "git diff" command. Report changes are evaluated for their "definition.pbir" configuration. If the byConnection property is null (meaning the report is not a thin report), the script identifies the local semantic model (example in Figure 2). If the byConnection is not null, we assume the report is a thin report and configured appropriately. Each report that has been updated is then published in the same workspace.
 
-4. For the semantic model, Invoke-DQVTesting is called for each semantic model to run the DAX Queries that follow the DAX Query View Testing Pattern.  Results then are logged to the Azure DevOps pipeline. Any failed tested will fail the pipeline.
+    ![Figure 2](../documentation/images/pbip-deployment-and-dqv-testing-pbir.png)
+    *Figure 2 - Example of. pbir definition file*
+
+3.  For the semantic models published in step 1, the script then <a href="https://learn.microsoft.com/en-us/power-bi/guidance/powerbi-implementation-planning-content-lifecycle-management-validate" target="_blank">validates the functionality</a> of the semantic model through a synchronous refresh using <a href="https://www.powershellgallery.com/packages/Invoke-SemanticModelRefresh/0.0.2" target="_blank">Invoke-SemanticModelRefresh</a>. Using the native <a href="https://learn.microsoft.com/en-us/rest/api/power-bi/datasets/refresh-dataset" target="_blank">v1.0 API</a> would be problematic because it is asynchronous, meaning if you issue a refresh you only know that the semantic model refresh has kicked off, but not if it was successful. To make it synchronous, I've written a module that will issue an enhanced refresh request to get a request identifier (a <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier" target="_blank">GUID</a>). This request identifier can then be passed as parameter to the <a href="https://learn.microsoft.com/en-us/rest/api/power-bi/datasets/get-refresh-execution-details" target="_blank">Get Refresh Execution Details</a> endpoint to check on that specific request's status and find out whether or not the refresh has completed successfully.
+    <br/><br/>
+    If the refresh is successful, we move to step 4. Note: The first time a new semantic is placed in the workspace, the refresh will fail. You have to "prime" the pipeline and set the data source credentials manually. As of April 2024, this is not fully automatable and the Fabric team at Microsoft <a href="https://powerbi.microsoft.com/en-us/blog/using-xmla-endpoints-to-change-data-sources-in-a-power-bi-dataset/" target="_blank">has written about</a>.
+
+4.  For each semantic model, Invoke-DQVTesting is called to run the DAX Queries that follow the DAX Query View Testing Pattern. Results are then logged to the Azure DevOps pipeline (Figure 3). Any failed test will fail the pipeline.
+
+![Figure 3](../documentation/images/pbip-deployment-and-dqv-testing-log.png)
+*Figure 3 - Example of test results logged by Invoke-DQVTesting*
 
 ## Prerequisites
 
