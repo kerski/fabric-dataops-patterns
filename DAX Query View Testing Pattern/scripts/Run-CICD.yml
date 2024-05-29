@@ -207,7 +207,6 @@ jobs:
 
         # Run synchronous refresh for each semantic model
         foreach($promotedItem in $sMPromotedItems){
-            $refreshResult = $null
 
             # Test refresh which validates functionality
             Invoke-SemanticModelRefresh -WorkspaceId $workspaceID `
