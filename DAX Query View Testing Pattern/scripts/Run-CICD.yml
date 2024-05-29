@@ -221,7 +221,7 @@ jobs:
             Invoke-DQVTesting -WorkspaceName "${env:WORKSPACE_NAME}" `
                               -Credential $credential `
                               -TenantId "${env:TENANT_ID}" `
-                              -DatasetId $datasetsToTest `
+                              -DatasetId $promotedItem.Id `
                               -LogOutput "ADO"
             
         }# end foreach
