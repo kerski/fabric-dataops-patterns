@@ -126,7 +126,7 @@ jobs:
 
         # Promote semantic models to workspace
         foreach($promotePath in $sMPathsToPromote){
-            Write-Host "[#debug]Promoting semantic model at $($promotePath) to workspace ${env:WORKSPACE_NAME}"
+            Write-Host "##[debug]Promoting semantic model at $($promotePath) to workspace ${env:WORKSPACE_NAME}"
             $sMPromotedItems += Import-FabricItem -workspaceId $workspaceID -path $promotePath
         }# end foreach  
         
@@ -181,23 +181,23 @@ jobs:
                   } #end if
               }
               else{
-                  Write-Host "[##vso[task.logissue type=error]Semantic Model definition not found in workspace."
+                  Write-Host "##[vso[task.logissue type=error]Semantic Model definition not found in workspace."
               }
 
               # Get the semantic model id from items in the workspace
               $semanticModel = $items | Where-Object {$_.type -eq "SemanticModel" -and $_.displayName -eq $semanticModelName}   
               
               if(!$semanticModel){
-                  Write-Host "[##vso[task.logissue type=error]Semantic Model not found in workspace."
+                  Write-Host "##[vso[task.logissue type=error]Semantic Model not found in workspace."
               }else{    
                 # Import report with appropriate semantic model id
-                Write-Host "[#debug]Promoting report at $($promotePath) to workspace ${env:WORKSPACE_NAME}"
+                Write-Host "##[debug]Promoting report at $($promotePath) to workspace ${env:WORKSPACE_NAME}"
                 $promotedItem = Import-FabricItem -workspaceId $workspaceID -path $promotePath -itemProperties @{semanticmodelId = "$($semanticModel.id)"}
                 $rptPromotedItems += $promotedItem          
               }
           }else{
                 # Promote thin report that already has byConnection set
-                Write-Host "[#debug]Promoting report at $($promotePath) to workspace ${env:WORKSPACE_NAME}"
+                Write-Host "##[debug]Promoting report at $($promotePath) to workspace ${env:WORKSPACE_NAME}"
                 $promotedItem = Import-FabricItem -workspaceId $workspaceID -path $promotePath
                 $rptPromotedItems += $promotedItem                    
           }
