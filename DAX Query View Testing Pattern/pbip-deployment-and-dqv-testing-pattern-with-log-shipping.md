@@ -1,9 +1,9 @@
-# PBIP Deployment & DAX Query View Testing (DQV) Pattern
+# PBIP Deployment & DAX Query View Testing (DQV) Pattern with Log Shipping
 
-If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pattern.md) you can also look at automating the deployment and testing using Azure DevOps. The following instructions show you how to setup an Azure DevOps pipeline to automate deployment of Power BI reports/semantic models and automate testing. 
+If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pattern.md) you can also look at automating the deployment and testing using Azure DevOps. The following instructions show you how to setup an Azure DevOps pipeline to automate deployment of Power BI reports/semantic models and automate testing. In addition, test results can be sent to OneLake in your Fabric Capacity for processing.
 
 ## Table of Contents
-- [PBIP Deployment \& DAX Query View Testing (DQV) Pattern](#pbip-deployment--dax-query-view-testing-dqv-pattern)
+- [PBIP Deployment \& DAX Query View Testing (DQV) Pattern(#pbip-deployment--dax-query-view-testing-dqv-pattern)
   - [Table of Contents](#table-of-contents)
   - [High-Level Process](#high-level-process)
   - [Prerequisites](#prerequisites)
@@ -15,7 +15,7 @@ If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pat
 
 ## High-Level Process
 
-![Figure 1](../documentation/images/deployment-and-dqv-testing-pattern-high-level.png)
+![Figure 1](../documentation/images/automated-testing-with-log-shipping-high-level.png)
 *Figure 1 -- High-level diagram of automated deployment of PBIP and automated testing with the DAX Query View Testing Pattern*
 
 In the pattern depicted in Figure 1, your team saves their Power BI work in the PBIP extension format and commits those changes to Azure DevOps.
@@ -38,15 +38,17 @@ Then an Azure Pipeline is triggered to validate the content of your Power BI sem
 ![Figure 3](../documentation/images/pbip-deployment-and-dqv-testing-log.png)
 *Figure 3 - Example of test results logged by Invoke-DQVTesting*
 
+5. The results of the tests collected by Invoke-DQVTesting are also sent to OneLake where there reside in a Lakehouse on your Fabric Capacity.  These can then be used for processing, analyses, and notifications.
+
 ## Prerequisites
 
 1. You have an Azure DevOps project and have at least Project or Build Administrator rights for that project.
 
-2. You have connected a premium-back capacity workspace to your repository in your Azure DevOps project. Instructions are provided <a href="https://learn.microsoft.com/en-us/power-bi/developer/projects/projects-git" target="_blank">at this link.</a>
+2. You have connected a **Fabric-backed** capacity workspace to your repository in your Azure DevOps project. Instructions are provided <a href="https://learn.microsoft.com/en-us/power-bi/developer/projects/projects-git" target="_blank">at this link.</a>
 
 3. Your Power BI tenant has <a href="https://learn.microsoft.com/en-us/power-bi/enterprise/service-premium-connect-tools#enable-xmla-read-write" target="_blank">XMLA Read/Write Enabled</a>.
 
-4. You have a service principal or account (username and password) with a Premium Per User license. If you are using a service principal you will need to make sure the Power BI tenant allows <a href="https://learn.microsoft.com/en-us/power-bi/enterprise/service-premium-service-principal#enable-service-principals">service principals to use the Fabric APIs</a>. The service prinicipal or account will need at least the Member role to the workspace.
+4. You have a service principal. If you are using a service principal you will need to make sure the Power BI tenant allows <a href="https://learn.microsoft.com/en-us/power-bi/enterprise/service-premium-service-principal#enable-service-principals">service principals to use the Fabric APIs</a>. The service prinicipal or account will need at least the Member role to the workspace.
 
 ## Instructions
 
@@ -60,17 +62,23 @@ Then an Azure Pipeline is triggered to validate the content of your Power BI sem
 
 ![Add Variable Group](../documentation/images/automated-testing-variable-group.png)
 
-3. Create a variable group called "TestingCredentials" and create the following variables:
+3. Create a variable group called "TestingCredentialsLogShipping" and create the following variables:
 
-- USERNAME_OR_CLIENTID - The service principal's application/client id or universal provider name for the account.
-- PASSWORD_OR_CLIENTSECRET - The client secret or password for the service principal or account respectively.
+- ONELAKE_ENDPOINT - Each lakehouse in your Fabric has a URL that identifies where files can be copied to.  To retrieve the URL, go to the Lakehouse and click the '...' and select the Properties option. (example below). 
+![OneLake Properties](../documentation/images/automated-testing-onelake-properties.png)
+
+You will be presented with a Properties window, copy the properties labled 'URL' (example below)
+
+![OneLake Properties URL](../documentation/images/automate-testing-onlake-properties-url.png)
+- CLIENT_ID - The service principal's application/client id or universal provider name for the account.
+- CLIENT_SECRET - The client secret or password for the service principal or account respectively.
 - TENANT_ID - The Tenant GUID.  You can locate it by following the instructions <a href="https://learn.microsoft.com/en-us/sharepoint/find-your-office-365-tenant-id" target="_blank">at this link</a>.
 
-![Create Variable Group](../documentation/images/automated-testing-create-variable-group.png)
+![Create Variable Group](../documentation/images/automated-testing-with-logging-shipping-create-variable-group.png)
 
 1. Save the variable group.
 
-![Save Variable Group](../documentation/images/automated-testing-save-variable-group.png)
+![Save Variable Group](../documentation/images/automated-testing-with-log-shipping-save-variable-group.png)
 
 ### Create the Pipeline
 
@@ -90,7 +98,7 @@ Then an Azure Pipeline is triggered to validate the content of your Power BI sem
 
 ![Select Repo](../documentation/images/automated-testing-select-repo.png)
 
-5. Copy the contents of the template YAML file located <a href="https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/main/DAX%20Query%20View%20Testing%20Pattern/scripts/Run-CICD.yml" target="_blank">at this link</a> into the code editor.
+5. Copy the contents of the template YAML file located <a href="https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/main/DAX%20Query%20View%20Testing%20Pattern/scripts/Run-CICD-LoggingShipping.yml" target="_blank">at this link</a> into the code editor.
 
 ![Copy YAML](../documentation/images/pbip-deployment-and-dqv-testing-copy-yaml.png)
 
@@ -132,10 +140,37 @@ Then an Azure Pipeline is triggered to validate the content of your Power BI sem
 
 ![Failed Tests](../documentation/images/automated-testing-failed-tests.png)
 
+16.  You will also see any test results in your lakehouse as a CSV file. Please see [CSV Format](#csv-format) for more details on the file format.
+
+![Logged Test Results](../documentation/images/automated-testing-logged-results.png)
 
 ## Monitoring
 
 It's essential to monitor the Azure DevOps pipeline for any failures. I've also written about some best practices for setting that up <a href="https://www.kerski.tech/bringing-dataops-to-power-bi-part31/" target="_blank">in this article</a>.
+
+## CSV Format
+The following describes the CSV file columns for each version of Invoke-DQVTesting.
+
+### Version 0.0.10
+
+1. Message - The message logged for each step of testing.
+2. LogType - Will be either of the following values:
+   - Debug - Informational purposes.
+   - Error - A test has failed.
+   - Failed - One or more tests failed.
+   - Success - All tests passed.
+   - Passed - Test result passed.
+3. IsTestResult - Will be "True" for if the record was a test.  "False" otherwise.
+4. DataSource - The XMLA endpoint for the semantic model.
+5. ModelName - The name of the semantic model.
+6. BranchName - The name of the branch of the repository this testing occurred in.
+7. RespositoryName - The name of the respository this testing occurred in.
+8. ProjectName - The name of the Azure DevOps project this testing occurred in.
+9.  UserName - Will be "Build Agent"
+10. RunID - Globally Unique Identifier to identify the tests conducted.
+11. Order - Integer representing the order in which each record was created.
+12. RunDateTime - ISO 8601 Format the Date and Time the tests were initiated.
+13. InvokeDQVTestingVersion - The version of Invoke-DQVTesting used to conducted the tests.
 
 ## Powershell Modules
 

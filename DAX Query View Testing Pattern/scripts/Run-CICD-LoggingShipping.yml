@@ -2,7 +2,7 @@ parameters:
   - name: WORKSPACE_NAME
     displayName: Workspace name to conduct tests?
     type: string
-    default: ' '
+    default: ''
 
 trigger:
   branches:
@@ -14,7 +14,7 @@ pool:
 
 variables:
   # Variable group with configuration
-  - group: TestingCredentials
+  - group: TestingCredentialsLogShipping
   - name: 'WORKSPACE_NAME'
     value: '${{ parameters.WORKSPACE_NAME }}'
 
@@ -56,7 +56,7 @@ jobs:
   - task: PowerShell@2
     displayName: Deploy Changes for Semantic Models, Reports and Conduct Testing For Semantic Models
     env:
-      PASSWORD_OR_CLIENTSECRET: $(PASSWORD_OR_CLIENTSECRET) # Maps the secret variable
+      CLIENT_SECRET: $(CLIENT_SECRET) # Maps the secret variable
     inputs:
       pwsh: true
       failOnStderr: true
@@ -67,8 +67,8 @@ jobs:
         Import-Module ".\.nuget\custom_modules\FabricPS-PBIP" -Force
 
         # ---------- Setup Credentials ---------- #
-        $secret = ${env:PASSWORD_OR_CLIENTSECRET} | ConvertTo-SecureString -AsPlainText -Force
-        $credential = [System.Management.Automation.PSCredential]::new(${env:USERNAME_OR_CLIENTID},$secret)  
+        $secret = ${env:CLIENT_SECRET} | ConvertTo-SecureString -AsPlainText -Force
+        $credential = [System.Management.Automation.PSCredential]::new(${env:CLIENT_ID},$secret)  
 
         # Check if service principal or username/password
         $guidRegex = '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}'
@@ -78,6 +78,7 @@ jobs:
             $isServicePrincipal = $true
         }
 
+        # ---------- Login to Azure Copy and Fabric ---------- #
         # Convert secure string to plain text to use in connection strings
         $secureStringPtr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($credential.Password)
         $plainTextPwd = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($secureStringPtr)
@@ -91,6 +92,25 @@ jobs:
             Set-FabricAuthToken -credential $credential -tenantId ${env:TENANT_ID} -reset
         }
 
+        # Set AzCopy Connection
+        $env:AZCOPY_SPA_CLIENT_SECRET = $plainTextPwd
+
+        $onelakeUri = New-Object System.Uri("${env:ONELAKE_ENDPOINT}" )
+        $onelakeDomain = $onelakeUri.Host        
+
+        $loginResult = azcopy login --service-principal `
+                                    --application-id $credential.UserName `
+                                    --tenant-id "${env:TENANT_ID}" `
+                                    --trusted-microsoft-suffixes="$($onelakeDomain)" `
+                                    --output-type json | ConvertFrom-Json
+
+        # Check if login was successful
+        $checkResult = $loginResult | Where-Object {$_.MessageContent -eq "INFO: SPN Auth via secret succeeded."}
+
+        if(!$checkResult) {
+            Write-Host "##[error] Failed to login to azcopy"
+        }       
+
         # ---------- Identify Changes For Promotion ---------- #
         $pbipSMChanges = @(git diff --name-only --relative --diff-filter=d HEAD~1..HEAD -- '*.Dataset/**' '*.SemanticModel/**')
         $pbipSMChanges += @(git diff --name-only --relative --diff-filter=d HEAD~2..HEAD -- '*.Dataset/**' '*.SemanticModel/**')
@@ -98,7 +118,7 @@ jobs:
         $pbipRptChanges = @(git diff --name-only --relative --diff-filter=d HEAD~1..HEAD -- '*.Report/**')
         $pbipRptChanges += @(git diff --name-only --relative --diff-filter=d HEAD~2..HEAD -- '*.Report/**')
         $pbipRptChanges = $pbipRptChanges | Sort-Object -Unique
-        
+
         # Detect if no changes
         if($pbipSMChanges -eq $null -and $pbipRptChanges -eq $null){
             Write-Host "No changes detected in the Semantic Model or Report folders. Exiting..."
@@ -209,6 +229,24 @@ jobs:
 
         # ---------- Run Refreshes and Tests ---------- #
 
+        # Generate Run-GUID
+        $runGuid = (New-Guid).Guid
+        $projectName = $($env:SYSTEM_TEAMPROJECT)
+        $repoName = $($env:BUILD_REPOSITORY_NAME)
+        $branchName = $($env:BUILD_SOURCEBRANCHNAME)
+
+        Write-Host "##[debug]Run GUID: $($runGuid)"
+        Write-Host "##[debug]Project Name: $($projectName)"
+        Write-Host "##[debug]Repository Name: $($repoName)"
+        Write-Host "##[debug]Branch Name: $($branchName)"
+
+        $userName = "Build Agent"
+        $iDQVersion = (Get-Module -Name "Invoke-DQVTesting" -ListAvailable).Version.toString()
+        $testResults = @()
+        # Get UTC representation of run
+        $dateTimeofRun = (Get-Date -Format "yyyy-MM-ddTHH-mm-ssZ")
+        $fileName = "$($dateTimeofRun)-$($runGuid).csv"
+
         # Run synchronous refresh for each semantic model
         foreach($promotedItem in $sMPromotedItems){
 
@@ -221,11 +259,59 @@ jobs:
                                         -LogOutput "ADO"
 
             # Run tests for functionality and data accuracy
-            Invoke-DQVTesting -WorkspaceName "${env:WORKSPACE_NAME}" `
+            $testResults = @()
+            $testResults = Invoke-DQVTesting -WorkspaceName "${env:WORKSPACE_NAME}" `
                               -Credential $credential `
                               -TenantId "${env:TENANT_ID}" `
                               -DatasetId $promotedItem.Id `
-                              -LogOutput "ADO"
+                              -LogOutput "Table"
+
+            # Add additional properties to the array of objects
+            $i = 0
+
+            $testResults | ForEach-Object {
+                Add-Member -InputObject $_ -Name "BranchName" -Value $branchName -MemberType NoteProperty
+                Add-Member -InputObject $_ -Name "RepositoryName" -Value $repoName -MemberType NoteProperty
+                Add-Member -InputObject $_ -Name "ProjectName" -Value $projectName -MemberType NoteProperty
+                Add-Member -InputObject $_ -Name "UserName" -Value $userName -MemberType NoteProperty
+                Add-Member -InputObject $_ -Name "RunID" -Value $runGuid -MemberType NoteProperty
+                Add-Member -InputObject $_ -Name "Order" -Value $i -MemberType NoteProperty
+                Add-Member -InputObject $_ -Name "RunDateTime" -Value $dateTimeofRun -MemberType NoteProperty
+                Add-Member -InputObject $_ -Name "InvokeDQVTestingVersion" -Value $iDQVersion -MemberType NoteProperty
+                $i++
+            }
+
+            $testResults | Select-Object * | Export-Csv ".\$fileName"
+
+            $getAbsPath = (Resolve-Path ".\$fileName").Path
+
+            Write-Host "##[debug]Test Results for $($promotedItem.Id) saved locally to $($getAbsPath)."
+
+            Write-Host "##[debug]Copying file to lakehouse at ${env:ONELAKE_ENDPOINT}."
+            # Copy file to lakehouse
+            $copyResults = azcopy copy $getAbsPath "${env:ONELAKE_ENDPOINT}" --overwrite=true `
+                                                      --blob-type=Detect `
+                                                      --check-length=true `
+                                                      --put-md5 `
+                                                      --trusted-microsoft-suffixes="$($onelakeDomain)" `
+                                                      --output-type json | ConvertFrom-Json
+            # Check if copy was successful
+            $checkCopyResults = $copyResults | Where-Object {$_.MessageType -eq "EndOfJob"}
+
+            if(!$checkCopyResults) {
+                Write-Host "##[error]Failed to copy file to lakehouse"
+            }else{
+                Write-Host "##[debug]Successfully copied file to lakehouse"
+            }                              
             
+            # Output test results
+            $testResults | Where-Object {$_.IsTestResult -eq "True"} | ForEach-Object {
+                if($_.LogType -eq "Failed" -or $_.LogType -eq "Error"){
+                    Write-Host "##[error]$($_.Message)"
+                }else{
+                    Write-Host "##[debug]$($_.Message)"
+                }#end if
+            }# end foreach test results that is truly a test result            
+
         }# end foreach
         
