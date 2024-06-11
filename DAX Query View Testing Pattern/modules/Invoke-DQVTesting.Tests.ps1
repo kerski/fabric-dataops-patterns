@@ -1,5 +1,6 @@
 Describe 'Invoke-DQVTesting' {
     BeforeAll { 
+        Uninstall-Module -Name Invoke-DQVTesting -Force -ErrorAction SilentlyContinue
         Import-Module ".\Invoke-DQVTesting\Invoke-DQVTesting.psm1" -Force
 
         # Retrieve specific variables from json so we don't keep sensitive values in 
@@ -191,7 +192,7 @@ Describe 'Invoke-DQVTesting' {
         $warnings = $results | Where-Object {$_.LogType -eq 'Warning'}
         $warnings.Length | Should -Be 0
     }  
-
+    
     # Check tests run with user account 
     It 'Should run tests because the semantic models has tests that pass using a service account' {
 
@@ -314,5 +315,26 @@ Describe 'Invoke-DQVTesting' {
         $errors = $results | Where-Object {$_.LogType -eq 'Error'}
         $errors.Length | Should -BeGreaterThan 1
     }    
+ 
+    
+    # Check tests run with one test for a user credentials
+    It 'Should run a test because the semantic model has one test with one row using a user account' -Tag "SingleRow" {
+
+        $datasetIds = $variables.TestSingleRowTest
+
+        $results = @(Invoke-DQVTesting -WorkspaceName "$($Variables.TestWorkspaceName)" `
+                        -Credential $userCredentials `
+                        -TenantId $variables.TestTenantId `
+                        -DatasetId $datasetIds `
+                        -LogOutput "Table")
         
+        Write-Host ($results | Format-Table | Out-String)
+        $warnings = $results | Where-Object {$_.LogType -eq 'Warning'}
+        $warnings.Length | Should -Be 0
+        
+        $testResults = $results | Where-Object {$_.IsTestResult -eq $true}
+        $testResults.Length | Should -Be 1
+    }
+
+
 }

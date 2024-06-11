@@ -466,7 +466,7 @@ function Invoke-DQVTesting  {
                         $da = new-Object Microsoft.AnalysisServices.AdomdClient.AdomdDataAdapter($cmd)
                         $ds = new-Object System.Data.DataSet
                         $temp = $da.Fill($ds)
-                        $rows = $ds.Tables.Rows
+                        $rows = @($ds.Tables.Rows)
                         #Check if Row Count is 0, no test results.
                         if ($rows.Count -eq 0) {
                             $testsFailed += 1
