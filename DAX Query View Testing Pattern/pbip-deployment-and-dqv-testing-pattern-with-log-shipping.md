@@ -50,25 +50,59 @@ Then an Azure Pipeline is triggered to validate the content of your Power BI sem
 
 4. You have a service principal. If you are using a service principal you will need to make sure the Power BI tenant allows <a href="https://learn.microsoft.com/en-us/power-bi/enterprise/service-premium-service-principal#enable-service-principals">service principals to use the Fabric APIs</a>. The service prinicipal or account will need at least the Member role to the workspace.
 
+5. You have an existing Lakehouse created. Instructions can be found <a href="https://learn.microsoft.com/en-us/fabric/data-engineering/tutorial-build-lakehouse#create-a-lakehouse" target="_blank">at this link</a>.
+
 ## Instructions
 
-### Create the Variable Group
+### Capture Lakehouse Variables
 
-1. In your project, navigate to the Pipelines->Library section.
+1. Navigate to the Lakehouse in the Fabric workspace.
+
+2. Inspecting the URL and capture the Workspace ID and Lakehouse ID. Copy locally to a text file (like Notepad).
+
+![Workspace and Lakehouse ID](../documentation/images/automated-testing-with-log-shipping-workspace-and-lakehouse-ids.png)
+
+3. Access the Files' properties by hovering over the Files label, select the option '...' and select Properties.
+
+![Access Properties](../documentation/images/automated-testing-with-logging-get-link.png)
+
+4. Copy the URL to your local machine temporarily in Notepad.  Append the copied URL with the text ‘DQVTesting/raw’. This allows us to ship the test results to a specific folder in your Lakehouse.
+For example if your URL for the Files is:
+   - https://onelake.dfs.fabric.microsoft.com/xxxxx-48be-41eb-83a7-6c1789407037/a754c80f-5f13-40b1-ab93-e4368da923c4/Files/DQVTests/rawthen 
+   - The updated URL is  https://onelake.dfs.fabric.microsoft.com/xxxxx-48be-41eb-83a7-6c1789407037/a754c80f-5f13-40b1-ab93-e4368da923c4/Files/DQVTests/raw/DQVTesting/raw
+  
+
+### Setup the Notebook and Lakehouse
+
+5. Download the Notebook locally from <a href="" target="_blank">this location</a>.
+
+6. Navigate to the <a href="https://app.powerbi.com/home?experience=data-engineering" target="_blank">Data Engineering Screen</a> and import the Notebook.
+
+![Import Notebook](../documentation/images/automated-testing-with-log-shipping-import-notebook.png)
+
+7. Open the notebook and update the parameterized cell's workspace_id and lakehouse_id with the ids you retrieved in Step 
+
+![Setup parameters in Notebook](../documentation/images/automated-testing-with-log-shipping-setup-notebook-parameters.png)
+
+8. If you have not connected the Notebook to the appropriate lakehouse, please do so.  Instructions are <a href="https://learn.microsoft.com/en-us/fabric/data-engineering/how-to-use-notebook#connect-lakehouses-and-notebooks" target="_blank">provided here</a>. 
+
+9. Run the Notebook. This will create the folders for processing the test results.
+
+![Folders created](../documentation/images/automated-testing-with-log-shipping-folders-created.png)
+
+### Create the Variable Group in Azure DevOps
+
+10. In your Azure DevOps project, navigate to the Pipelines->Library section.
 
 ![Variable Groups](../documentation/images/automated-testing-library.png)
 
-1. Select the "Add Variable Group" button.
+11. Select the "Add Variable Group" button.
 
 ![Add Variable Group](../documentation/images/automated-testing-variable-group.png)
 
-3. Create a variable group called "TestingCredentialsLogShipping" and create the following variables:
+12. Create a variable group called "TestingCredentialsLogShipping" and create the following variables:
 
-- ONELAKE_ENDPOINT - Each lakehouse in your Fabric has a URL that identifies where files can be copied to.  To retrieve the URL, go to the Lakehouse and click the '...' and select the Properties option. (example below). 
-![OneLake Properties](../documentation/images/automated-testing-onelake-properties.png)
-
-You will be presented with a Properties window, copy the properties labled 'URL' (example below)
-
+- ONELAKE_ENDPOINT - Copy the URL from Step 4 into this variable.
 ![OneLake Properties URL](../documentation/images/automate-testing-onlake-properties-url.png)
 - CLIENT_ID - The service principal's application/client id or universal provider name for the account.
 - CLIENT_SECRET - The client secret or password for the service principal or account respectively.
@@ -76,73 +110,86 @@ You will be presented with a Properties window, copy the properties labled 'URL'
 
 ![Create Variable Group](../documentation/images/automated-testing-with-logging-shipping-create-variable-group.png)
 
-1. Save the variable group.
+13. Save the variable group.
 
 ![Save Variable Group](../documentation/images/automated-testing-with-log-shipping-save-variable-group.png)
 
 ### Create the Pipeline
 
-1. Navigate to the pipeline interface.
+14. Navigate to the pipeline interface.
 
 ![Navigate to Pipeline](../documentation/images/automated-testing-navigate-pipeline.png)
 
-2. Select the "New Pipeline" button.
+15. Select the "New Pipeline" button.
 
 ![New Pipeline](../documentation/images/automated-testing-create-pipeline.png)
 
-3. Select the Azure Repos Git option.
+16. Select the Azure Repos Git option.
 
 ![ADO Option](../documentation/images/automated-testing-ado-option.png)
 
-4. Select the repository you have connected the workspace via Git Integration.
+17. Select the repository you have connected the workspace via Git Integration.
 
 ![Select Repo](../documentation/images/automated-testing-select-repo.png)
 
-5. Copy the contents of the template YAML file located <a href="https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/main/DAX%20Query%20View%20Testing%20Pattern/scripts/Run-CICD-LoggingShipping.yml" target="_blank">at this link</a> into the code editor.
+18. Copy the contents of the template YAML file located <a href="https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/main/DAX%20Query%20View%20Testing%20Pattern/scripts/Run-CICD-LoggingShipping.yml" target="_blank">at this link</a> into the code editor.
 
 ![Copy YAML](../documentation/images/pbip-deployment-and-dqv-testing-copy-yaml.png)
 
-6. Update the default workspace name for located on line 5 with the workspace you will typically use to conduct testing.
+19. Update the default workspace name for located on line 5 with the workspace you will typically use to conduct testing.
 
 ![Update workspace parameter](../documentation/images/pbip-deployment-and-dqv-testing-update-workspace-parameter.png)
 
-7. Select the 'Save and Run' button.
+20. Select the 'Save and Run' button.
 
 ![Save and Run](../documentation/images/pbip-deployment-and-dqv-testing-save-pipeline.png)
 
-8. You will be prompted to commit to the main branch. Select the 'Save and Run' button.
+21. You will be prompted to commit to the main branch. Select the 'Save and Run' button.
 
 ![Save and Run again](../documentation/images/automated-testing-save-and-run.png)
 
-9. You will be redirected to the first pipeline run, and you will be asked to authorize the pipeline to access the variable group created previously.  Select the 'View' button.
+22. You will be redirected to the first pipeline run, and you will be asked to authorize the pipeline to access the variable group created previously.  Select the 'View' button.
 
-10. A pop-up window will appear. Select the 'Permit' button.
+23. A pop-up window will appear. Select the 'Permit' button.
 
 ![Permit](../documentation/images/automated-testing-permit.png)
 
-11. You will be asked to confirm.  Select the 'Permit' button.
+24. You will be asked to confirm.  Select the 'Permit' button.
 
 ![Permit Again](../documentation/images/automated-testing-permit-again.png)
 
-12. This will kick off the automated deployment and testing as [described above](#high-level-process).
+25. This will kick off the automated deployment and testing as [described above](#high-level-process).
 
 ![Automated Job](../documentation/images/pbip-deployment-and-dqv-testing-job-running.png)
 
-13. Select the "Automated Deployment and Testing Job".
+26. Select the "Automated Deployment and Testing Job".
 
 ![Select Job](../documentation/images/pbip-deployment-and-dqv-testing-select-job.png)
 
-14. You will see a log of DAX Queries that end in .Tests or .Test running against their respective semantic models in your workspace.
+27. You will see a log of DAX Queries that end in .Tests or .Test running against their respective semantic models in your workspace.
 
 ![Log](../documentation/images/pbip-deployment-and-dqv-testing-log.png)
 
-15. For any failed tests, this will be logged to the job, and the pipeline will also fail.
+28. For any failed tests, this will be logged to the job, and the pipeline will also fail.
 
 ![Failed Tests](../documentation/images/automated-testing-failed-tests.png)
 
-16.  You will also see any test results in your lakehouse as a CSV file. Please see [CSV Format](#csv-format) for more details on the file format.
+29.  You will also see any test results in your lakehouse as a CSV file. Please see [CSV Format](#csv-format) for more details on the file format.
 
 ![Logged Test Results](../documentation/images/automated-testing-logged-results.png)
+
+### Run the Notebook
+
+30.   Run the notebook and when completed the files should be moved into the processed folder and following tables are created in the lakehouse:
+- Calendar - The date range of the test results.
+- ProjectInformation - A table containing information about the Azure DevOps project and pipeline used to execute the test results.
+- TestResults - Table containing test results.
+- Time - Used to support time-based calculations.
+
+  
+![View Tables](../documentation/images/automated-testing-with-logging-shipping-view-tables.png)
+
+1.  Schedule the notebook to run on a regular interval as needed. Instructions can be found <a href="https://learn.microsoft.com/en-us/fabric/data-factory/notebook-activity#save-and-run-or-schedule-the-pipeline" target="_blank">at this link</a>.
 
 ## Monitoring
 
@@ -166,7 +213,7 @@ The following describes the CSV file columns for each version of Invoke-DQVTesti
 6. BranchName - The name of the branch of the repository this testing occurred in.
 7. RespositoryName - The name of the respository this testing occurred in.
 8. ProjectName - The name of the Azure DevOps project this testing occurred in.
-9.  UserName - Will be "Build Agent"
+9.  UserName - The initiator of the test results in Azure DevOps.
 10. RunID - Globally Unique Identifier to identify the tests conducted.
 11. Order - Integer representing the order in which each record was created.
 12. RunDateTime - ISO 8601 Format the Date and Time the tests were initiated.
