@@ -90,7 +90,7 @@ Then an Azure Pipeline is triggered to validate the content of your Power BI sem
 
 ![Select Repo](../documentation/images/automated-testing-select-repo.png)
 
-5. Copy the contents of the template YAML file located <a href="https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/development/DAX%20Query%20View%20Testing%20Pattern/scripts/Run-CICD.yml" target="_blank">at this link</a> into the code editor.
+5. Copy the contents of the template YAML file located <a href="https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/main/DAX%20Query%20View%20Testing%20Pattern/scripts/Run-CICD.yml" target="_blank">at this link</a> into the code editor.
 
 ![Copy YAML](../documentation/images/pbip-deployment-and-dqv-testing-copy-yaml.png)
 
