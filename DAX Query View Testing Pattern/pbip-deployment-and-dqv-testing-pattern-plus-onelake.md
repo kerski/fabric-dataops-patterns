@@ -1,4 +1,4 @@
-# PBIP Deployment & DAX Query View Testing (DQV) Pattern with Log Shipping
+# PBIP Deployment & DAX Query View Testing (DQV) Pattern + OneLake
 
 If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pattern.md) you can also look at automating the deployment and testing using Azure DevOps. The following instructions show you how to setup an Azure DevOps pipeline to automate deployment of Power BI reports/semantic models and automate testing. In addition, test results can be sent to OneLake in your Fabric Capacity for processing.
 
@@ -68,13 +68,13 @@ Then an Azure Pipeline is triggered to validate the content of your Power BI sem
 
 4. Copy the URL to your local machine temporarily in Notepad.  Append the copied URL with the text ‘DQVTesting/raw’. This allows us to ship the test results to a specific folder in your Lakehouse.
 For example if your URL for the Files is:
-   - https://onelake.dfs.fabric.microsoft.com/xxxxx-48be-41eb-83a7-6c1789407037/a754c80f-5f13-40b1-ab93-e4368da923c4/Files/DQVTests/rawthen 
-   - The updated URL is  https://onelake.dfs.fabric.microsoft.com/xxxxx-48be-41eb-83a7-6c1789407037/a754c80f-5f13-40b1-ab93-e4368da923c4/Files/DQVTests/raw/DQVTesting/raw
+   - https://onelake.dfs.fabric.microsoft.com/xxxxx-48be-41eb-83a7-6c1789407037/a754c80f-5f13-40b1-ab93-e4368da923c4/Files
+   - The updated URL is  https://onelake.dfs.fabric.microsoft.com/xxxxx-48be-41eb-83a7-6c1789407037/a754c80f-5f13-40b1-ab93-e4368da923c4/Files/DQVTests/raw
   
 
 ### Setup the Notebook and Lakehouse
 
-5. Download the Notebook locally from <a href="" target="_blank">this location</a>.
+5. Download the Notebook locally from <a href="./scripts/Load Test Results.ipynb" target="_blank">this location</a>.
 
 6. Navigate to the <a href="https://app.powerbi.com/home?experience=data-engineering" target="_blank">Data Engineering Screen</a> and import the Notebook.
 
@@ -132,7 +132,7 @@ For example if your URL for the Files is:
 
 ![Select Repo](../documentation/images/automated-testing-select-repo.png)
 
-18. Copy the contents of the template YAML file located <a href="https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/main/DAX%20Query%20View%20Testing%20Pattern/scripts/Run-CICD-LoggingShipping.yml" target="_blank">at this link</a> into the code editor.
+18. Copy the contents of the template YAML file located <a href="https://raw.githubusercontent.com/kerski/fabric-dataops-patterns/main/DAX%20Query%20View%20Testing%20Pattern/scripts/Run-CICD-Plus-OneLake.yml" target="_blank">at this link</a> into the code editor.
 
 ![Copy YAML](../documentation/images/pbip-deployment-and-dqv-testing-copy-yaml.png)
 

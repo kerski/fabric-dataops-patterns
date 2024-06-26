@@ -38,7 +38,8 @@ jobs:
         }
 
         # Install Invoke-DQVTesting        
-        Install-Module -Name Invoke-DQVTesting -Scope CurrentUser -AllowClobber -Force
+        #Install-Module -Name Invoke-DQVTesting -Scope CurrentUser -AllowClobber -Force
+        Install-Module -Name Invoke-DQVTesting -Scope CurrentUser -AllowClobber -Force -AllowPrerelease
 
         # Install Invoke-SemanticModelRefresh        
         Install-Module -Name Invoke-SemanticModelRefresh -Scope CurrentUser -AllowClobber -Force        
@@ -234,13 +235,20 @@ jobs:
         $projectName = $($env:SYSTEM_TEAMPROJECT)
         $repoName = $($env:BUILD_REPOSITORY_NAME)
         $branchName = $($env:BUILD_SOURCEBRANCHNAME)
+        $userName = "$($env:BUILD_REQUESTEDFOREMAIL)"
+        $buildReason = "$($env:BUILD_REASON)"
 
+        if($buildReason -eq 'Schedule' -or $buildReason -eq 'ScheduleForced'){
+          $userName = "Scheduled - Build Agent"
+        }
+        
         Write-Host "##[debug]Run GUID: $($runGuid)"
         Write-Host "##[debug]Project Name: $($projectName)"
         Write-Host "##[debug]Repository Name: $($repoName)"
         Write-Host "##[debug]Branch Name: $($branchName)"
+        Write-Host "##[debug]User Name: $($userName)"
 
-        $userName = "Build Agent"
+        
         $iDQVersion = (Get-Module -Name "Invoke-DQVTesting" -ListAvailable).Version.toString()
         $testResults = @()
         # Get UTC representation of run
@@ -305,12 +313,15 @@ jobs:
             }                              
             
             # Output test results
-            $testResults | Where-Object {$_.IsTestResult -eq "True"} | ForEach-Object {
-                if($_.LogType -eq "Failed" -or $_.LogType -eq "Error"){
-                    Write-Host "##[error]$($_.Message)"
-                }else{
-                    Write-Host "##[debug]$($_.Message)"
-                }#end if
+            $testResults | ForEach-Object {
+                $prefix = "##[debug]"
+                switch($_.LogType){
+                    'Warning' { $prefix = "##vso[task.logissue type=warning]"}
+                    'Error' { $prefix = "##vso[task.logissue type=error]"}
+                    'Failure' { $prefix = "##vso[task.complete result=Failed;]"}
+                    'Success' { $prefix = "##vso[task.complete result=Succeeded;]"}
+                }                
+                Write-Host "$($prefix)$($_.Message)"
             }# end foreach test results that is truly a test result            
 
         }# end foreach
