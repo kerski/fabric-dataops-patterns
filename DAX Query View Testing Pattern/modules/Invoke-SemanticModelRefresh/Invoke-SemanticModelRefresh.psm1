@@ -1,4 +1,3 @@
-
 $script:messages = @()
 
 #Install Powershell Module if Needed
@@ -59,6 +58,7 @@ Function Invoke-SemanticModelRefresh {
         [Parameter(Position = 2, Mandatory = $true)][String]$TenantId,
         [Parameter(Position = 3, Mandatory = $true)][PSCredential]$Credential,
         [Parameter(Position = 4, Mandatory = $true)][Microsoft.PowerBI.Common.Abstractions.PowerBIEnvironmentType]$Environment,
+        [Parameter(Mandatory = $false)][ValidateSet('automatic', 'full', 'clearValues', 'calculate')]$RefreshType = 'full',
         [Parameter(Mandatory = $false)][Int64]$Timeout = 30,
         [Parameter(Mandatory = $false)]
         [ValidateSet('ADO','Host')] # Override
@@ -123,7 +123,7 @@ Function Invoke-SemanticModelRefresh {
             -LogOutput $LogOutput
 
             # Issue Data Refresh with type full to get enhanced refresh
-            $result = Invoke-WebRequest -Uri "$($refreshUrl)" -Method Post -Headers $headers -Body "{ `"type`": `"full`",`"commitMode`": `"transactional`",`"notifyOption`": `"NoNotification`"}" | Select-Object headers
+            $result = Invoke-WebRequest -Uri "$($refreshUrl)" -Method Post -Headers $headers -Body "{ `"type`": `"$RefreshType`",`"commitMode`": `"transactional`",`"notifyOption`": `"NoNotification`"}" | Select-Object headers
             # Get Request ID
             $requestId = $result.Headers.'x-ms-request-id'
             # Add request id to url to get enhanced refresh status
