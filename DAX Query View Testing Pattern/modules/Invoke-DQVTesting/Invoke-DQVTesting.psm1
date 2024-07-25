@@ -43,18 +43,18 @@ foreach ($nuget in $nugets)
 }
 
 # Create a new directory in the current location
-if((Test-Path -path ".\.nuget\custom_modules") -eq $false){
-    New-Item -Name ".nuget\custom_modules" -Type Directory
+if((Test-Path -path "$currentPath\.nuget\custom_modules") -eq $false){
+    New-Item -Path "$currentPath\.nuget\custom_modules" -Type Directory 
 }
 
 # For each url download and install in module folder
 @("https://raw.githubusercontent.com/microsoft/Analysis-Services/master/pbidevmode/fabricps-pbip/FabricPS-PBIP.psm1",
     "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/pbidevmode/fabricps-pbip/FabricPS-PBIP.psd1") | ForEach-Object {
-    Invoke-WebRequest -Uri $_ -OutFile ".\.nuget\custom_modules\$(Split-Path $_ -Leaf)"
+    Invoke-WebRequest -Uri $_ -OutFile "$currentPath\.nuget\custom_modules\$(Split-Path $_ -Leaf)"
 }
 
 # Import FabricPS-PBIP
-Import-Module ".\.nuget\custom_modules\FabricPS-PBIP" -Force
+Import-Module "$currentPath\.nuget\custom_modules\FabricPS-PBIP" -Force
 
 # Check to see if the type already exists
 # This is used identify which Power BI Reports are opened locally
