@@ -35,6 +35,9 @@ if (Get-Module -ListAvailable -Name "MicrosoftPowerBIMgmt") {
     .PARAMETER Timeout
     The number of minutes to wait for the refresh to complete. Default is 30 minutes.
 
+    .PARAMETER RefreshType
+    Refresh type to use. Refresh type as defined in MS Docs: https://learn.microsoft.com/en-us/rest/api/power-bi/datasets/refresh-dataset#datasetrefreshtype
+
     .PARAMETER LogOutput
     Specifies where the log messages should be written. Options are 'ADO' (Azure DevOps Pipeline) or Host.
 
