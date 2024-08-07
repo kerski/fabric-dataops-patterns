@@ -1,4 +1,3 @@
-
 $script:messages = @()
 
 #Install Powershell Module if Needed
@@ -36,6 +35,12 @@ if (Get-Module -ListAvailable -Name "MicrosoftPowerBIMgmt") {
     .PARAMETER Timeout
     The number of minutes to wait for the refresh to complete. Default is 30 minutes.
 
+    .PARAMETER RefreshType
+    Refresh type to use. Refresh type as defined in MS Docs: https://learn.microsoft.com/en-us/rest/api/power-bi/datasets/refresh-dataset#datasetrefreshtype
+
+    .PARAMETER ApplyRefreshPolicy
+    Apply refresh policy as defined in MS Docs: https://learn.microsoft.com/en-us/analysis-services/tmsl/refresh-command-tmsl?view=asallproducts-allversions#optional-parameters
+
     .PARAMETER LogOutput
     Specifies where the log messages should be written. Options are 'ADO' (Azure DevOps Pipeline) or Host.
 
@@ -59,6 +64,8 @@ Function Invoke-SemanticModelRefresh {
         [Parameter(Position = 2, Mandatory = $true)][String]$TenantId,
         [Parameter(Position = 3, Mandatory = $true)][PSCredential]$Credential,
         [Parameter(Position = 4, Mandatory = $true)][Microsoft.PowerBI.Common.Abstractions.PowerBIEnvironmentType]$Environment,
+        [Parameter(Mandatory = $false)][ValidateSet('automatic', 'full', 'clearValues', 'calculate')]$RefreshType = 'full',
+        [Parameter(Mandatory = $false)][ValidateSet('true', 'false')]$ApplyRefreshPolicy = 'true',
         [Parameter(Mandatory = $false)][Int64]$Timeout = 30,
         [Parameter(Mandatory = $false)]
         [ValidateSet('ADO','Host')] # Override
@@ -123,7 +130,7 @@ Function Invoke-SemanticModelRefresh {
             -LogOutput $LogOutput
 
             # Issue Data Refresh with type full to get enhanced refresh
-            $result = Invoke-WebRequest -Uri "$($refreshUrl)" -Method Post -Headers $headers -Body "{ `"type`": `"full`",`"commitMode`": `"transactional`",`"notifyOption`": `"NoNotification`"}" | Select-Object headers
+            $result = Invoke-WebRequest -Uri "$($refreshUrl)" -Method Post -Headers $headers -Body "{ `"type`": `"$RefreshType`",`"commitMode`": `"transactional`", `"applyRefreshPolicy`": `"$ApplyRefreshPolicy`", `"notifyOption`": `"NoNotification`"}" | Select-Object headers
             # Get Request ID
             $requestId = $result.Headers.'x-ms-request-id'
             # Add request id to url to get enhanced refresh status
