@@ -44,7 +44,7 @@ foreach ($nuget in $nugets)
 
 # Create a new directory in the current location
 if((Test-Path -path "$currentPath\.nuget\custom_modules") -eq $false){
-    New-Item -Path "$currentPath\.nuget\custom_modules" -Type Directory 
+    New-Item -Path "$currentPath\.nuget\custom_modules" -Type Directory
 }
 
 # For each url download and install in module folder
