@@ -3,7 +3,7 @@
 If you are using the [DAX Query View Testing Pattern](dax-query-view-testing-pattern.md) you can also look at automating the deployment and testing using Azure DevOps. The following instructions show you how to setup an Azure DevOps pipeline to automate deployment of Power BI reports/semantic models and automate testing. In addition, test results can be sent to OneLake in your Fabric Capacity for processing.
 
 ## Table of Contents
-- [PBIP Deployment \& DAX Query View Testing (DQV) Pattern(#pbip-deployment--dax-query-view-testing-dqv-pattern)
+- [PBIP Deployment \& DAX Query View Testing (DQV) Pattern](#pbip-deployment--dax-query-view-testing-dqv-pattern)
   - [Table of Contents](#table-of-contents)
   - [High-Level Process](#high-level-process)
   - [Prerequisites](#prerequisites)
