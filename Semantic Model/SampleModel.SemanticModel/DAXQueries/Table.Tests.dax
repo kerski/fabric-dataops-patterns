@@ -1,0 +1,32 @@
+DEFINE
+	/* Data Quality Checks */
+	VAR _PercentageOfNullValuesInAppearances = DIVIDE(
+				COUNTROWS('MarvelFact') - COUNT('MarvelFact'[Appearances]),
+				COUNT('MarvelFact'[Appearances]),0)
+	
+	/*Run Tests*/
+	VAR _Tests = UNION(
+		ROW(
+			"TestName", "Marvel Fact: Date ID has no null values.",
+			"ExpectedValue", 0,
+			"ActualValue", COUNTROWS('MarvelFact') - COUNT('MarvelFact'[DateID])
+		),
+		ROW(
+			"TestName", "Marvel Fact: ID has distinct values.",
+			"ExpectedValue", COUNTROWS('MarvelFact'),
+			"ActualValue", DISTINCTCOUNTNOBLANK('MarvelFact'[ID])
+		),
+		ROW(
+			"TestName", "Marvel Fact: Percentage of null values does not exceed 15%.",
+			"ExpectedValue", 1,
+			"AcutalValue", IF(_PercentageOfNullValuesInAppearances < .15 ,1,0)
+			)
+		)
+	
+
+/*Output Pass/Fail*/
+EVALUATE
+	ADDCOLUMNS(
+		_Tests,
+		"Passed", [ExpectedValue] = [ActualValue]
+	)

@@ -1,0 +1,131 @@
+DEFINE
+	// Update TableName1 and TableName2 with your tables
+	VAR _TableName1 = "AlignmentDim"
+	VAR _TableName2 = "MarvelFact"
+	
+	////// START TEST SETUP  //////
+	VAR _DataTypes = DATATABLE(
+		"Explicit Type", INTEGER,
+		"Type", STRING,
+		{
+		{1,"Calculated column"},
+		{2,"Text"},
+		{6,"Whole Number"},
+		{8,"Decimal Number"},
+		{9,"Date"},
+		{10,"Currency"},			
+		{11,"Boolean"}	
+		})
+	VAR _tables = SELECTCOLUMNS(
+		FILTER(
+			INFO.TABLES(),
+			// Exclude hidden tables
+			[IsHidden] = FALSE()
+		),
+		"TableID",
+		[ID],
+		"TableName",
+		[Name]
+	)
+	VAR _columns = FILTER(
+		INFO.COLUMNS(),
+		// Exclude RowNumber columns
+		[Type] <> 3
+	)
+	
+	VAR _measures = INFO.MEASURES()
+	
+	VAR _columnsxtable = SELECTCOLUMNS(
+		NATURALINNERJOIN(
+			_columns,
+			_tables
+		),
+		"Table",
+		[TableName],
+		"Column",
+		[ExplicitName],
+		"Description",
+		[Description],
+		"Explicit Type",
+		[ExplicitDataType],
+		"Data Category",
+		[DataCategory],
+		"Column Type",
+		SWITCH(
+			[Type],
+			1, "Data column",
+			2, "Calculated column",
+			[Type]
+		),
+		"Format String",
+		[FormatString]
+	)
+	
+	VAR _measuresxtable = SELECTCOLUMNS(
+		NATURALINNERJOIN(
+			_measures,
+			_tables
+		),
+		"Table",
+		[TableName],
+		"Column",
+		[Name],
+		"Description",
+		[Description],
+		"Explicit Type",
+		[DataType],
+		"Data Category",
+		[DataCategory],		
+		"Column Type",
+		"Measures",
+		"Format String",
+		[FormatString]
+	)	
+
+	// Join with Data Types to get plain language types
+	VAR _schema = NATURALINNERJOIN(UNION(_columnsxtable,_measuresxtable),_DataTypes)
+	////// END TEST SETUP  //////
+	
+	////// INSERT EXPECTED SCHEMA //////
+	// Set Expectations on the Schema
+	VAR _Definition_of_Table1Schema = DATATABLE("Column",STRING,"Type",STRING,"Data Category",STRING,"Format String",STRING,{{"Alignment","Text",BLANK(),BLANK()},{"AlignmentKey","Text",BLANK(),BLANK()},{"AlignmentID","Whole Number",BLANK(),"0"}})
+
+	// Set Expectations on the Schema
+	VAR _Definition_of_Table2Schema = DATATABLE("Column",STRING,"Type",STRING,"Data Category",STRING,"Format String",STRING,{{"Name","Text",BLANK(),BLANK()},{"Number of Characters Title By Date","Text",BLANK(),BLANK()},{"ID","Whole Number",BLANK(),"0"},{"Appearances","Whole Number",BLANK(),"#,0"},{"DateID","Whole Number",BLANK(),"0"},{"EyeID","Whole Number",BLANK(),"0"},{"AlignmentID","Whole Number",BLANK(),"0"},{"Number of Characters","Whole Number",BLANK(),"0"},{"Rank of Appearances","Whole Number",BLANK(),"0"},{"Running Total of Character Appearances","Whole Number",BLANK(),"#,0"},{"Test","Date",BLANK(),"Long Time"}})
+		
+	// Get the schema for Table 1
+	VAR _Table1schema = SELECTCOLUMNS(
+	FILTER(
+		_schema,
+		[Table] = _TableName1
+	),[Column],[Type],[Data Category],[Format String])
+	
+	// Get the schema for Table 2
+	VAR _Table2Schema = SELECTCOLUMNS(
+	FILTER(
+		_schema,
+		[Table] = _TableName2
+	),[Column],[Type],[Data Category],[Format String])	
+		
+	
+	/*Run Tests*/
+	VAR _Tests = UNION(
+		ROW(
+			"TestName", "Alignment Schema matches expectations",
+			"ExpectedValue", 0,
+			// EXCEPT shows that it appears in the first table, but not the second
+			"ActualValue", COUNTROWS(EXCEPT(_Definition_of_Table1schema,_Table1schema)) + 0
+		),
+		ROW(
+			"TestName", "Marvel Fact EXACTLY matches expectations",
+			"ExpectedValue", 0,
+			"ActualValue", COUNTROWS(EXCEPT(_Definition_of_Table2Schema,_Table2Schema)) + COUNTROWS(EXCEPT(_Table2Schema,_Definition_of_Table2Schema)) + 0
+		))
+		
+
+/*Output Pass/Fail*/
+EVALUATE 
+	ADDCOLUMNS(
+		_Tests,
+		"Passed", [ExpectedValue] = [ActualValue]
+	)

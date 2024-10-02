@@ -1,0 +1,42 @@
+DEFINE
+	VAR __DS0FilterTable = 
+		FILTER(
+			KEEPFILTERS(VALUES('DateDim'[Date])),
+			AND('DateDim'[Date] >= DATE(2011, 5, 26), 'DateDim'[Date] < DATE(2024, 5, 26))
+		)
+
+	VAR __DS0FilterTable2 = 
+		TREATAS({"Good"}, 'AlignmentDim'[Alignment])
+		
+	VAR __DS0FilterTable3 = 
+		TREATAS({"Bad"}, 'AlignmentDim'[Alignment])		
+
+	VAR __GoodResult = SUMMARIZECOLUMNS(
+		__DS0FilterTable,
+		__DS0FilterTable2,
+		"Number_of_Characters_Title_By_Date", IGNORE('MarvelFact'[Number of Characters Title By Date]),
+		"Number_of_Characters", IGNORE('MarvelFact'[Number of Characters])
+	)
+	
+	VAR __BadResult = SUMMARIZECOLUMNS(
+		__DS0FilterTable,
+		__DS0FilterTable3,
+		"Number_of_Characters_Title_By_Date", IGNORE('MarvelFact'[Number of Characters Title By Date]),
+		"Number_of_Characters", IGNORE('MarvelFact'[Number of Characters]))
+	
+   VAR __Tests =
+   UNION(
+	ROW (
+        "TestName",
+            "Measure: Number of Characters Test for Good Alignment Should be 178",
+        "ExpectedValue", 1178,
+        "ActualValue", SELECTCOLUMNS(__GoodResult, [Number_of_Characters])
+    ),    
+	ROW (
+        "TestName", "Measure: Number of Characters Test for Bad Alignment Should be 209",
+        "ExpectedValue", 1209,
+        "ActualValue", SELECTCOLUMNS(__BadResult, [Number_of_Characters])
+    ))
+	
+	/*Output Pass/Fail*/
+EVALUATE ADDCOLUMNS(__Tests,"Passed",[ExpectedValue] = [ActualValue])

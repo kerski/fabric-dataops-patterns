@@ -1,0 +1,37 @@
+DEFINE
+
+	// Pick a static date(s)
+	VAR __January2011 = DATE(2011,1,1)
+    VAR __January2011Filter = TREATAS({__January2011}, 'DateDim'[Date])
+	VAR __BlankDayFilter = TREATAS({0},'DateDim'[DateID])
+	/* Check for blank date */
+	VAR _Date_Dim_Blank_Format = CALCULATE(MIN('DateDim'[Month Year]),__BlankDayFilter)
+	VAR _Date_Dim_NonBlank_Format = CALCULATE(MAX('DateDim'[Month Year]),__January2011Filter)
+	
+/*Run Tests 123*/
+VAR _Tests = 
+UNION(
+ROW(
+	"TestName", "Calculated Column: Month Year column should be blank when no date (1/1/0001) is selected.", 
+	"ExpectedValue", "Not Available",
+	"ActualValue", _Date_Dim_Blank_Format
+),
+ROW(
+	"TestName", "Calculated Column: Month Year column should be Jan-11 when filtered by January 1, 2011.", 
+	"ExpectedValue", _Date_Dim_NonBlank_Format,
+	"ActualValue", "Jan-11"
+),
+ROW(
+	"TestName", "Calculated Column: Month Year column should be Jan-11 when filtered by January 1, 2011. 2", 
+	"ExpectedValue", _Date_Dim_NonBlank_Format,
+	"ActualValue", "Jan-11"
+)/*,
+ROW(
+	"TestName", "Test That Should Fail", 
+	"ExpectedValue", _Date_Dim_NonBlank_Format,
+	"ActualValue", "Bad Results"
+)*/
+)
+
+/*Output Pass/Fail*/
+EVALUATE ADDCOLUMNS(_Tests,"Passed",[ExpectedValue] = [ActualValue])

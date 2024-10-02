@@ -1,0 +1,1081 @@
+{
+  "compatibilityLevel": 1567,
+  "model": {
+    "annotations": [
+      {
+        "name": "PBIDesktopVersion",
+        "value": "2.132.1053.0 (24.08)"
+      },
+      {
+        "name": "PBI_QueryOrder",
+        "value": "[\"MarvelFact\",\"DateDim\",\"EyeColorDim\",\"AlignmentDim\",\"DateDimBlank\",\"MarvelSource\",\"WebURL\",\"DataTypes\"]"
+      },
+      {
+        "name": "__PBI_TimeIntelligenceEnabled",
+        "value": "0"
+      },
+      {
+        "name": "PBI_ProTooling",
+        "value": "[\"DevMode\",\"DaxQueryView_Desktop\"]"
+      }
+    ],
+    "culture": "en-US",
+    "cultures": [
+      {
+        "name": "en-US",
+        "linguisticMetadata": {
+          "content": {
+            "Language": "en-US",
+            "Version": "1.0.0"
+          },
+          "contentType": "json"
+        }
+      }
+    ],
+    "dataAccessOptions": {
+      "legacyRedirects": true,
+      "returnErrorValuesAsNull": true
+    },
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "expressions": [
+      {
+        "name": "DateDimBlank",
+        "annotations": [
+          {
+            "name": "PBI_NavigationStepName",
+            "value": "Navigation"
+          },
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ],
+        "expression": [
+          "let",
+          "    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(\"i45WMlDSUfJKzNM1MDAwBDIN9Q31wczYWAA=\", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [DateID = _t, DateKey = _t, Date = _t]),",
+          "    #\"Changed Type1\" = Table.TransformColumnTypes(Source,{{\"Date\", type date}}),",
+          "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Changed Type1\",{{\"DateID\", Int64.Type}, {\"DateKey\", type text}, {\"Date\", type date}})",
+          "in",
+          "    #\"Changed Type\""
+        ],
+        "kind": "m",
+        "lineageTag": "e21359d2-597d-431f-a09b-cc69a3ccf63e"
+      },
+      {
+        "name": "WebURL",
+        "annotations": [
+          {
+            "name": "PBI_NavigationStepName",
+            "value": "Navigation"
+          },
+          {
+            "name": "PBI_ResultType",
+            "value": "Text"
+          }
+        ],
+        "description": "Use: https://raw.githubusercontent.com/fivethirtyeight/data/master/comic-characters/marvel-wikia-data.csv",
+        "expression": "\"https://raw.githubusercontent.com/fivethirtyeight/data/master/comic-characters/marvel-wikia-data.csv\" meta [IsParameterQuery=true, Type=\"Any\", IsParameterQueryRequired=true]",
+        "kind": "m",
+        "lineageTag": "82d1cfde-eee7-4ae8-9d6e-4e2d1c4d13b5",
+        "queryGroup": "Parameters"
+      }
+    ],
+    "queryGroups": [
+      {
+        "annotations": [
+          {
+            "name": "PBI_QueryGroupOrder",
+            "value": "0"
+          }
+        ],
+        "folder": "Dimensions"
+      },
+      {
+        "annotations": [
+          {
+            "name": "PBI_QueryGroupOrder",
+            "value": "1"
+          }
+        ],
+        "folder": "Fact"
+      },
+      {
+        "annotations": [
+          {
+            "name": "PBI_QueryGroupOrder",
+            "value": "2"
+          }
+        ],
+        "folder": "Parameters"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "c536afe1-3f60-4922-8aaa-c9e5754c7744",
+        "fromColumn": "DateID",
+        "fromTable": "MarvelFact",
+        "toColumn": "DateID",
+        "toTable": "DateDim"
+      },
+      {
+        "name": "99b81a18-76e8-4806-a3e6-d8ab605cc07a",
+        "fromColumn": "EyeID",
+        "fromTable": "MarvelFact",
+        "toColumn": "EyeID",
+        "toTable": "EyeColorDim"
+      },
+      {
+        "name": "56999b72-f4f6-442c-9f2d-65422acff5af",
+        "fromColumn": "AlignmentID",
+        "fromTable": "MarvelFact",
+        "toColumn": "AlignmentID",
+        "toTable": "AlignmentDim"
+      }
+    ],
+    "sourceQueryCulture": "en-US",
+    "tables": [
+      {
+        "name": "MarvelFact",
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          },
+          {
+            "name": "PBI_NavigationStepName",
+            "value": "Navigation"
+          }
+        ],
+        "columns": [
+          {
+            "name": "ID",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "int64",
+            "formatString": "0",
+            "lineageTag": "b7ff624e-3f51-4955-89fb-6129a2da0110",
+            "sourceColumn": "ID",
+            "summarizeBy": "count"
+          },
+          {
+            "name": "Name",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "lineageTag": "babc8e7f-21c5-43d2-b7f3-f871a5275156",
+            "sourceColumn": "Name",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Appearances",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "int64",
+            "formatString": "#,0",
+            "lineageTag": "1eaca556-a316-4132-bec0-1e10537e8c5a",
+            "sourceColumn": "Appearances",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "DateID",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "int64",
+            "formatString": "0",
+            "lineageTag": "5a5e1b5e-96a3-43c5-bfa1-dbf397dbe6dc",
+            "sourceColumn": "DateID",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "EyeID",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "int64",
+            "formatString": "0",
+            "lineageTag": "e91d9d2a-fc21-45d6-b9a4-562098b146d3",
+            "sourceColumn": "EyeID",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "AlignmentID",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "int64",
+            "formatString": "0",
+            "lineageTag": "6cdf4368-853c-471f-8092-72f8e6ef6b29",
+            "sourceColumn": "AlignmentID",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Test",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              },
+              {
+                "name": "UnderlyingDateTimeDataType",
+                "value": "Time"
+              }
+            ],
+            "changedProperties": [
+              {
+                "property": "DataType"
+              }
+            ],
+            "dataType": "dateTime",
+            "expression": "1",
+            "formatString": "Long Time",
+            "lineageTag": "48b215f3-6230-4672-ae9f-8133298d5615",
+            "summarizeBy": "none",
+            "type": "calculated"
+          }
+        ],
+        "lineageTag": "743cae73-8a6b-4e03-af99-d194d47d16af",
+        "measures": [
+          {
+            "name": "Number of Characters",
+            "expression": "COUNTROWS('MarvelFact') + 1000",
+            "formatString": "0",
+            "lineageTag": "df54ac01-57f7-4a28-a338-2609c59c6503"
+          },
+          {
+            "name": "Number of Characters Title By Date",
+            "expression": "\"Number of Characters that first appeared \" & [Date Filter]",
+            "lineageTag": "69d792e2-4fcc-4491-9f87-3ddb00d7bbbc"
+          },
+          {
+            "name": "Rank of Appearances",
+            "expression": [
+              "",
+              "RANKX (",
+              "    ALLEXCEPT ( 'MarvelFact', AlignmentDim[Alignment] ),",
+              "    CALCULATE ( SUM ( 'MarvelFact'[Appearances] ) )",
+              ")",
+              ""
+            ],
+            "formatString": "0",
+            "lineageTag": "714f1b79-a4f3-4a84-a723-7b62d9467ba9"
+          },
+          {
+            "name": "Running Total of Character Appearances",
+            "expression": [
+              "",
+              "CALCULATE (",
+              "    COUNTROWS ( 'MarvelFact' ),",
+              "    FILTER (",
+              "        ALL ( 'MarvelFact' ),",
+              "        'MarvelFact'[DateID] <= MAX ( 'DateDim'[DateID] )",
+              "    )",
+              ")",
+              ""
+            ],
+            "formatString": "#,0",
+            "lineageTag": "7fb56eb7-be01-4955-92db-9dab09d95a7a"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "MarvelFact-6bd788f7-6397-4a40-bbcd-b7a7355b7188",
+            "mode": "import",
+            "queryGroup": "Fact",
+            "source": {
+              "expression": [
+                "let",
+                "    Source = MarvelSource,",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(Source,{{\"page_id\", Int64.Type}, {\"name\", type text}, {\"urlslug\", type text}, {\"ID\", type text}, {\"ALIGN\", type text}, {\"EYE\", type text}, {\"HAIR\", type text}, {\"SEX\", type text}, {\"GSM\", type text}, {\"ALIVE\", type text}, {\"APPEARANCES\", Int64.Type}, {\"FIRST APPEARANCE\", type text}, {\"Year\", Int64.Type}}),",
+                "    #\"Split Column by Delimiter\" = Table.SplitColumn(#\"Changed Type\", \"FIRST APPEARANCE\", Splitter.SplitTextByDelimiter(\"-\", QuoteStyle.Csv), {\"FIRST APPEARANCE.1\", \"FIRST APPEARANCE.2\"}),",
+                "    #\"Changed Type1\" = Table.TransformColumnTypes(#\"Split Column by Delimiter\",{{\"FIRST APPEARANCE.1\", type text}, {\"FIRST APPEARANCE.2\", Int64.Type}}),",
+                "    #\"Added Custom\" = Table.AddColumn(#\"Changed Type1\", \"DateKey\", each [FIRST APPEARANCE.1]&\"-\"&Text.From([Year])),",
+                "    #\"Replaced Value\" = Table.ReplaceValue(#\"Added Custom\",null,\"Jan-0001\",Replacer.ReplaceValue,{\"DateKey\"}),",
+                "    #\"Removed Columns\" = Table.RemoveColumns(#\"Replaced Value\",{\"FIRST APPEARANCE.1\", \"FIRST APPEARANCE.2\", \"Year\"}),",
+                "    #\"Merged Queries\" = Table.NestedJoin(#\"Removed Columns\", {\"DateKey\"}, DateDim, {\"DateKey\"}, \"DateDim\", JoinKind.LeftOuter),",
+                "    #\"Expanded DateDim\" = Table.ExpandTableColumn(#\"Merged Queries\", \"DateDim\", {\"DateID\"}, {\"DateDim.DateID\"}),",
+                "    #\"Removed Columns1\" = Table.RemoveColumns(#\"Expanded DateDim\",{\"DateKey\"}),",
+                "    #\"Renamed Columns\" = Table.RenameColumns(#\"Removed Columns1\",{{\"DateDim.DateID\", \"DateID\"}}),",
+                "    #\"Removed Columns2\" = Table.RemoveColumns(#\"Renamed Columns\",{\"SEX\", \"GSM\", \"ALIVE\", \"urlslug\"}),",
+                "    #\"Merged Queries1\" = Table.NestedJoin(#\"Removed Columns2\", {\"EYE\"}, EyeColorDim, {\"EyeKey\"}, \"EyeColorDim\", JoinKind.LeftOuter),",
+                "    #\"Expanded EyeColorDim\" = Table.ExpandTableColumn(#\"Merged Queries1\", \"EyeColorDim\", {\"EyeID\"}, {\"EyeID\"}),",
+                "    #\"Removed Columns3\" = Table.RemoveColumns(#\"Expanded EyeColorDim\",{\"HAIR\"}),",
+                "    #\"Merged Queries2\" = Table.NestedJoin(#\"Removed Columns3\", {\"ALIGN\"}, AlignmentDim, {\"AlignmentKey\"}, \"AlignmentDim\", JoinKind.LeftOuter),",
+                "    #\"Expanded AlignmentDim\" = Table.ExpandTableColumn(#\"Merged Queries2\", \"AlignmentDim\", {\"AlignmentID\"}, {\"AlignmentID\"}),",
+                "    #\"Removed Columns4\" = Table.RemoveColumns(#\"Expanded AlignmentDim\",{\"ID\", \"ALIGN\", \"EYE\"}),",
+                "    #\"Renamed Columns1\" = Table.RenameColumns(#\"Removed Columns4\",{{\"name\", \"Name\"}, {\"APPEARANCES\", \"Appearances\"}, {\"page_id\", \"ID\"}})",
+                "in",
+                "    #\"Renamed Columns1\""
+              ],
+              "type": "m"
+            }
+          }
+        ]
+      },
+      {
+        "name": "DateDim",
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          },
+          {
+            "name": "PBI_NavigationStepName",
+            "value": "Navigation"
+          }
+        ],
+        "columns": [
+          {
+            "name": "DateID",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "int64",
+            "formatString": "0",
+            "lineageTag": "f04165d7-a964-463a-9fe1-11c45e755a75",
+            "sourceColumn": "DateID",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Date",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              },
+              {
+                "name": "UnderlyingDateTimeDataType",
+                "value": "Date"
+              }
+            ],
+            "dataType": "dateTime",
+            "formatString": "Long Date",
+            "lineageTag": "1f5eadd5-60fa-4976-a5ef-a7abd80457b5",
+            "sourceColumn": "Date",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "DateKey",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "lineageTag": "99cbf526-ec1a-4670-b1ef-873cddd7efaa",
+            "sourceColumn": "DateKey",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "MonthYearSort",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "changedProperties": [
+              {
+                "property": "DataType"
+              }
+            ],
+            "dataType": "int64",
+            "formatString": "0",
+            "lineageTag": "d0061923-ebd6-4cfd-be33-d910d8d0714f",
+            "sourceColumn": "MonthYearSort",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "Month Year",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "expression": "IF([DateID]<>0,FORMAT([Date],\"MMM-YY\"),\"Not Available\")",
+            "isDataTypeInferred": true,
+            "lineageTag": "022b9561-6f1d-432a-927a-b431bbcc5cff",
+            "sortByColumn": "MonthYearSort",
+            "summarizeBy": "none",
+            "type": "calculated"
+          },
+          {
+            "name": "Year",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "int64",
+            "formatString": "0",
+            "lineageTag": "526e727b-b599-42fa-9aba-ff2c64b6c7df",
+            "sourceColumn": "Year",
+            "summarizeBy": "none"
+          }
+        ],
+        "lineageTag": "864aaed1-9b52-4c91-a679-eee5e9ce61ea",
+        "measures": [
+          {
+            "name": "Date Filter",
+            "expression": [
+              "",
+              "VAR MinDate =",
+              "    FORMAT ( MIN ( 'DateDim'[Date] ), \"MMMM, YYYY\" )",
+              "VAR MaxDate =",
+              "    FORMAT ( MAX ( 'DateDim'[Date] ), \"MMMM, YYYY\" )",
+              "VAR SelDate =",
+              "    SELECTEDVALUE ( 'DateDim'[Date], \"X\" )",
+              "RETURN",
+              "    IF (",
+              "        SelDate = \"X\",",
+              "        \"between \" & MinDate & \" and \" & MaxDate,",
+              "        \"for the month of \" & FORMAT ( SelDate, \"MMMM, YYYY\" )",
+              "    )",
+              ""
+            ],
+            "lineageTag": "4a102139-aa1e-4805-8ff3-8f26cc11ca77"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "DateDim-e3a1d953-1356-4aad-8dfb-22648d5b0c23",
+            "mode": "import",
+            "queryGroup": "Dimensions",
+            "source": {
+              "expression": [
+                "let",
+                "    Source = MarvelSource,",
+                "    #\"Removed Other Columns\" = Table.SelectColumns(Source,{\"FIRST APPEARANCE\", \"Year\"}),",
+                "    #\"Split Column by Delimiter\" = Table.SplitColumn(#\"Removed Other Columns\", \"FIRST APPEARANCE\", Splitter.SplitTextByDelimiter(\"-\", QuoteStyle.Csv), {\"FIRST APPEARANCE.1\", \"FIRST APPEARANCE.2\"}),",
+                "    #\"Changed Type1\" = Table.TransformColumnTypes(#\"Split Column by Delimiter\",{{\"FIRST APPEARANCE.1\", type text}, {\"FIRST APPEARANCE.2\", Int64.Type}}),",
+                "    #\"Added Custom\" = Table.AddColumn(#\"Changed Type1\", \"Date\", each Date.FromText([FIRST APPEARANCE.1]&\" 1, \"&Text.From([Year]))),",
+                "    #\"Filtered Rows\" = Table.SelectRows(#\"Added Custom\", each ([Date] <> null)),",
+                "    #\"Sorted Rows\" = Table.Sort(#\"Filtered Rows\",{{\"Date\", Order.Ascending}}),",
+                "    #\"Removed Columns\" = Table.RemoveColumns(#\"Sorted Rows\",{\"FIRST APPEARANCE.1\", \"FIRST APPEARANCE.2\", \"Year\"}),",
+                "    #\"Added Custom1\" = Table.AddColumn(#\"Removed Columns\", \"EndDate\", each Date.From(DateTime.LocalNow())),",
+                "    #\"Filtered Rows1\" = Table.SelectRows(#\"Added Custom1\", let earliest = List.Min(#\"Added Custom1\"[Date]) in each [Date] = earliest),",
+                "    #\"Removed Duplicates\" = Table.Distinct(#\"Filtered Rows1\", {\"Date\"}),",
+                "    #\"Renamed Columns\" = Table.RenameColumns(#\"Removed Duplicates\",{{\"Date\", \"StartDate\"}}),",
+                "    #\"Added Custom2\" = Table.AddColumn(#\"Renamed Columns\", \"Dates\", each {Number.From([StartDate])..Number.From([EndDate])}),",
+                "    #\"Expanded Dates\" = Table.ExpandListColumn(#\"Added Custom2\", \"Dates\"),",
+                "    #\"Changed Type2\" = Table.TransformColumnTypes(#\"Expanded Dates\",{{\"Dates\", type date}}),",
+                "    #\"Filter1stMonth\" = Table.SelectRows(#\"Changed Type2\", each Date.Day([Dates]) = 1),",
+                "    #\"Removed Columns1\" = Table.RemoveColumns(#\"Filter1stMonth\",{\"StartDate\", \"EndDate\"}),",
+                "    #\"Added Index\" = Table.AddIndexColumn(#\"Removed Columns1\", \"Index\", 1, 1, Int64.Type),",
+                "    #\"Reordered Columns\" = Table.ReorderColumns(#\"Added Index\",{\"Index\", \"Dates\"}),",
+                "    #\"Added Custom3\" = Table.AddColumn(#\"Reordered Columns\", \"DateKey\", each Date.ToText([Dates],\"MMM-yyyy\")),",
+                "    #\"Renamed Columns1\" = Table.RenameColumns(#\"Added Custom3\",{{\"Dates\", \"Date\"}, {\"Index\", \"DateID\"}}),",
+                "    #\"Appended Query\" = Table.Combine({#\"Renamed Columns1\", DateDimBlank}),",
+                "    #\"Sorted Rows1\" = Table.Sort(#\"Appended Query\",{{\"DateID\", Order.Ascending}}),",
+                "    #\"Replaced Value\" = Table.ReplaceValue(#\"Sorted Rows1\",\"\",\"Jan-0001\",Replacer.ReplaceValue,{\"DateKey\"}),",
+                "    #\"Added Custom4\" = Table.AddColumn(#\"Replaced Value\", \"MonthYearSort\", each Date.Year([Date])*100 + Date.Month([Date])),",
+                "    #\"Added Custom5\" = Table.AddColumn(#\"Added Custom4\", \"Year\", each Date.Year([Date])),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Added Custom5\",{{\"Year\", Int64.Type}})",
+                "in",
+                "    #\"Changed Type\""
+              ],
+              "type": "m"
+            }
+          }
+        ]
+      },
+      {
+        "name": "EyeColorDim",
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ],
+        "columns": [
+          {
+            "name": "EyeID",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "int64",
+            "formatString": "0",
+            "lineageTag": "997fc90c-3966-4e04-9b0a-4890e6bb2aa2",
+            "sourceColumn": "EyeID",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "EyeKey",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "lineageTag": "55a30476-3ae6-4781-999b-ef1816fb31d9",
+            "sourceColumn": "EyeKey",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Eye Color",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "lineageTag": "ebbc7a88-ab18-435c-9c89-435151873c5c",
+            "sourceColumn": "Eye Color",
+            "summarizeBy": "none"
+          }
+        ],
+        "lineageTag": "037f7bba-4826-403f-b77b-fb781709cca3",
+        "partitions": [
+          {
+            "name": "EyeColorDim-9e3c8afc-012c-44ec-9c61-96893c06fa7b",
+            "mode": "import",
+            "queryGroup": "Dimensions",
+            "source": {
+              "expression": [
+                "let",
+                "    Source = MarvelSource,",
+                "    #\"Removed Other Columns\" = Table.SelectColumns(Source,{\"EYE\"}),",
+                "    #\"Duplicated Column\" = Table.DuplicateColumn(#\"Removed Other Columns\", \"EYE\", \"EYE - Copy\"),",
+                "    #\"Removed Duplicates\" = Table.Distinct(#\"Duplicated Column\", {\"EYE\"}),",
+                "    #\"Renamed Columns\" = Table.RenameColumns(#\"Removed Duplicates\",{{\"EYE\", \"EyeKey\"}}),",
+                "    #\"Split Column by Delimiter\" = Table.SplitColumn(#\"Renamed Columns\", \"EYE - Copy\", Splitter.SplitTextByDelimiter(\" \", QuoteStyle.Csv), {\"EYE - Copy.1\", \"EYE - Copy.2\"}),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Split Column by Delimiter\",{{\"EYE - Copy.1\", type text}, {\"EYE - Copy.2\", type text}}),",
+                "    #\"Removed Columns\" = Table.RemoveColumns(#\"Changed Type\",{\"EYE - Copy.2\"}),",
+                "    #\"Sorted Rows\" = Table.Sort(#\"Removed Columns\",{{\"EYE - Copy.1\", Order.Ascending}}),",
+                "    #\"Added Index\" = Table.AddIndexColumn(#\"Sorted Rows\", \"Index\", 0, 1, Int64.Type),",
+                "    #\"Reordered Columns\" = Table.ReorderColumns(#\"Added Index\",{\"Index\", \"EyeKey\", \"EYE - Copy.1\"}),",
+                "    #\"Renamed Columns1\" = Table.RenameColumns(#\"Reordered Columns\",{{\"Index\", \"EyeID\"}, {\"EYE - Copy.1\", \"Eye Color\"}}),",
+                "    #\"Replaced Value\" = Table.ReplaceValue(#\"Renamed Columns1\",\"\",\"Not Available\",Replacer.ReplaceValue,{\"Eye Color\"})",
+                "in",
+                "    #\"Replaced Value\""
+              ],
+              "type": "m"
+            }
+          }
+        ]
+      },
+      {
+        "name": "MarvelSource",
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ],
+        "columns": [
+          {
+            "name": "page_id",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "changedProperties": [
+              {
+                "property": "IsHidden"
+              }
+            ],
+            "dataType": "int64",
+            "formatString": "0",
+            "isHidden": true,
+            "lineageTag": "90efbd2f-4c8e-4802-9c30-8a365e8386ad",
+            "sourceColumn": "page_id",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "name",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "changedProperties": [
+              {
+                "property": "IsHidden"
+              }
+            ],
+            "dataType": "string",
+            "isHidden": true,
+            "lineageTag": "f2c44bae-5db7-41fc-a456-49eff0d7444d",
+            "sourceColumn": "name",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "urlslug",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "changedProperties": [
+              {
+                "property": "IsHidden"
+              }
+            ],
+            "dataType": "string",
+            "isHidden": true,
+            "lineageTag": "1d36baa2-4bea-4ab5-9cc1-4bb760a78c37",
+            "sourceColumn": "urlslug",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "ID",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "changedProperties": [
+              {
+                "property": "IsHidden"
+              }
+            ],
+            "dataType": "string",
+            "isHidden": true,
+            "lineageTag": "caa99830-9bba-472c-afd6-22222592549a",
+            "sourceColumn": "ID",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "ALIGN",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "changedProperties": [
+              {
+                "property": "IsHidden"
+              }
+            ],
+            "dataType": "string",
+            "isHidden": true,
+            "lineageTag": "0f7a14b4-c795-44cb-a3d4-9dcfc091ac3f",
+            "sourceColumn": "ALIGN",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "EYE",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "changedProperties": [
+              {
+                "property": "IsHidden"
+              }
+            ],
+            "dataType": "string",
+            "isHidden": true,
+            "lineageTag": "20d4352e-62ac-46b2-a5e8-052180eded7e",
+            "sourceColumn": "EYE",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "HAIR",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "changedProperties": [
+              {
+                "property": "IsHidden"
+              }
+            ],
+            "dataType": "string",
+            "isHidden": true,
+            "lineageTag": "ea60ac25-df49-4c18-b092-846a7f4c17b2",
+            "sourceColumn": "HAIR",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "SEX",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "changedProperties": [
+              {
+                "property": "IsHidden"
+              }
+            ],
+            "dataType": "string",
+            "isHidden": true,
+            "lineageTag": "7bffbbad-78b7-4f16-9bca-111612f54300",
+            "sourceColumn": "SEX",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "GSM",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "changedProperties": [
+              {
+                "property": "IsHidden"
+              }
+            ],
+            "dataType": "string",
+            "isHidden": true,
+            "lineageTag": "55c8d845-32d9-44fe-88c9-44a680eeafac",
+            "sourceColumn": "GSM",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "ALIVE",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "changedProperties": [
+              {
+                "property": "IsHidden"
+              }
+            ],
+            "dataType": "string",
+            "isHidden": true,
+            "lineageTag": "a6b3d8cc-9410-460c-891e-25e80b772693",
+            "sourceColumn": "ALIVE",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "APPEARANCES",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "changedProperties": [
+              {
+                "property": "IsHidden"
+              }
+            ],
+            "dataType": "int64",
+            "formatString": "0",
+            "isHidden": true,
+            "lineageTag": "402cfdd7-08ab-478e-a039-d3abc7f0841c",
+            "sourceColumn": "APPEARANCES",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "FIRST APPEARANCE",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "changedProperties": [
+              {
+                "property": "IsHidden"
+              }
+            ],
+            "dataType": "string",
+            "isHidden": true,
+            "lineageTag": "7e67c78a-607b-4a89-9b09-5ada2a2581f0",
+            "sourceColumn": "FIRST APPEARANCE",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Year",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "changedProperties": [
+              {
+                "property": "IsHidden"
+              }
+            ],
+            "dataType": "int64",
+            "formatString": "0",
+            "isHidden": true,
+            "lineageTag": "1ed89e36-864d-414c-9d19-afb0e40a72f1",
+            "sourceColumn": "Year",
+            "summarizeBy": "sum"
+          }
+        ],
+        "isHidden": true,
+        "lineageTag": "1398ee0f-272b-4a82-a465-0ad3a9527f05",
+        "partitions": [
+          {
+            "name": "MarvelSource-9b980f40-8504-413c-98b2-7be27f4146c9",
+            "mode": "import",
+            "source": {
+              "expression": [
+                "let",
+                "    Source = Csv.Document(Web.Contents(WebURL),[Delimiter=\",\", Columns=13, Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\",{{\"page_id\", Int64.Type}, {\"name\", type text}, {\"urlslug\", type text}, {\"ID\", type text}, {\"ALIGN\", type text}, {\"EYE\", type text}, {\"HAIR\", type text}, {\"SEX\", type text}, {\"GSM\", type text}, {\"ALIVE\", type text}, {\"APPEARANCES\", Int64.Type}, {\"FIRST APPEARANCE\", type text}, {\"Year\", Int64.Type}})",
+                "in",
+                "    #\"Changed Type\""
+              ],
+              "type": "m"
+            }
+          }
+        ]
+      },
+      {
+        "name": "AlignmentDim",
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ],
+        "columns": [
+          {
+            "name": "AlignmentID",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "int64",
+            "formatString": "0",
+            "lineageTag": "5fe32fbe-cb3d-4291-909d-05db95b3f299",
+            "sourceColumn": "AlignmentID",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Alignment",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "lineageTag": "0911cc1e-86b5-4fd7-b8ad-ff20a910f842",
+            "sourceColumn": "Alignment",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "AlignmentKey",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "lineageTag": "d3157c54-4773-49c6-b33b-6c8583855468",
+            "sourceColumn": "AlignmentKey",
+            "summarizeBy": "none"
+          }
+        ],
+        "lineageTag": "bfdfe08d-e2c6-4102-a232-3c7c68b03669",
+        "partitions": [
+          {
+            "name": "AlignmentDim-efd4d92e-b9f5-41bd-a54f-2260dec05954",
+            "mode": "import",
+            "queryGroup": "Dimensions",
+            "source": {
+              "expression": [
+                "let",
+                "    Source = MarvelSource,",
+                "    #\"Removed Other Columns\" = Table.SelectColumns(Source,{\"ALIGN\"}),",
+                "    #\"Removed Duplicates\" = Table.Distinct(#\"Removed Other Columns\"),",
+                "    #\"Duplicated Column\" = Table.DuplicateColumn(#\"Removed Duplicates\", \"ALIGN\", \"ALIGN - Copy\"),",
+                "    #\"Renamed Columns\" = Table.RenameColumns(#\"Duplicated Column\",{{\"ALIGN - Copy\", \"AlignmentKey\"}}),",
+                "    #\"Split Column by Delimiter\" = Table.SplitColumn(#\"Renamed Columns\", \"ALIGN\", Splitter.SplitTextByDelimiter(\" \", QuoteStyle.Csv), {\"ALIGN.1\", \"ALIGN.2\"}),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Split Column by Delimiter\",{{\"ALIGN.1\", type text}, {\"ALIGN.2\", type text}}),",
+                "    #\"Renamed Columns1\" = Table.RenameColumns(#\"Changed Type\",{{\"ALIGN.1\", \"Alignment\"}}),",
+                "    #\"Sorted Rows\" = Table.Sort(#\"Renamed Columns1\",{{\"Alignment\", Order.Ascending}}),",
+                "    #\"Replaced Value\" = Table.ReplaceValue(#\"Sorted Rows\",\"\",\"Not Available\",Replacer.ReplaceValue,{\"Alignment\"}),",
+                "    #\"Added Index\" = Table.AddIndexColumn(#\"Replaced Value\", \"Index\", 0, 1, Int64.Type),",
+                "    #\"Renamed Columns2\" = Table.RenameColumns(#\"Added Index\",{{\"Index\", \"AlignmentID\"}}),",
+                "    #\"Reordered Columns\" = Table.ReorderColumns(#\"Renamed Columns2\",{\"AlignmentID\", \"Alignment\", \"ALIGN.2\", \"AlignmentKey\"}),",
+                "    #\"Removed Columns\" = Table.RemoveColumns(#\"Reordered Columns\",{\"ALIGN.2\"}),",
+                "    #\"Renamed Columns3\" = Table.RenameColumns(#\"Removed Columns\",{{\"AlignmentKey\", \"AlignmentKey\"}})",
+                "in",
+                "    #\"Renamed Columns3\""
+              ],
+              "type": "m"
+            }
+          }
+        ]
+      },
+      {
+        "name": "DataTypes",
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ],
+        "columns": [
+          {
+            "name": "Whole Number",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "int64",
+            "formatString": "0",
+            "lineageTag": "0f9bab8a-c892-4ff5-8ff3-95d4387d1e8a",
+            "sourceColumn": "Whole Number",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "Decimal Number",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              },
+              {
+                "name": "PBI_FormatHint",
+                "value": "{\"isGeneralNumber\":true}"
+              }
+            ],
+            "dataType": "double",
+            "lineageTag": "7536a752-6b53-484c-9f5a-3ffec4e7cad0",
+            "sourceColumn": "Decimal Number",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "Boolean",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "boolean",
+            "formatString": "\"TRUE\";\"TRUE\";\"FALSE\"",
+            "lineageTag": "0a6241d6-eba0-43c1-b18b-164075811fac",
+            "sourceColumn": "Boolean",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Text",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ],
+            "dataType": "string",
+            "lineageTag": "9c5b6fcd-85af-4efd-97c5-2a6039698a4b",
+            "sourceColumn": "Text",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Date",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              },
+              {
+                "name": "UnderlyingDateTimeDataType",
+                "value": "Date"
+              }
+            ],
+            "dataType": "dateTime",
+            "formatString": "Long Date",
+            "lineageTag": "9b5893c4-1bae-41ea-9259-9c71aa2fa810",
+            "sourceColumn": "Date",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Currency",
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              },
+              {
+                "name": "PBI_FormatHint",
+                "value": "{\"currencyCulture\":\"en-US\"}"
+              }
+            ],
+            "changedProperties": [
+              {
+                "property": "DataType"
+              }
+            ],
+            "dataType": "decimal",
+            "formatString": "\\$#,0.00;(\\$#,0.00);\\$#,0.00",
+            "lineageTag": "8de8e7c5-4c39-4bf7-b725-059c868868da",
+            "sourceColumn": "Currency",
+            "summarizeBy": "sum"
+          }
+        ],
+        "lineageTag": "7f69575d-04de-4b21-8397-70fa031cdead",
+        "partitions": [
+          {
+            "name": "DataTypes",
+            "mode": "import",
+            "source": {
+              "expression": [
+                "let",
+                "    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(\"i45WMlTSUTLUMzIGUiFFpakgKiOzWAGISlIrSkCS+ob6RgZGJmB1lpZKsbEA\", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#\"Whole Number\" = _t, #\"Decimal Number\" = _t, Boolean = _t, Text = _t, Date = _t, Currency = _t]),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(Source,{{\"Whole Number\", Int64.Type}, {\"Decimal Number\", type number}, {\"Boolean\", type logical}, {\"Text\", type text}, {\"Date\", type date}, {\"Currency\", type number}})",
+                "in",
+                "    #\"Changed Type\""
+              ],
+              "type": "m"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
