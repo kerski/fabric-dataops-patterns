@@ -1,5 +1,4 @@
-# ---------- Check if PowerShell Modules are Installed ---------- #
-Install-Module -Name Invoke-DQVTesting -Scope CurrentUser -AllowClobber -Force
+# Automated Job for the Dqv Testing Pattern
 
 $secret = ${env:PASSWORD_OR_CLIENTSECRET} | ConvertTo-SecureString -AsPlainText -Force
 $credentials = [System.Management.Automation.PSCredential]::new(${env:USERNAME_OR_CLIENTID}, $secret)                  

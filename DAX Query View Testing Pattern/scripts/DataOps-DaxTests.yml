@@ -8,15 +8,20 @@ parameters:
     type: string
     default: ' '
 
-schedules:
-- cron: 0 */6 * * *
-  displayName: Every 6 hours
-  branches:
-    include:
-      - development
-      - test
-      - main
-  always: True
+# schedules:
+# - cron: 0 */6 * * *
+#   displayName: Every 6 hours
+#   branches:
+#     include:
+#       - development
+#       - test
+#       - main
+#   always: True
+
+# While in development mode-
+#   Explicitly disable the azure devops default of yaml pipelines
+#   having a ci trigger enabled for all branches
+trigger: none
 
 pool:
   vmimage: 'windows-latest'
@@ -31,7 +36,7 @@ variables:
 
 jobs:
 - job: Job_1
-  displayName: Automated Testing Job
+  displayName: Automated Job for the Dqv Testing Pattern
   steps:
   - checkout: self
     fetchDepth: 0
@@ -49,5 +54,5 @@ jobs:
       PASSWORD_OR_CLIENTSECRET: $(PASSWORD_OR_CLIENTSECRET) # Maps the secret variable
     inputs:
       pwsh: true
-      filePath: PipelineScripts/Run-DqvTestingPattern.ps1
+      filePath: "DAX Query View Testing Pattern/PipelineScripts/Run-DqvTestingPattern.ps1"
       failOnStderr: true

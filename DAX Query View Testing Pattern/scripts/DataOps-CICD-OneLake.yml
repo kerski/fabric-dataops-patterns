@@ -17,10 +17,15 @@ parameters:
     type: string
     default: 'Build'
 
-trigger:
-  branches:
-    include:
-      - main
+# trigger:
+#   branches:
+#     include:
+#       - main
+
+# While in development mode-
+#   Explicitly disable the azure devops default of yaml pipelines
+#   having a ci trigger enabled for all branches
+trigger: none
 
 pool:
   vmimage: 'windows-latest'
@@ -39,7 +44,7 @@ variables:
 
 jobs:
 - job: Job_1
-  displayName: Automated Job for the Dqv Deployment and Testing OneLake Pattern
+  displayName: Automated Job for the Dqv Testing and Deployment OneLake Pattern
   steps:
   - checkout: self
     fetchDepth: 0
@@ -49,6 +54,6 @@ jobs:
       PASSWORD_OR_CLIENTSECRET: $(PASSWORD_OR_CLIENTSECRET) # Maps the secret variable
     inputs:
       pwsh: true
-      filePath: PipelineScripts/Run-DqvDeployTestingOneLakePattern.ps1
+      filePath: "DAX Query View Testing Pattern/PipelineScripts/Run-DqvTestingDeployOneLakePattern.ps1'
       failOnStderr: true
         
