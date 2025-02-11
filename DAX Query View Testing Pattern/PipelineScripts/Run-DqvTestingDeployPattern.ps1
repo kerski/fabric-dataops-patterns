@@ -170,6 +170,7 @@ foreach ($promotePath in $rptPathsToPromote) {
         }
         else {
             Write-Host "##vso[task.logissue type=error]Semantic Model definition not found in workspace."
+            exit 1
         }
 
         # Get the semantic model id from items in the workspace
@@ -177,6 +178,7 @@ foreach ($promotePath in $rptPathsToPromote) {
               
         if (!$semanticModel) {
             Write-Host "##vso[task.logissue type=error]Semantic Model not found in workspace."
+            exit 1
         }
         else {    
             # Import report with appropriate semantic model id
@@ -195,7 +197,6 @@ foreach ($promotePath in $rptPathsToPromote) {
 
 
 # ---------- Run Refreshes and Tests ---------- #
-$FailureCount = 0
 # Run synchronous refresh for each semantic model
 foreach ($promotedItem in $sMPromotedItems) {
     # Test refresh which validates functionality
@@ -209,8 +210,8 @@ foreach ($promotedItem in $sMPromotedItems) {
     # Check if refresh results are null or not, if null then set the failure count to 1
     Write-Host "##[debug]Checking refresh results for promoted item $($promotedItem.displayName) to workspace ${env:WORKSPACE_NAME}"
     if ($null -eq $RefreshResults -or $RefreshResults[-1] -ne "Completed") {
-        $FailureCount += 1
         Write-Host "##vso[task.logissue type=warning]Failed to refresh $($promotedItem.displayName); status was $($RefreshResults[-1]). Please resolve."
+        exit 1
     }
     else {
             # Run tests for functionality and data accuracy
@@ -219,17 +220,15 @@ foreach ($promotedItem in $sMPromotedItems) {
                 -TenantId "${env:TENANT_ID}" `
                 -DatasetId $promotedItem.Id `
                 -LogOutput "Table"
+            $TestResults | Where-Object {$_.IsTestResult -eq "True"} | ForEach-Object {Write-Host "##[debug]$($_.Message)"}
+            Write-Host "##[debug]$($TestResults[-1].Message)"
 
             # Check if test results are null or not, if null then set the failure count
-            $testsFailed =  ($TestResults | Where-Object {$_.IsTestResult -eq "True" -and $_.LogType -eq "Failed"}).Count
+            $testsFailed =  ($TestResults | Where-Object {$_.IsTestResult -eq "True" -and $_.LogType -eq "Error"}).Count
             Write-Host "##[debug]Checking DAX query test results for promoted item $($promotedItem.displayName) to workspace ${env:WORKSPACE_NAME}"
             if ($null -eq $TestResults -or $TestResults[-1].LogType -ne "Success") {
-                $FailureCount += $testsFailed
-                Write-Host "##vso[task.logissue type=error]$($FailureCount) failed test(s). Please resolve."
+                Write-Host "##vso[task.logissue type=error]$($testsFailed) failed test(s). Please resolve."
                 exit 1
-            }
-            else {
-                $TestResults | Where-Object {$_.IsTestResult -eq "True"} | ForEach-Object {Write-Host "##[debug]$($_.Message)"}
             }
     } 
 }# end foreach

@@ -54,6 +54,5 @@ jobs:
       PASSWORD_OR_CLIENTSECRET: $(PASSWORD_OR_CLIENTSECRET) # Maps the secret variable
     inputs:
       pwsh: true
-      filePath: "DAX Query View Testing Pattern/PipelineScripts/Run-DqvTestingDeployOneLakePattern.ps1'
-      failOnStderr: true
-        
+      filePath: "DAX Query View Testing Pattern/PipelineScripts/Run-DqvTestingDeployOneLakePattern.ps1"
+      failOnStderr: false

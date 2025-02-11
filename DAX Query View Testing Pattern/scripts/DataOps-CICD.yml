@@ -42,10 +42,10 @@ jobs:
   - checkout: self
     fetchDepth: 0
   - task: PowerShell@2
-    displayName: Conduct Testing
+    displayName: Deploy Changes for Semantic Models, Reports and Conduct Testing For Semantic Models
     env:
       PASSWORD_OR_CLIENTSECRET: $(PASSWORD_OR_CLIENTSECRET) # Maps the secret variable
     inputs:
       pwsh: true
       filePath: "DAX Query View Testing Pattern/PipelineScripts/Run-DqvTestingDeployPattern.ps1"
-      failOnStderr: true
+      failOnStderr: false
