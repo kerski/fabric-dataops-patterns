@@ -31,7 +31,7 @@ if ((Test-Path -path ".\.nuget\custom_modules") -eq $false) {
 
 # ---------- Import PowerShell Modules ---------- #
 # Import FabricPS-PBIP
-Import-Module "..\..\.nuget\custom_modules\FabricPS-PBIP" -Force
+Import-Module ".\.nuget\custom_modules\FabricPS-PBIP" -Force
 
 # Import module to support deployment pipeline functions
 Import-Module "..\PipelineScripts\custom_modules\DeploymentPipelines" -Force
