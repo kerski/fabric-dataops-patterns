@@ -6,9 +6,10 @@
     "Example.Tests",
     "Column.Tests",
     "Table.Tests",
-    "Schema.Tests",
+    "Schema_Table.Tests",
+    "Schema_Model.Tests",
     "Schema Query Example",
     "NonTest"
   ],
-  "defaultTab": "Sample.Tests"
+  "defaultTab": "Schema_Model.Tests"
 }

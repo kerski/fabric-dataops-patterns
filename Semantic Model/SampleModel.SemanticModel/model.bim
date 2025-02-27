@@ -4,7 +4,7 @@
     "annotations": [
       {
         "name": "PBIDesktopVersion",
-        "value": "2.132.1053.0 (24.08)"
+        "value": "2.140.1078.0 (25.02)+2cce24fb16e8b71ba835921d23e7ffc1fab909df"
       },
       {
         "name": "PBI_QueryOrder",
@@ -231,7 +231,7 @@
             "summarizeBy": "none"
           },
           {
-            "name": "Test",
+            "name": "Test Change",
             "annotations": [
               {
                 "name": "SummarizationSetBy",

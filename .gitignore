@@ -6,3 +6,4 @@
 testFiles/
 *.psd1
 publish.ps1
+Semantic Model/SampleModel.pbix

@@ -1,0 +1,91 @@
+DEFINE
+
+	////// START TEST SETUP //////
+	// Use function introduce in late 2024
+	VAR _InitMeasures = SELECTCOLUMNS(
+		INFO.VIEW.MEASURES(),
+		"Table", [Table],
+		"Column", [Name],
+		"Type", [DataType],
+		"Data Category", "",
+		"Format String", SUBSTITUTE([FormatStringDefinition],"""","")
+	)
+
+	// Create preliminary schema table
+	VAR _InitiColumns = SELECTCOLUMNS(
+		FILTER(
+			INFO.VIEW.COLUMNS(),
+			[DataCategory] <> "RowNumber"
+		),
+		"Table", [Table],
+		"Column", [Name],
+		"Type", [DataType],
+		"Data Category", [DataCategory],
+		"Format String", [FormatString]
+	)
+
+	VAR _Schema = UNION(
+		_InitMeasures,
+		_InitiColumns
+	)
+	////// END TEST SETUP  //////
+
+	////// INSERT EXPECTED SCHEMA //////
+	// Set Expectations on the Schema
+	VAR _Definition_of_ModelSchema = DATATABLE("Table",STRING,"Column",STRING,"Type",STRING,"Data Category",STRING,"Format String",STRING,{{"MarvelFact","Number of Characters","Integer","","0"},{"MarvelFact","Number of Characters Title By Date","Text","",BLANK()},{"MarvelFact","Rank of Appearances","Integer","","0"},{"MarvelFact","Running Total of Character Appearances","Integer","","#,0"},{"DateDim","Date Filter","Text","",BLANK()},{"MarvelFact","ID","Integer","Regular","0"},{"MarvelFact","Name","Text","Regular",BLANK()},{"MarvelFact","Appearances","Integer","Regular","#,0"},{"MarvelFact","DateID","Integer","Regular","0"},{"MarvelFact","EyeID","Integer","Regular","0"},{"MarvelFact","AlignmentID","Integer","Regular","0"},{"MarvelFact","Test","Date","Regular","Long Time"},{"DateDim","DateID","Integer","Regular","0"},{"DateDim","Date","Date","Regular","Long Date"},{"DateDim","DateKey","Text","Regular",BLANK()},{"DateDim","MonthYearSort","Integer","Regular","0"},{"DateDim","Month Year","Text","Regular",BLANK()},{"DateDim","Year","Integer","Regular","0"},{"EyeColorDim","EyeID","Integer","Regular","0"},{"EyeColorDim","EyeKey","Text","Regular",BLANK()},{"EyeColorDim","Eye Color","Text","Regular",BLANK()},{"MarvelSource","page_id","Integer","Regular","0"},{"MarvelSource","Name","Text","Regular",BLANK()},{"MarvelSource","urlslug","Text","Regular",BLANK()},{"MarvelSource","ID","Text","Regular",BLANK()},{"MarvelSource","ALIGN","Text","Regular",BLANK()},{"MarvelSource","EYE","Text","Regular",BLANK()},{"MarvelSource","HAIR","Text","Regular",BLANK()},{"MarvelSource","SEX","Text","Regular",BLANK()},{"MarvelSource","GSM","Text","Regular",BLANK()},{"MarvelSource","ALIVE","Text","Regular",BLANK()},{"MarvelSource","Appearances","Integer","Regular","0"},{"MarvelSource","FIRST APPEARANCE","Text","Regular",BLANK()},{"MarvelSource","Year","Integer","Regular","0"},{"AlignmentDim","AlignmentID","Integer","Regular","0"},{"AlignmentDim","Alignment","Text","Regular",BLANK()},{"AlignmentDim","AlignmentKey","Text","Regular",BLANK()},{"DataTypes","Whole Number","Integer","Regular","0"},{"DataTypes","Decimal Number","Number","Regular",BLANK()},{"DataTypes","Boolean","True/False","Regular","""TRUE"";""TRUE"";""FALSE"""},{"DataTypes","Text","Text","Regular",BLANK()},{"DataTypes","Date","Date","Regular","Long Date"},{"DataTypes","Currency","Currency","Regular","\$#,0.00;(\$#,0.00);\$#,0.00"}})
+
+	// Get the schema for Table 1
+	VAR _ModelSchema = SELECTCOLUMNS(
+		FILTER(
+			_schema,
+			1 = 1
+		),
+		[Table],
+		[Column],
+		[Type],
+		[Data Category],
+		[Format String]
+	)
+
+	// For visual comparison
+	VAR _CompareOutput = UNION(
+		ADDCOLUMNS(
+			EXCEPT(
+				_Definition_of_ModelSchema,
+				_ModelSchema
+			),
+			"Change", "Definition != Current"
+		),
+		ADDCOLUMNS(
+			EXCEPT(
+				_ModelSchema,
+				_Definition_of_ModelSchema
+			),
+			"Change", "Current != Definition"
+		)
+	)
+
+	/*Run Tests*/
+	VAR _Tests = ROW(
+		"TestName", "Alignment Schema matches expectations",
+		"ExpectedValue", 0,
+		// EXCEPT shows that it appears in the first table, but not the second
+		"ActualValue", COUNTROWS(EXCEPT(
+			_Definition_of_ModelSchema,
+			_ModelSchema
+		)) + COUNTROWS(EXCEPT(
+			_ModelSchema,
+			_Definition_of_ModelSchema
+		)) + 0
+	)
+
+	/*Output Pass/Fail*/
+	VAR _TestOutput =
+	ADDCOLUMNS(
+		_Tests,
+		"Passed", [ExpectedValue] = [ActualValue]
+	)
+
+// Comment out if you want to see the differences
+EVALUATE _TestOutput
+EVALUATE _CompareOutput ORDER BY [Table],[Column]
