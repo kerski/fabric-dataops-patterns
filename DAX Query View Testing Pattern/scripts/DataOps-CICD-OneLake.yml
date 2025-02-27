@@ -1,0 +1,58 @@
+parameters:
+  - name: WORKSPACE_NAME
+    displayName: Workspace name to conduct tests?
+    type: string
+    # Set the default value to the name of the workspace
+    default: 'Fabric DataOps Build'
+    
+    # Add a parameter for the deployment pipeline
+  - name: DEPLOYMENT_PIPELINE_NAME
+    displayName: Deployment pipeline name to use?
+    type: string
+    default: 'Fabric DataOps CI/CD Process'
+    
+    # Add a parameter for the source stage
+  - name: SOURCE_STAGE_NAME
+    displayName: Source stage name in the pipeline?
+    type: string
+    default: 'Build'
+
+# trigger:
+#   branches:
+#     include:
+#       - main
+
+# While in development mode-
+#   Explicitly disable the azure devops default of yaml pipelines
+#   having a ci trigger enabled for all branches
+trigger: none
+
+pool:
+  vmimage: 'windows-latest'
+  name: Default
+
+variables:
+  # Variable group with configuration
+  - group: TestingCredentials
+  # Parameters for the pipeline
+  - name: 'WORKSPACE_NAME'
+    value: '${{ parameters.WORKSPACE_NAME }}'
+  - name: 'DEPLOYMENT_PIPELINE_NAME'
+    value: '${{ parameters.DEPLOYMENT_PIPELINE_NAME }}'
+  - name: 'SOURCE_STAGE_NAME'
+    value: '${{ parameters.SOURCE_STAGE_NAME }}'
+
+jobs:
+- job: Job_1
+  displayName: Automated Job for the Dqv Testing and Deployment OneLake Pattern
+  steps:
+  - checkout: self
+    fetchDepth: 0
+  - task: PowerShell@2
+    displayName: Deploy Changes for Semantic Models, Reports and Conduct Testing For Semantic Models
+    env:
+      PASSWORD_OR_CLIENTSECRET: $(PASSWORD_OR_CLIENTSECRET) # Maps the secret variable
+    inputs:
+      pwsh: true
+      filePath: "DAX Query View Testing Pattern/PipelineScripts/Run-DqvTestingDeployOneLakePattern.ps1"
+      failOnStderr: false

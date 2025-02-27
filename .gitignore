@@ -1,5 +1,6 @@
 **/.pbi/localSettings.json
 **/.pbi/cache.abf
+**/.DS_Store
 *.config.json
 .\Tests.config.json
 .nuget/

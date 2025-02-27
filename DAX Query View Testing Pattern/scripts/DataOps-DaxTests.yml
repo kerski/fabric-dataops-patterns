@@ -8,15 +8,20 @@ parameters:
     type: string
     default: ' '
 
-schedules:
-- cron: 0 */6 * * *
-  displayName: Every 6 hours
-  branches:
-    include:
-      - development
-      - test
-      - main
-  always: True
+# schedules:
+# - cron: 0 */6 * * *
+#   displayName: Every 6 hours
+#   branches:
+#     include:
+#       - development
+#       - test
+#       - main
+#   always: True
+
+# While in development mode-
+#   Explicitly disable the azure devops default of yaml pipelines
+#   having a ci trigger enabled for all branches
+trigger: none
 
 pool:
   vmimage: 'windows-latest'
@@ -31,7 +36,7 @@ variables:
 
 jobs:
 - job: Job_1
-  displayName: Automated Testing Job
+  displayName: Automated Job for the Dqv Testing Pattern
   steps:
   - checkout: self
     fetchDepth: 0
@@ -49,23 +54,5 @@ jobs:
       PASSWORD_OR_CLIENTSECRET: $(PASSWORD_OR_CLIENTSECRET) # Maps the secret variable
     inputs:
       pwsh: true
+      filePath: "DAX Query View Testing Pattern/PipelineScripts/Run-DqvTestingPattern.ps1"
       failOnStderr: true
-      targetType: inline
-      script: |                    
-        $secret = ${env:PASSWORD_OR_CLIENTSECRET} | ConvertTo-SecureString -AsPlainText -Force
-        $credentials = [System.Management.Automation.PSCredential]::new(${env:USERNAME_OR_CLIENTID},$secret)                  
-
-        # Check if specific datasets need to be tested
-        $lengthCheck = "${env:DATASET_IDS}".Trim()
-        if($lengthCheck -gt 0){
-          $datasetsToTest = "${env:DATASET_IDS}".Trim() -split ','
-        }else{
-          $datasetsToTest = @()
-        }
-
-        # Run tests
-        Invoke-DQVTesting -WorkspaceName "${env:WORKSPACE_NAME}" `
-                        -Credential $credentials `
-                        -TenantId "${env:TENANT_ID}" `
-                        -DatasetId $datasetsToTest `
-                        -LogOutput "ADO"
