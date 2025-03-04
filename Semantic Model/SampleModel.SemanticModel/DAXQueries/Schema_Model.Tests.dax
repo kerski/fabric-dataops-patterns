@@ -67,7 +67,7 @@ DEFINE
 
 	/*Run Tests*/
 	VAR _Tests = ROW(
-		"TestName", "Alignment Schema matches expectations",
+		"TestName", "Model Schema matches expectations",
 		"ExpectedValue", 0,
 		// EXCEPT shows that it appears in the first table, but not the second
 		"ActualValue", COUNTROWS(EXCEPT(
