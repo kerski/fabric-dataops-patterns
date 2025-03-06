@@ -117,10 +117,21 @@ DEFINE
 			"ActualValue", COUNTROWS(EXCEPT(_Definition_of_Table1schema,_Table1schema)) + 0
 		),
 		ROW(
-			"TestName", "Marvel Fact EXACTLY matches expectations",
+			"TestName", "Marvel Fact every column definition in the test matched EXACTLY to the published schema",
+			"ExpectedValue", 0,
+			"ActualValue", COUNTROWS(EXCEPT(_Definition_of_Table2Schema,_Table2Schema)) + 0
+		),
+		ROW(
+			"TestName", "Marvel Fact every column definition in the published schema matched EXACTLY to the test definition",
+			"ExpectedValue", 0,
+			"ActualValue", COUNTROWS(EXCEPT(_Table2Schema,_Definition_of_Table2Schema)) + 0
+		),
+		ROW(
+			"TestName", "Marvel Fact EXACTLY matches expectations; the test definition and published schema are identical",
 			"ExpectedValue", 0,
 			"ActualValue", COUNTROWS(EXCEPT(_Definition_of_Table2Schema,_Table2Schema)) + COUNTROWS(EXCEPT(_Table2Schema,_Definition_of_Table2Schema)) + 0
-		))
+		)
+	)
 		
 
 /*Output Pass/Fail*/

@@ -1,0 +1,78 @@
+DEFINE
+	// Update TableName1 and TableName2 with your tables
+	VAR _TableName1 = "AlignmentDim"
+	VAR _TableName2 = "MarvelFact"
+	
+	////// START TEST SETUP //////
+	// Use function introduce in late 2024
+	VAR _InitMeasures = SELECTCOLUMNS(
+		INFO.VIEW.MEASURES(),
+		"Table", [Table],
+		"Column", [Name],
+		"Type", [DataType],
+		"Data Category", "",
+		"Format String", SUBSTITUTE([FormatStringDefinition],"""","")
+	)
+
+	// Create preliminary schema table
+	VAR _InitiColumns = SELECTCOLUMNS(
+		FILTER(
+			INFO.VIEW.COLUMNS(),
+			[DataCategory] <> "RowNumber"
+		),
+		"Table", [Table],
+		"Column", [Name],
+		"Type", [DataType],
+		"Data Category", [DataCategory],
+		"Format String", [FormatString]
+	)
+
+	VAR _Schema = UNION(
+		_InitMeasures,
+		_InitiColumns
+	)
+	////// END TEST SETUP  //////
+	
+	////// INSERT EXPECTED SCHEMA //////
+	// Set Expectations on the Schema
+	VAR _Definition_of_Table1Schema = DATATABLE("Table",STRING,"Column",STRING,"Type",STRING,"Data Category",STRING,"Format String",STRING,{{"AlignmentDim","AlignmentID","Integer","Regular","0"},{"AlignmentDim","Alignment","Text","Regular",BLANK()},{"AlignmentDim","AlignmentKey","Text","Regular",BLANK()}})
+
+	// Set Expectations on the Schema
+	VAR _Definition_of_Table2Schema = DATATABLE("Table",STRING,"Column",STRING,"Type",STRING,"Data Category",STRING,"Format String",STRING,{{"MarvelFact","Number of Characters","Integer","","0"},{"MarvelFact","Number of Characters Title By Date","Text","",BLANK()},{"MarvelFact","Rank of Appearances","Integer","","0"},{"MarvelFact","Running Total of Character Appearances","Integer","","#,0"},{"MarvelFact","ID","Integer","Regular","0"},{"MarvelFact","Name","Text","Regular",BLANK()},{"MarvelFact","Appearances","Integer","Regular","#,0"},{"MarvelFact","DateID","Integer","Regular","0"},{"MarvelFact","EyeID","Integer","Regular","0"},{"MarvelFact","AlignmentID","Integer","Regular","0"},{"MarvelFact","Test","Date","Regular","Long Time"}})
+		
+	// Get the schema for Table 1
+	VAR _Table1schema = SELECTCOLUMNS(
+	FILTER(
+		_schema,
+		[Table] = _TableName1
+	),[Table],[Column],[Type],[Data Category],[Format String])
+	
+	// Get the schema for Table 2
+	VAR _Table2Schema = SELECTCOLUMNS(
+	FILTER(
+		_schema,
+		[Table] = _TableName2
+	),[Table],[Column],[Type],[Data Category],[Format String])	
+		
+	
+	/*Run Tests*/
+	VAR _Tests = UNION(
+		ROW(
+			"TestName", "Alignment Schema matches expectations",
+			"ExpectedValue", 0,
+			// EXCEPT shows that it appears in the first table, but not the second
+			"ActualValue", COUNTROWS(EXCEPT(_Definition_of_Table1schema,_Table1schema)) + 0
+		),
+		ROW(
+			"TestName", "Marvel Fact EXACTLY matches expectations",
+			"ExpectedValue", 0,
+			"ActualValue", COUNTROWS(EXCEPT(_Definition_of_Table2Schema,_Table2Schema)) + COUNTROWS(EXCEPT(_Table2Schema,_Definition_of_Table2Schema)) + 0
+		))
+		
+
+/*Output Pass/Fail*/
+EVALUATE 
+	ADDCOLUMNS(
+		_Tests,
+		"Passed", [ExpectedValue] = [ActualValue]
+	)

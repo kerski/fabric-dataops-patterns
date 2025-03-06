@@ -28,12 +28,12 @@ DEFINE
    UNION(
 	ROW (
         "TestName",
-            "Measure: Number of Characters Test for Good Alignment Should be 178",
+            "Measure: Number of Characters Test for Good Alignment Should be 1178",
         "ExpectedValue", 1178,
         "ActualValue", SELECTCOLUMNS(__GoodResult, [Number_of_Characters])
     ),    
 	ROW (
-        "TestName", "Measure: Number of Characters Test for Bad Alignment Should be 209",
+        "TestName", "Measure: Number of Characters Test for Bad Alignment Should be 1209",
         "ExpectedValue", 1209,
         "ActualValue", SELECTCOLUMNS(__BadResult, [Number_of_Characters])
     ))
