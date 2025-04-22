@@ -3,10 +3,21 @@ $script:pbiAPIURL = "https://api.powerbi.com"
 $script:xMLAPrefix = "powerbi://api.powerbi.com/v1.0/myorg/"
 $script:messages = @()
 
-#Install Az.Accounts if Needed
-if (!(Get-Module -ListAvailable -Name "Az.Accounts")) {
-    #Install Az.Accounts Module
-    Install-Module -Name Az.Accounts -Scope CurrentUser -AllowClobber -Force
+# Ensure Az.Accounts is installed and at least version 4.0.0
+$requiredVersion = "4.0.0"
+$azAccountsModule = Get-Module -ListAvailable -Name "Az.Accounts" | Where-Object { $_.Version -ge [Version]$requiredVersion }
+
+if (-not $azAccountsModule) {
+    Write-Output "Az.Accounts module version $requiredVersion or higher is not installed. Installing..."
+    Install-Module -Name Az.Accounts -RequiredVersion $requiredVersion -Scope CurrentUser -AllowClobber -Force
+}
+
+# Import the correct version of Az.Accounts
+$azAccountsModule = Get-Module -ListAvailable -Name "Az.Accounts" | Where-Object { $_.Version -ge [Version]$requiredVersion } | Select-Object -First 1
+if ($azAccountsModule) {
+    Import-Module -Name $azAccountsModule.Name -RequiredVersion $azAccountsModule.Version -Force
+} else {
+    throw "Failed to install or import Az.Accounts module version $requiredVersion or higher."
 }
 
 # Load the type from the Microsoft.AnalysisServices.AdomdClient nuget package
@@ -322,11 +333,12 @@ function Invoke-DQVTesting  {
             else{ # User account
                 Set-FabricAuthToken -credential $Credential -tenantId $TenantId -reset
             }
-        }Catch [System.Exception]{
-            $errObj = ($_).ToString()
-            Write-ToLog -Message "$($errObj)" -LogType "Error" -LogOutput $LogOutput
+        } Catch [System.Exception] {
+            $errObj = $_.Exception.Message
+            $stackTrace = $_.Exception.StackTrace
+            Write-ToLog -Message "Error: $($errObj)`nStack Trace: $($stackTrace)" -LogType "Error" -LogOutput $LogOutput
             return @($script:messages)
-        }# End Try
+        } # End Try
 
         # Retrieve workspace name using filter capability
         Try{
